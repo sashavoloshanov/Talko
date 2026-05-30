@@ -1,6 +1,7 @@
 import Foundation
 import Combine
 import Observation
+import WidgetKit
  
 enum AppLanguage: String, CaseIterable, Codable, Identifiable {
     case ukrainian = "uk"
@@ -38,6 +39,8 @@ final class LanguageClient {
     func setLanguage(_ lang: AppLanguage) {
         current = lang
         UserDefaultsClient.set(lang, for: .appLanguage)
+        UserDefaults(suiteName: "group.com.talk.shared")?.set(lang.rawValue, forKey: "appLanguage")
         subject.send(lang)
+        WidgetCenter.shared.reloadAllTimelines()
     }
 }

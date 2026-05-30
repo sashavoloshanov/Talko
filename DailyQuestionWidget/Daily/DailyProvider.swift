@@ -30,8 +30,10 @@ struct DailyProvider: TimelineProvider {
     }
 
     private func loadFromBundle() -> String? {
+        let langCode = UserDefaults(suiteName: "group.com.talk.shared")?.string(forKey: "appLanguage") ?? "uk"
+        let bundle = Bundle(path: Bundle.main.path(forResource: langCode, ofType: "lproj") ?? "") ?? .main
         guard
-            let url = Bundle.main.url(forResource: "daily", withExtension: "json"),
+            let url = bundle.url(forResource: "daily", withExtension: "json"),
             let data = try? Data(contentsOf: url),
             let payload = try? JSONDecoder().decode(DailyQuestionsPayload.self, from: data)
         else { return nil }
