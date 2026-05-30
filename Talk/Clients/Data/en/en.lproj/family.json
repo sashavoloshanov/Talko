@@ -1,0 +1,1052 @@
+{
+  "id": "family",
+  "name": "Family",
+  "emoji": "🏠",
+  "subcategories": [
+    {
+      "id": "who_among_us",
+      "emoji": "🪞",
+      "name": "Who Among Us…",
+      "description": "Who fits the description best",
+      "isPremium": false,
+      "questions": [
+        {
+          "id": "who_among_us_1",
+          "text": "Who takes the longest to get ready to leave?"
+        },
+        {
+          "id": "who_among_us_2",
+          "text": "Who is always searching for the TV remote?"
+        },
+        {
+          "id": "who_among_us_3",
+          "text": "Who falls asleep first?"
+        },
+        {
+          "id": "who_among_us_4",
+          "text": "Who makes the best breakfast?"
+        },
+        {
+          "id": "who_among_us_5",
+          "text": "Who most often says 'I'm not hungry, but I could eat something'?"
+        },
+        {
+          "id": "who_among_us_6",
+          "text": "Who best remembers dates and important events?"
+        },
+        {
+          "id": "who_among_us_7",
+          "text": "Who grumbles the most but is the first one to laugh?"
+        },
+        {
+          "id": "who_among_us_8",
+          "text": "Who holds a grudge the longest?"
+        },
+        {
+          "id": "who_among_us_9",
+          "text": "Who dances best at family gatherings?"
+        },
+        {
+          "id": "who_among_us_10",
+          "text": "Who most often says 'Just give me 5 minutes'?"
+        },
+        {
+          "id": "who_among_us_11",
+          "text": "Who is most similar to mum?"
+        },
+        {
+          "id": "who_among_us_12",
+          "text": "Who always knows where everything is?"
+        },
+        {
+          "id": "who_among_us_13",
+          "text": "Who starts dancing for absolutely no reason?"
+        },
+        {
+          "id": "who_among_us_14",
+          "text": "Who loves to argue over small things the most?"
+        },
+        {
+          "id": "who_among_us_15",
+          "text": "Who always knows where the sweets are hidden?"
+        },
+        {
+          "id": "who_among_us_16",
+          "text": "Who gets distracted most easily during a conversation?"
+        },
+        {
+          "id": "who_among_us_17",
+          "text": "Who spends the longest in the bathroom?"
+        },
+        {
+          "id": "who_among_us_18",
+          "text": "Who laughs the loudest?"
+        },
+        {
+          "id": "who_among_us_19",
+          "text": "Who always finds the best deals?"
+        },
+        {
+          "id": "who_among_us_20",
+          "text": "Who loves watching TV series the most?"
+        },
+        {
+          "id": "who_among_us_21",
+          "text": "Who handles the cold the worst?"
+        },
+        {
+          "id": "who_among_us_22",
+          "text": "Who most often forgets where they put their phone?"
+        },
+        {
+          "id": "who_among_us_23",
+          "text": "Who loves hugging the most?"
+        },
+        {
+          "id": "who_among_us_24",
+          "text": "Who always eats the last cookie?"
+        },
+        {
+          "id": "who_among_us_25",
+          "text": "Who gets frustrated fastest in traffic?"
+        },
+        {
+          "id": "who_among_us_26",
+          "text": "Who is best at calming everyone down?"
+        },
+        {
+          "id": "who_among_us_27",
+          "text": "Who most often says 'But we had an agreement'?"
+        },
+        {
+          "id": "who_among_us_28",
+          "text": "Who gets the most excited about a beautifully wrapped gift?"
+        },
+        {
+          "id": "who_among_us_29",
+          "text": "Who studies the menu the longest at a restaurant?"
+        },
+        {
+          "id": "who_among_us_30",
+          "text": "Who always has the answer to a question nobody asked?"
+        },
+        {
+          "id": "who_among_us_31",
+          "text": "Who best remembers song lyrics?"
+        },
+        {
+          "id": "who_among_us_32",
+          "text": "Who enjoys cleaning the most?"
+        },
+        {
+          "id": "who_among_us_33",
+          "text": "Who loses their keys most often?"
+        },
+        {
+          "id": "who_among_us_34",
+          "text": "Who loves long phone conversations the most?"
+        },
+        {
+          "id": "who_among_us_35",
+          "text": "Who always falls asleep during a movie?"
+        },
+        {
+          "id": "who_among_us_36",
+          "text": "Who is best at finding a way out of a tough situation?"
+        },
+        {
+          "id": "who_among_us_37",
+          "text": "Who most often says 'I don't feel like cooking — shall we order?'"
+        },
+        {
+          "id": "who_among_us_38",
+          "text": "Who loves being photographed the most?"
+        },
+        {
+          "id": "who_among_us_39",
+          "text": "Who always finishes what others leave on their plate?"
+        },
+        {
+          "id": "who_among_us_40",
+          "text": "Who is best at cheering everyone up?"
+        },
+        {
+          "id": "who_among_us_41",
+          "text": "Who takes the longest to choose a gift?"
+        },
+        {
+          "id": "who_among_us_42",
+          "text": "Who turns the music on without warning?"
+        },
+        {
+          "id": "who_among_us_43",
+          "text": "Who loves sleeping in on weekends the most?"
+        },
+        {
+          "id": "who_among_us_44",
+          "text": "Who is always the first to hear the news?"
+        },
+        {
+          "id": "who_among_us_45",
+          "text": "Who is best at keeping secrets?"
+        },
+        {
+          "id": "who_among_us_46",
+          "text": "Who most often says 'I knew that's what would happen'?"
+        },
+        {
+          "id": "who_among_us_47",
+          "text": "Who loves planning but follows through the least?"
+        },
+        {
+          "id": "who_among_us_48",
+          "text": "Who makes the best coffee or tea?"
+        },
+        {
+          "id": "who_among_us_49",
+          "text": "Who says the longest goodbyes?"
+        },
+        {
+          "id": "who_among_us_50",
+          "text": "Who most often hits snooze and sleeps another hour?"
+        }
+      ]
+    },
+    {
+      "id": "childhood",
+      "emoji": "🧸",
+      "name": "Childhood",
+      "description": "How different generations in the family grew up",
+      "isPremium": true,
+      "questions": [
+        {
+          "id": "childhood_1",
+          "text": "What was your favorite childhood game?"
+        },
+        {
+          "id": "childhood_2",
+          "text": "What song was sung to you as a child?"
+        },
+        {
+          "id": "childhood_3",
+          "text": "Which childhood celebration stands out the most?"
+        },
+        {
+          "id": "childhood_4",
+          "text": "What did you dream of becoming when you were little?"
+        },
+        {
+          "id": "childhood_5",
+          "text": "What is your earliest school memory?"
+        },
+        {
+          "id": "childhood_6",
+          "text": "Which childhood gift made you the happiest?"
+        },
+        {
+          "id": "childhood_7",
+          "text": "Where was your favorite place as a child?"
+        },
+        {
+          "id": "childhood_8",
+          "text": "Which food takes you straight back to childhood?"
+        },
+        {
+          "id": "childhood_9",
+          "text": "Which children's book would you love to read again?"
+        },
+        {
+          "id": "childhood_10",
+          "text": "What did you love to do most during summer as a child?"
+        },
+        {
+          "id": "childhood_11",
+          "text": "Which childhood adventure scared you the most?"
+        },
+        {
+          "id": "childhood_12",
+          "text": "What did your parents teach you that you still carry with you?"
+        },
+        {
+          "id": "childhood_13",
+          "text": "What was your favorite fairy tale and why?"
+        },
+        {
+          "id": "childhood_14",
+          "text": "What did you love to do on weekends as a child?"
+        },
+        {
+          "id": "childhood_15",
+          "text": "What is the first film or cartoon you remember from childhood?"
+        },
+        {
+          "id": "childhood_16",
+          "text": "Which childhood dream do you remember most vividly?"
+        },
+        {
+          "id": "childhood_17",
+          "text": "What did you believe as a child that turned out to be completely wrong?"
+        },
+        {
+          "id": "childhood_18",
+          "text": "What adventure did you have without adults and never told anyone about?"
+        },
+        {
+          "id": "childhood_19",
+          "text": "Which smell takes you back to childhood?"
+        },
+        {
+          "id": "childhood_20",
+          "text": "What did you love most about school?"
+        },
+        {
+          "id": "childhood_21",
+          "text": "What forbidden thing did you do as a child?"
+        },
+        {
+          "id": "childhood_22",
+          "text": "Who was your best friend in childhood?"
+        },
+        {
+          "id": "childhood_23",
+          "text": "What is the funniest mistake you made as a child?"
+        },
+        {
+          "id": "childhood_24",
+          "text": "What was the first thing you learned to cook?"
+        },
+        {
+          "id": "childhood_25",
+          "text": "Which childhood toy do you still have or remember clearly?"
+        },
+        {
+          "id": "childhood_26",
+          "text": "Which holiday was the most anticipated when you were little?"
+        },
+        {
+          "id": "childhood_27",
+          "text": "What do you know now that you wish someone had told you when you were young?"
+        },
+        {
+          "id": "childhood_28",
+          "text": "Which childhood dream did you actually make come true as an adult?"
+        },
+        {
+          "id": "childhood_29",
+          "text": "What felt unfair to you as a child?"
+        },
+        {
+          "id": "childhood_30",
+          "text": "Which lullaby or song from a family member do you still remember word for word?"
+        },
+        {
+          "id": "childhood_31",
+          "text": "What amazed you most about the world when you were small?"
+        },
+        {
+          "id": "childhood_32",
+          "text": "Which childhood game would you love to play right now?"
+        },
+        {
+          "id": "childhood_33",
+          "text": "How did you imagine adult life when you were a child?"
+        },
+        {
+          "id": "childhood_34",
+          "text": "What did grown-ups say that you never understood back then?"
+        },
+        {
+          "id": "childhood_35",
+          "text": "Which childhood hurt do you still remember?"
+        },
+        {
+          "id": "childhood_36",
+          "text": "What did you consider your greatest treasure as a child?"
+        },
+        {
+          "id": "childhood_37",
+          "text": "Which place in nature reminds you of your childhood?"
+        },
+        {
+          "id": "childhood_38",
+          "text": "What's one thing from your childhood that kids today will never get to experience?"
+        },
+        {
+          "id": "childhood_39",
+          "text": "Which childhood wisdom have you carried into your adult life?"
+        },
+        {
+          "id": "childhood_40",
+          "text": "Which fairy-tale or cartoon character was your hero?"
+        },
+        {
+          "id": "childhood_41",
+          "text": "What did you want to tell your parents but never dared to?"
+        },
+        {
+          "id": "childhood_42",
+          "text": "What did an adult tell you as a child that turned out to be completely untrue?"
+        },
+        {
+          "id": "childhood_43",
+          "text": "What seemed magical as a child but turned out to be simple?"
+        },
+        {
+          "id": "childhood_44",
+          "text": "Which part of childhood would you like to bring back?"
+        },
+        {
+          "id": "childhood_45",
+          "text": "How different are you now from who you wanted to be back then?"
+        },
+        {
+          "id": "childhood_46",
+          "text": "What made you stronger during your childhood?"
+        },
+        {
+          "id": "childhood_47",
+          "text": "Which childhood mistake do you now see as the right choice?"
+        },
+        {
+          "id": "childhood_48",
+          "text": "What lesson from childhood do you pass on to others?"
+        },
+        {
+          "id": "childhood_49",
+          "text": "What do you consider unique about your childhood?"
+        },
+        {
+          "id": "childhood_50",
+          "text": "If you could go back to your childhood for one day, what would you do?"
+        }
+      ]
+    },
+    {
+      "id": "traditions",
+      "emoji": "🎄",
+      "name": "Traditions",
+      "description": "What we pass on to each other",
+      "isPremium": true,
+      "questions": [
+        {
+          "id": "traditions_1",
+          "text": "What is our favorite family tradition?"
+        },
+        {
+          "id": "traditions_2",
+          "text": "Which holiday do we celebrate in the most original way?"
+        },
+        {
+          "id": "traditions_3",
+          "text": "Which tradition do you want to pass on to the children?"
+        },
+        {
+          "id": "traditions_4",
+          "text": "Which dish is a must on the family table?"
+        },
+        {
+          "id": "traditions_5",
+          "text": "How do we bring something special to New Year's celebrations?"
+        },
+        {
+          "id": "traditions_6",
+          "text": "Which tradition came from a grandparent?"
+        },
+        {
+          "id": "traditions_7",
+          "text": "What do we always do on birthdays?"
+        },
+        {
+          "id": "traditions_8",
+          "text": "Which new tradition would you like to start?"
+        },
+        {
+          "id": "traditions_9",
+          "text": "Which of our family traditions would seem unusual to outsiders?"
+        },
+        {
+          "id": "traditions_10",
+          "text": "How do we always wrap up a family evening?"
+        },
+        {
+          "id": "traditions_11",
+          "text": "What is our family motto or saying?"
+        },
+        {
+          "id": "traditions_12",
+          "text": "Which tradition brings us together the most?"
+        },
+        {
+          "id": "traditions_13",
+          "text": "Which tradition has been in your family since your great-grandparents?"
+        },
+        {
+          "id": "traditions_14",
+          "text": "What do you cook for special occasions and why that dish?"
+        },
+        {
+          "id": "traditions_15",
+          "text": "Which tradition do you wish more families had?"
+        },
+        {
+          "id": "traditions_16",
+          "text": "Which of our traditions has the deepest roots in our family history?"
+        },
+        {
+          "id": "traditions_17",
+          "text": "How do we celebrate small wins in the family?"
+        },
+        {
+          "id": "traditions_18",
+          "text": "Which tradition started from a completely random situation?"
+        },
+        {
+          "id": "traditions_19",
+          "text": "Which tradition did you hold on to even through hard times?"
+        },
+        {
+          "id": "traditions_20",
+          "text": "What do we always do together on Sundays?"
+        },
+        {
+          "id": "traditions_21",
+          "text": "Which tradition did you adopt from another culture?"
+        },
+        {
+          "id": "traditions_22",
+          "text": "Which tradition helps us stay connected?"
+        },
+        {
+          "id": "traditions_23",
+          "text": "What do you always do before a big holiday?"
+        },
+        {
+          "id": "traditions_24",
+          "text": "Which tradition would you be glad to leave behind?"
+        },
+        {
+          "id": "traditions_25",
+          "text": "What do we always say to each other in the morning?"
+        },
+        {
+          "id": "traditions_26",
+          "text": "Which tradition is tied to our region or hometown?"
+        },
+        {
+          "id": "traditions_27",
+          "text": "How do we celebrate the achievements of a child or a younger family member?"
+        },
+        {
+          "id": "traditions_28",
+          "text": "What is our special tradition for welcoming guests?"
+        },
+        {
+          "id": "traditions_29",
+          "text": "What do we always take with us when we travel?"
+        },
+        {
+          "id": "traditions_30",
+          "text": "Which tradition has grown more meaningful over time?"
+        },
+        {
+          "id": "traditions_31",
+          "text": "What do we do together when someone in the family is ill?"
+        },
+        {
+          "id": "traditions_32",
+          "text": "What is our tradition for supporting each other in grief?"
+        },
+        {
+          "id": "traditions_33",
+          "text": "Which tradition belongs only to our family and no one else?"
+        },
+        {
+          "id": "traditions_34",
+          "text": "What do we always say to each other before bed?"
+        },
+        {
+          "id": "traditions_35",
+          "text": "Which tradition do you want to introduce next summer?"
+        },
+        {
+          "id": "traditions_36",
+          "text": "What do we do to stay connected with family members who live far away?"
+        },
+        {
+          "id": "traditions_37",
+          "text": "What is each family member's birthday tradition?"
+        },
+        {
+          "id": "traditions_38",
+          "text": "Which food-related tradition is especially meaningful in our family?"
+        },
+        {
+          "id": "traditions_39",
+          "text": "What do we always do after a tough week?"
+        },
+        {
+          "id": "traditions_40",
+          "text": "What is our tradition at the start of a new school or work year?"
+        },
+        {
+          "id": "traditions_41",
+          "text": "What is our tradition for resolving family disagreements?"
+        },
+        {
+          "id": "traditions_42",
+          "text": "Which tradition makes everyone laugh the most?"
+        },
+        {
+          "id": "traditions_43",
+          "text": "Which everyday habit of ours quietly became a tradition without us even noticing?"
+        },
+        {
+          "id": "traditions_44",
+          "text": "Which tradition strengthens our identity as a family?"
+        },
+        {
+          "id": "traditions_45",
+          "text": "What do we always photograph together?"
+        },
+        {
+          "id": "traditions_46",
+          "text": "Which tradition that you want to pass on is fading in the modern world?"
+        },
+        {
+          "id": "traditions_47",
+          "text": "Which tradition would you like to revive after a long break?"
+        },
+        {
+          "id": "traditions_48",
+          "text": "What do we do together to rest and recharge?"
+        },
+        {
+          "id": "traditions_49",
+          "text": "How has one of our traditions changed over time?"
+        },
+        {
+          "id": "traditions_50",
+          "text": "Which tradition has become a symbol of our family to others?"
+        }
+      ]
+    },
+    {
+      "id": "family_dreams",
+      "emoji": "✈️",
+      "name": "Family Dreams",
+      "description": "Where we are heading as a family",
+      "isPremium": true,
+      "questions": [
+        {
+          "id": "family_dreams_1",
+          "text": "Which place do you want the whole family to visit together?"
+        },
+        {
+          "id": "family_dreams_2",
+          "text": "What is our shared dream for the next 5 years?"
+        },
+        {
+          "id": "family_dreams_3",
+          "text": "What do you want to change about our family life?"
+        },
+        {
+          "id": "family_dreams_4",
+          "text": "What new venture do you want to start together as a family?"
+        },
+        {
+          "id": "family_dreams_5",
+          "text": "What does our dream family home look like?"
+        },
+        {
+          "id": "family_dreams_6",
+          "text": "What do you want to teach the children or younger members of the family?"
+        },
+        {
+          "id": "family_dreams_7",
+          "text": "Which family adventure do you want us to experience together?"
+        },
+        {
+          "id": "family_dreams_8",
+          "text": "How do you want to be remembered in the family?"
+        },
+        {
+          "id": "family_dreams_9",
+          "text": "What makes our family special?"
+        },
+        {
+          "id": "family_dreams_10",
+          "text": "What legacy do you want to leave for the next generation?"
+        },
+        {
+          "id": "family_dreams_11",
+          "text": "What's a family adventure that would take real courage to pull off — but you'd love to try?"
+        },
+        {
+          "id": "family_dreams_12",
+          "text": "What do you want our family to achieve together?"
+        },
+        {
+          "id": "family_dreams_13",
+          "text": "Which book or film do you want the whole family to read or watch together?"
+        },
+        {
+          "id": "family_dreams_14",
+          "text": "What new activity do you want to start with the family this year?"
+        },
+        {
+          "id": "family_dreams_15",
+          "text": "Where do you see our family in 10 years?"
+        },
+        {
+          "id": "family_dreams_16",
+          "text": "What do you want outsiders to know about our family?"
+        },
+        {
+          "id": "family_dreams_17",
+          "text": "Which new skill do you want to pass on to the younger family members?"
+        },
+        {
+          "id": "family_dreams_18",
+          "text": "What's one thing about our family life right now that you'd never want to change?"
+        },
+        {
+          "id": "family_dreams_19",
+          "text": "What do you want our children to remember about their childhood?"
+        },
+        {
+          "id": "family_dreams_20",
+          "text": "What do you consider the main mission of our family?"
+        },
+        {
+          "id": "family_dreams_21",
+          "text": "What's one thing you'd love for our family to do together for the world around us?"
+        },
+        {
+          "id": "family_dreams_22",
+          "text": "Which family tradition do you want to start this year?"
+        },
+        {
+          "id": "family_dreams_23",
+          "text": "What do you want our family to achieve culturally?"
+        },
+        {
+          "id": "family_dreams_24",
+          "text": "What would you like our family gatherings to always include?"
+        },
+        {
+          "id": "family_dreams_25",
+          "text": "Which language or skill would you like the whole family to learn?"
+        },
+        {
+          "id": "family_dreams_26",
+          "text": "What do you want our family to contribute to the local community?"
+        },
+        {
+          "id": "family_dreams_27",
+          "text": "What new role in the family do you want to take on?"
+        },
+        {
+          "id": "family_dreams_28",
+          "text": "What would you like to change about the way we spend time together?"
+        },
+        {
+          "id": "family_dreams_29",
+          "text": "Which shared project do you want to start with the family?"
+        },
+        {
+          "id": "family_dreams_30",
+          "text": "What do you want the family to celebrate in a special way?"
+        },
+        {
+          "id": "family_dreams_31",
+          "text": "Which dream have you never voiced out loud to the family?"
+        },
+        {
+          "id": "family_dreams_32",
+          "text": "What do you want to see together as a family?"
+        },
+        {
+          "id": "family_dreams_33",
+          "text": "Which change in family life do you consider the most important?"
+        },
+        {
+          "id": "family_dreams_34",
+          "text": "What's something about our family that you hope the next generation carries forward?"
+        },
+        {
+          "id": "family_dreams_35",
+          "text": "Which family achievement would you like to celebrate next year?"
+        },
+        {
+          "id": "family_dreams_36",
+          "text": "What do you consider most important in our shared future?"
+        },
+        {
+          "id": "family_dreams_37",
+          "text": "Which idea do you want to bring up in a family conversation?"
+        },
+        {
+          "id": "family_dreams_38",
+          "text": "What do you want the family to do for its own members?"
+        },
+        {
+          "id": "family_dreams_39",
+          "text": "Which tradition of helping each other do you want to establish?"
+        },
+        {
+          "id": "family_dreams_40",
+          "text": "What do you wish our family talked about more openly?"
+        },
+        {
+          "id": "family_dreams_41",
+          "text": "Which new form of communication do you want to introduce in the family?"
+        },
+        {
+          "id": "family_dreams_42",
+          "text": "What small everyday moment in our family life makes you feel the most grateful?"
+        },
+        {
+          "id": "family_dreams_43",
+          "text": "What change would you like to see in how we care for one another?"
+        },
+        {
+          "id": "family_dreams_44",
+          "text": "What do you want people to say about our family 20 years from now?"
+        },
+        {
+          "id": "family_dreams_45",
+          "text": "Which place do you want to become meaningful to our whole family?"
+        },
+        {
+          "id": "family_dreams_46",
+          "text": "What do you want the family to understand about its own strength?"
+        },
+        {
+          "id": "family_dreams_47",
+          "text": "Which trip do you want to take with an older family member while there is still time?"
+        },
+        {
+          "id": "family_dreams_48",
+          "text": "What would you like to build with the family — literally or figuratively?"
+        },
+        {
+          "id": "family_dreams_49",
+          "text": "Which family goal do you want us to reach by the end of the year?"
+        },
+        {
+          "id": "family_dreams_50",
+          "text": "If our family had a motto for the future — what would it be?"
+        }
+      ]
+    },
+    {
+      "id": "funny_stories",
+      "emoji": "😂",
+      "name": "Funny Stories",
+      "description": "Legendary moments from our family",
+      "isPremium": true,
+      "questions": [
+        {
+          "id": "funny_stories_1",
+          "text": "What is the funniest family situation you can remember?"
+        },
+        {
+          "id": "funny_stories_2",
+          "text": "Which childhood prank in the family is still talked about?"
+        },
+        {
+          "id": "funny_stories_3",
+          "text": "Which accident at a family celebration became legendary?"
+        },
+        {
+          "id": "funny_stories_4",
+          "text": "Which phrase did someone say that became a family meme?"
+        },
+        {
+          "id": "funny_stories_5",
+          "text": "Which trip went completely off plan but is the one everyone remembers most?"
+        },
+        {
+          "id": "funny_stories_6",
+          "text": "Which kitchen disaster became a family legend?"
+        },
+        {
+          "id": "funny_stories_7",
+          "text": "Which silly mistake did someone in the family make more than once?"
+        },
+        {
+          "id": "funny_stories_8",
+          "text": "Which pointless argument has the family never managed to settle?"
+        },
+        {
+          "id": "funny_stories_9",
+          "text": "Which moment at a wedding or birthday made everyone burst out laughing?"
+        },
+        {
+          "id": "funny_stories_10",
+          "text": "Which piece of child logic from a family member still makes you smile?"
+        },
+        {
+          "id": "funny_stories_11",
+          "text": "Which habit of a family member has become a running joke?"
+        },
+        {
+          "id": "funny_stories_12",
+          "text": "What is our family 'legend' that gets retold at every gathering?"
+        },
+        {
+          "id": "funny_stories_13",
+          "text": "Which family photo session ended in laughter?"
+        },
+        {
+          "id": "funny_stories_14",
+          "text": "What was the funniest misunderstanding between generations?"
+        },
+        {
+          "id": "funny_stories_15",
+          "text": "Which piece of 'wisdom' from a family member is now quoted by everyone?"
+        },
+        {
+          "id": "funny_stories_16",
+          "text": "Which story from a renovation or a move became legendary?"
+        },
+        {
+          "id": "funny_stories_17",
+          "text": "Which song did someone get wrong and now everyone sings the wrong lyrics?"
+        },
+        {
+          "id": "funny_stories_18",
+          "text": "What was the funniest tech mishap in the family?"
+        },
+        {
+          "id": "funny_stories_19",
+          "text": "What's the most elaborate excuse someone in the family ever came up with?"
+        },
+        {
+          "id": "funny_stories_20",
+          "text": "What was the funniest thing that happened at an outdoor trip or picnic?"
+        },
+        {
+          "id": "funny_stories_21",
+          "text": "Which family 'rule' turned out to be a hilarious misunderstanding?"
+        },
+        {
+          "id": "funny_stories_22",
+          "text": "Which unexpected encounter on a trip became a legend?"
+        },
+        {
+          "id": "funny_stories_23",
+          "text": "What did a family member do out of ignorance that turned out to be funny?"
+        },
+        {
+          "id": "funny_stories_24",
+          "text": "What was the funniest thing a pet ever did in the family?"
+        },
+        {
+          "id": "funny_stories_25",
+          "text": "Which impression or imitation of a family member became a running joke?"
+        },
+        {
+          "id": "funny_stories_26",
+          "text": "When did everyone try to be serious but completely failed?"
+        },
+        {
+          "id": "funny_stories_27",
+          "text": "When did the family plan something perfectly — and it went completely off the rails anyway?"
+        },
+        {
+          "id": "funny_stories_28",
+          "text": "What happened when someone tried to surprise everyone and it went sideways?"
+        },
+        {
+          "id": "funny_stories_29",
+          "text": "What happened when someone in the family decided to fix something themselves?"
+        },
+        {
+          "id": "funny_stories_30",
+          "text": "What did someone say very seriously that made everyone around them laugh?"
+        },
+        {
+          "id": "funny_stories_31",
+          "text": "Which moment on a family trip made you realize just how well you all know each other?"
+        },
+        {
+          "id": "funny_stories_32",
+          "text": "What happened when a new family member was first introduced?"
+        },
+        {
+          "id": "funny_stories_33",
+          "text": "What did someone do with complete confidence that turned out to be totally wrong?"
+        },
+        {
+          "id": "funny_stories_34",
+          "text": "Which moment became a turning point in the family's sense of humor?"
+        },
+        {
+          "id": "funny_stories_35",
+          "text": "What happened when someone tried to fix something themselves?"
+        },
+        {
+          "id": "funny_stories_36",
+          "text": "What's a moment the family was genuinely proud of — and it always comes up in conversation?"
+        },
+        {
+          "id": "funny_stories_37",
+          "text": "What happened when someone confused the time or place of a meeting?"
+        },
+        {
+          "id": "funny_stories_38",
+          "text": "Which 'serious' advice from an older generation turned out to be funny?"
+        },
+        {
+          "id": "funny_stories_39",
+          "text": "What happened when someone decided to cook something new without a recipe?"
+        },
+        {
+          "id": "funny_stories_40",
+          "text": "Which story does one family member tell best — and gets asked to tell again and again?"
+        },
+        {
+          "id": "funny_stories_41",
+          "text": "What happened when someone tried to do something impressive in front of the whole family?"
+        },
+        {
+          "id": "funny_stories_42",
+          "text": "What did a younger family member say or do that showed just how little they understood the adult world?"
+        },
+        {
+          "id": "funny_stories_43",
+          "text": "When did you struggle to hold back laughter in the most serious situation?"
+        },
+        {
+          "id": "funny_stories_44",
+          "text": "What did someone do 'in secret' that got unexpectedly revealed?"
+        },
+        {
+          "id": "funny_stories_45",
+          "text": "Which weekend adventure was completely unplanned but turned out to be the best?"
+        },
+        {
+          "id": "funny_stories_46",
+          "text": "What happened when someone tried to impress someone important?"
+        },
+        {
+          "id": "funny_stories_47",
+          "text": "Which phrase said at a serious moment now makes everyone laugh?"
+        },
+        {
+          "id": "funny_stories_48",
+          "text": "What did one of the kids do that entered the family legend forever?"
+        },
+        {
+          "id": "funny_stories_49",
+          "text": "Which event only became funny years later?"
+        },
+        {
+          "id": "funny_stories_50",
+          "text": "What happened at the last family gathering that made absolutely everyone laugh?"
+        }
+      ]
+    }
+  ]
+}

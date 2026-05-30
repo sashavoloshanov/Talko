@@ -1,0 +1,97 @@
+import Foundation
+import Observation
+import StoreKit
+import WidgetKit
+
+@Observable
+final class PremiumClient {
+
+    static let monthlyProductID = "com.talkapp.premium.monthly"
+    static let annualProductID  = "com.talkapp.premium.annual"
+    private static let allProductIDs: Set<String> = [monthlyProductID, annualProductID]
+
+    var isPremium: Bool {
+        didSet {
+            UserDefaultsClient.set(isPremium, for: .isPremium)
+            UserDefaults(suiteName: "group.com.talk.shared")?.set(isPremium, forKey: "isPremium")
+            WidgetCenter.shared.reloadAllTimelines()
+        }
+    }
+    var products: [Product] = []
+    var lastPurchaseError: String? = nil
+
+    private var transactionListenerTask: Task<Void, Never>?
+
+    init() {
+        self.isPremium = UserDefaultsClient.get(Bool.self, for: .isPremium) ?? false
+        transactionListenerTask = listenForTransactions()
+    }
+
+    deinit {
+        transactionListenerTask?.cancel()
+    }
+
+    private func listenForTransactions() -> Task<Void, Never> {
+        Task(priority: .background) { [weak self] in
+            for await result in Transaction.updates {
+                guard let self else { return }
+                if case .verified(let transaction) = result {
+                    await MainActor.run { self.isPremium = true }
+                    await transaction.finish()
+                }
+            }
+        }
+    }
+
+    func checkPremiumStatus() async {
+        var hasActive = false
+        for await result in Transaction.currentEntitlements {
+            if case .verified(let tx) = result,
+               Self.allProductIDs.contains(tx.productID),
+               tx.revocationDate == nil {
+                hasActive = true
+            }
+        }
+        await MainActor.run { isPremium = hasActive }
+    }
+
+    func fetchAvailableProducts() async {
+        guard let fetched = try? await Product.products(for: Self.allProductIDs) else { return }
+        let sorted = fetched.sorted {
+            $0.id == Self.monthlyProductID && $1.id != Self.monthlyProductID
+        }
+        await MainActor.run { self.products = sorted }
+    }
+
+    func purchase(_ productId: String) async {
+        guard let product = products.first(where: { $0.id == productId }) else { return }
+        do {
+            let result = try await product.purchase()
+            if case .success(let verification) = result,
+               case .verified(let tx) = verification {
+                await MainActor.run { isPremium = true; lastPurchaseError = nil }
+                await tx.finish()
+            }
+        } catch {
+            await MainActor.run { lastPurchaseError = error.localizedDescription }
+        }
+    }
+
+    func restorePurchases() async {
+        do {
+            try await AppStore.sync()
+            await checkPremiumStatus()
+        } catch {
+            await MainActor.run { lastPurchaseError = error.localizedDescription }
+        }
+    }
+
+    func redeemCoupon(_ code: String) async throws {
+        guard !code.isEmpty else { throw CouponError.invalid }
+    }
+
+    enum CouponError: LocalizedError {
+        case invalid
+        var errorDescription: String? { "Invalid coupon code" }
+    }
+}
