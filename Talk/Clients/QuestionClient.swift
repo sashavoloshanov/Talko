@@ -14,7 +14,6 @@ actor QuestionClient {
         let names = ["couple", "family", "friends"]
         let categories = try names.map { try loadCategory($0, language: language) }
 
-        // Зберігаємо питання для віджету
         let isPremium = UserDefaults(suiteName: "group.com.talk.shared")?
             .bool(forKey: "isPremium") ?? false
         saveQuestionsForWidget(categories: categories, isPremium: isPremium)
@@ -39,8 +38,6 @@ actor QuestionClient {
 
         return DailyQuestion(text: text)
     }
-
-    // MARK: - Widget sync
 
     func refreshWidgetData(for language: AppLanguage) async {
         let names = ["couple", "family", "friends"]
