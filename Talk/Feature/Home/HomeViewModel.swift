@@ -2,4 +2,16 @@ import Foundation
 import Observation
 
 @Observable
-final class HomeViewModel: BaseViewModel {}
+final class HomeViewModel: BaseViewModel {
+
+    func questionsForSubcategory(_ sub: Subcategory) -> [CardQuestion] {
+        let progress = UserDefaultsClient.get([String: Int].self, for: .subcategoryProgress) ?? [:]
+        let lastIndex = progress[sub.id] ?? 0
+        let startIndex = min(lastIndex, sub.questions.count - 1)
+        return Array(sub.questions.dropFirst(startIndex)) + Array(sub.questions.prefix(startIndex))
+    }
+
+    func isLocked(_ sub: Subcategory, isPremium: Bool) -> Bool {
+        sub.isPremium && !isPremium
+    }
+}
