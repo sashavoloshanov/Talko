@@ -18,7 +18,7 @@ struct BadgesView: View {
                         let badges = viewModel.badgesByCategory[category.id] ?? []
                         if !badges.isEmpty {
                             VStack(alignment: .leading, spacing: 12) {
-                                sectionHeader(with: category)
+                                CategorySectionHeader(emoji: category.emoji, name: category.name)
 
                                 LazyVGrid(
                                     columns: Array(repeating: GridItem(.flexible()), count: 4),
@@ -61,16 +61,6 @@ struct BadgesView: View {
             centerContent: .text(String(localized: "tab_badges", bundle: bundle)),
             rightButton: nil
         )
-    }
-    
-    private func sectionHeader(with category: Category) -> some View {
-        HStack(spacing: 8) {
-            Text(category.emoji)
-                .font(.title2)
-            Text(category.name)
-                .font(.title2.bold())
-        }
-        .padding(.horizontal, 16)
     }
 }
 

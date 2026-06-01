@@ -20,7 +20,7 @@ struct HomeView: View {
 
                     ForEach(questionHolder.categories) { category in
                         VStack(alignment: .leading, spacing: 12) {
-                            sectionHeader(with: category.emoji, and: category.name)
+                            CategorySectionHeader(emoji: category.emoji, name: category.name)
 
                             LazyVGrid(
                                 columns: [GridItem(.flexible()), GridItem(.flexible())],
@@ -67,16 +67,6 @@ struct HomeView: View {
             DailyQuestionCard(question: daily)
                 .padding(.horizontal, 16)
         }
-    }
-    
-    private func sectionHeader(with emoji: String, and name: String) -> some View {
-        HStack(spacing: 8) {
-            Text(emoji)
-                .font(.title2)
-            Text(name)
-                .font(.title2.bold())
-        }
-        .padding(.horizontal, 16)
     }
     
     private func listRow(_ subcategory: Subcategory) -> some View {
