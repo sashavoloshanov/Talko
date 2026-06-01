@@ -1,6 +1,5 @@
 import Foundation
 import SwiftUI
-import Combine
 import Observation
  
 enum AppTheme: String, CaseIterable, Codable, Identifiable {
@@ -28,20 +27,12 @@ enum AppTheme: String, CaseIterable, Codable, Identifiable {
 final class ThemeClient {
     private(set) var current: AppTheme
  
-    private let subject: CurrentValueSubject<AppTheme, Never>
-    let themePublisher: AnyPublisher<AppTheme, Never>
- 
     init() {
-        let saved = UserDefaultsClient.get(AppTheme.self, for: .appTheme) ?? .light
-        self.current = saved
-        let subj = CurrentValueSubject<AppTheme, Never>(saved)
-        self.subject = subj
-        self.themePublisher = subj.eraseToAnyPublisher()
+        self.current = UserDefaultsClient.get(AppTheme.self, for: .appTheme) ?? .light
     }
  
     func setTheme(_ theme: AppTheme) {
         current = theme
         UserDefaultsClient.set(theme, for: .appTheme)
-        subject.send(theme)
     }
 }
