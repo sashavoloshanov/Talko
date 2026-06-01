@@ -9,7 +9,7 @@ final class QuestionClientHolder {
     private(set) var isLoading: Bool = false
 
     func load(language: AppLanguage, premiumClient: PremiumClient) async throws {
-        guard loadedLanguage != language else { return }
+        guard loadedLanguage != language, !isLoading else { return }
         isLoading = true
         defer { isLoading = false }
         async let cats = QuestionClient.shared.loadCategories(language: language)

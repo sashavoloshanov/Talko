@@ -3,57 +3,69 @@ import SwiftUI
 struct TabBarView: View {
     @Environment(AppCoordinator.self) private var coordinator
     @Environment(ThemeClient.self) private var themeClient
+    @Environment(QuestionClientHolder.self) private var questionHolder
+    @Environment(LanguageClient.self) private var languageClient
+    @Environment(PremiumClient.self) private var premiumClient
     @State private var selectedTab: AppTab = .home
 
     var body: some View {
         @Bindable var coord = coordinator
 
         NavigationStack(path: $coord.path) {
-            ZStack(alignment: .bottom) {
-                Group {
-                    switch selectedTab {
-                    case .home:
-                        HomeView()
-                    case .badges:
-                        BadgesView()
-                    case .settings:
-                        SettingsView()
-                    }
-                }
+            currentTab
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(Colors.backgroundPrimary)
-
-                LiquidGlassTabBar(selectedTab: $selectedTab)
-                
-                if case let .badge(badge) = coord.fullScreenCover {
-                    BadgeDetailView(badge: badge)
-                        .zIndex(1000)
-                        .transition(.opacity)
-                }
-            }
-            .ignoresSafeArea(edges: .bottom)
-            .navigationDestination(for: AppRoute.self) { route in
-                switch route {
-                case .question(let questions, let subcategoryId, let title):
-                    QuestionView(questions: questions, subcategoryId: subcategoryId, title: title)
-                        .background(Colors.backgroundPrimary)
-
-                case .likedQuestions:
-                    LikedQuestionsView()
-                        .background(Colors.backgroundPrimary)
-                }
-            }
-            .sheet(item: $coord.sheet) { screen in
-                switch screen {
-                case .document(let item):
-                    DocumentView(document: item)
-
-                case .subscription:
-                    SubscriptionView()
-                }
-            }
-            .animation(.easeInOut(duration: 0.2), value: coord.fullScreenCover != nil)
+                .overlay(alignment: .bottom) { LiquidGlassTabBar(selectedTab: $selectedTab) }
+                .overlay { badgeOverlay }
+                .ignoresSafeArea(edges: .bottom)
+                .navigationDestination(for: AppRoute.self, destination: routeView)
+                .sheet(item: $coord.sheet, content: sheetView)
+                .animation(.easeInOut(duration: 0.2), value: coordinator.fullScreenCover != nil)
         }
         .preferredColorScheme(themeClient.current.colorScheme)
+        .onChange(of: languageClient.current) { _, newLang in
+            Task {
+                questionHolder.reload()
+                try? await questionHolder.load(language: newLang, premiumClient: premiumClient)
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var currentTab: some View {
+        switch selectedTab {
+        case .home:     HomeView()
+        case .badges:   BadgesView()
+        case .settings: SettingsView()
+        }
+    }
+
+    @ViewBuilder
+    private var badgeOverlay: some View {
+        if case let .badge(badge) = coordinator.fullScreenCover {
+            BadgeDetailView(badge: badge)
+                .zIndex(1000)
+                .transition(.opacity)
+        }
+    }
+
+    @ViewBuilder
+    private func routeView(_ route: AppRoute) -> some View {
+        switch route {
+        case .question(let questions, let subcategoryId, let title):
+            QuestionView(questions: questions, subcategoryId: subcategoryId, title: title)
+                .background(Colors.backgroundPrimary)
+        case .likedQuestions:
+            LikedQuestionsView()
+                .background(Colors.backgroundPrimary)
+        }
+    }
+
+    @ViewBuilder
+    private func sheetView(_ screen: AppSheet) -> some View {
+        switch screen {
+        case .document(let item): DocumentView(document: item)
+        case .subscription:       SubscriptionView()
+        }
     }
 }
