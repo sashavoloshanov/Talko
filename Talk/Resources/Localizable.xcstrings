@@ -1,6 +1,40 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "common_cancel" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancel"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Скасувати"
+          }
+        }
+      }
+    },
+    "common_error_title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Something went wrong"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Щось пішло не так"
+          }
+        }
+      }
+    },
     "common_loading" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -14,6 +48,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Завантаження…"
+          }
+        }
+      }
+    },
+    "common_retry" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Try Again"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Спробувати ще раз"
           }
         }
       }
@@ -48,6 +99,40 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Недоступно"
+          }
+        }
+      }
+    },
+    "home_empty_description" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couldn't load content. Please check your connection and try again."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не вдалося завантажити вміст. Перевірте з'єднання та спробуйте ще раз."
+          }
+        }
+      }
+    },
+    "home_empty_title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nothing here yet"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Тут поки нічого немає"
           }
         }
       }

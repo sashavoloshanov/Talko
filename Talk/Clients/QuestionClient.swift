@@ -6,9 +6,12 @@ final class QuestionClientHolder {
     var categories: [Category] = []
     var dailyQuestion: DailyQuestion?
     private(set) var loadedLanguage: AppLanguage?
+    private(set) var isLoading: Bool = false
 
     func load(language: AppLanguage, premiumClient: PremiumClient) async throws {
         guard loadedLanguage != language else { return }
+        isLoading = true
+        defer { isLoading = false }
         async let cats = QuestionClient.shared.loadCategories(language: language)
         async let daily = QuestionClient.shared.loadDailyQuestion(language: language)
         async let _: () = premiumClient.checkPremiumStatus()
@@ -16,6 +19,10 @@ final class QuestionClientHolder {
         self.categories = c
         self.dailyQuestion = d
         self.loadedLanguage = language
+    }
+
+    func reload() {
+        loadedLanguage = nil
     }
 }
 

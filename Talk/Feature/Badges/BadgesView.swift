@@ -11,47 +11,76 @@ struct BadgesView: View {
     var body: some View {
         VStack(spacing: 0) {
             navigationView
-
-            ScrollView {
-                LazyVStack(alignment: .leading, spacing: 24) {
-                    ForEach(viewModel.categories) { category in
-                        let badges = viewModel.badgesByCategory[category.id] ?? []
-                        if !badges.isEmpty {
-                            VStack(alignment: .leading, spacing: 12) {
-                                CategorySectionHeader(emoji: category.emoji, name: category.name)
-
-                                LazyVGrid(
-                                    columns: Array(repeating: GridItem(.flexible()), count: 4),
-                                    spacing: 0
-                                ) {
-                                    ForEach(badges) { badge in
-                                        BadgeRow(badge: badge) {
-                                            if badge.isEarned {
-                                                coordinator.present(.badge(badge))
-                                            }
-                                        }
-                                    }
-                                    
-                                }
-                            }
-                        }
-                    }
-
-                    Spacer().frame(height: 100)
-                }
-                .padding(.top, 16)
-            }
+            contentView
         }
         .background(Color.backgroundPrimary)
         .onAppear {
             viewModel.load(categories: questionHolder.categories)
-            Task { try? await questionHolder.load(language: languageClient.current, premiumClient: premiumClient) }
+            Task { await viewModel.loadContent(holder: questionHolder, language: languageClient.current, premiumClient: premiumClient) }
         }
         .onChange(of: questionHolder.categories) { _, cats in
             viewModel.load(categories: cats)
         }
         .onChange(of: languageClient.current) { _, newLang in
-            Task { try? await questionHolder.load(language: newLang, premiumClient: premiumClient) }
+            Task { await viewModel.loadContent(holder: questionHolder, language: newLang, premiumClient: premiumClient) }
+        }
+        .alert(
+            String(localized: "common_error_title", bundle: bundle),
+            isPresented: Binding(
+                get: { viewModel.errorMessage != nil },
+                set: { if !$0 { viewModel.errorMessage = nil } }
+            )
+        ) {
+            Button(String(localized: "common_retry", bundle: bundle)) {
+                Task { await viewModel.reloadContent(holder: questionHolder, language: languageClient.current, premiumClient: premiumClient) }
+            }
+            Button(String(localized: "common_cancel", bundle: bundle), role: .cancel) {
+                viewModel.errorMessage = nil
+            }
+        } message: {
+            Text(viewModel.errorMessage ?? "")
+        }
+    }
+
+    @ViewBuilder
+    private var contentView: some View {
+        if questionHolder.isLoading && viewModel.categories.isEmpty {
+            Spacer()
+            ProgressView()
+            Spacer()
+        } else {
+            scrollContent
+        }
+    }
+
+    private var scrollContent: some View {
+        ScrollView {
+            LazyVStack(alignment: .leading, spacing: 24) {
+                ForEach(viewModel.categories) { category in
+                    let badges = viewModel.badgesByCategory[category.id] ?? []
+                    if !badges.isEmpty {
+                        VStack(alignment: .leading, spacing: 12) {
+                            CategorySectionHeader(emoji: category.emoji, name: category.name)
+
+                            LazyVGrid(
+                                columns: Array(repeating: GridItem(.flexible()), count: 4),
+                                spacing: 0
+                            ) {
+                                ForEach(badges) { badge in
+                                    BadgeRow(badge: badge) {
+                                        if badge.isEarned {
+                                            coordinator.present(.badge(badge))
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                Spacer().frame(height: 100)
+            }
+            .padding(.top, 16)
         }
     }
     
