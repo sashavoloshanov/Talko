@@ -6,6 +6,8 @@ struct HomeView: View {
     @Environment(LanguageClient.self) private var languageClient
     @Environment(\.languageBundle) private var bundle
     @Environment(PremiumClient.self) private var premiumClient
+    @State private var viewModel = HomeViewModel()
+
     var body: some View {
         VStack(spacing: 0) {
             navigationView
@@ -79,14 +81,11 @@ struct HomeView: View {
     
     private func listRow(_ subcategory: Subcategory) -> some View {
         SubcategoryRow(subcategory: subcategory) {
-            guard !subcategory.isPremium || !premiumClient.isPremium else {
+            if viewModel.isLocked(subcategory, isPremium: premiumClient.isPremium) {
                 coordinator.present(.subscription)
                 return
             }
-            let progress = UserDefaultsClient.get([String: Int].self, for: .subcategoryProgress) ?? [:]
-            let lastIndex = progress[subcategory.id] ?? 0
-            let startIndex = min(lastIndex, subcategory.questions.count - 1)
-            let questions = Array(subcategory.questions.dropFirst(startIndex)) + Array(subcategory.questions.prefix(startIndex))
+            let questions = viewModel.questionsForSubcategory(subcategory)
             coordinator.push(.question(questions, subcategoryId: subcategory.id, title: subcategory.name))
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
