@@ -63,6 +63,8 @@ Talk/
 │   ├── Settings/               # SettingsView + SettingsViewModel
 │   ├── Subscription/           # SubscriptionView + SubscriptionViewModel
 │   └── Document/               # DocumentView — in-app HTML viewer (ToS, Privacy)
+├── Shared/
+│   └── AppGroupKey.swift       # App Group suite name & shared UserDefaults keys
 ├── Utility/
 │   └── Colors.swift            # Colors enum with asset catalog references
 └── Resources/
