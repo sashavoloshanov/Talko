@@ -1,6 +1,6 @@
 import Foundation
 
-enum DocumentItem {
+enum DocumentItem: Hashable {
     case privacyPolicy
     case termsOfService
 
@@ -15,21 +15,5 @@ enum DocumentItem {
     
     func localURL(_ language: AppLanguage) -> URL? {
         Bundle.main.url(forResource: fileName(language), withExtension: "html")
-    }
-}
-
-extension DocumentItem: Hashable {
-    static func == (lhs: DocumentItem, rhs: DocumentItem) -> Bool {
-        switch (lhs, rhs) {
-        case (.privacyPolicy, .privacyPolicy),
-             (.termsOfService, .termsOfService): return true
-        default: return false
-        }
-    }
-    func hash(into hasher: inout Hasher) {
-        switch self {
-        case .privacyPolicy:  hasher.combine(0)
-        case .termsOfService: hasher.combine(1)
-        }
     }
 }
