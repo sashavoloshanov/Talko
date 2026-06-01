@@ -4,7 +4,19 @@ import WidgetKit
 @Observable
 final class QuestionClientHolder {
     var categories: [Category] = []
-    var dailyQuestion: DailyQuestion? = nil
+    var dailyQuestion: DailyQuestion?
+    private(set) var loadedLanguage: AppLanguage?
+
+    func load(language: AppLanguage, premiumClient: PremiumClient) async throws {
+        guard loadedLanguage != language else { return }
+        async let cats = QuestionClient.shared.loadCategories(language: language)
+        async let daily = QuestionClient.shared.loadDailyQuestion(language: language)
+        async let _: () = premiumClient.checkPremiumStatus()
+        let (c, d) = try await (cats, daily)
+        self.categories = c
+        self.dailyQuestion = d
+        self.loadedLanguage = language
+    }
 }
 
 actor QuestionClient {

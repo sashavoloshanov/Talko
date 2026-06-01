@@ -6,19 +6,17 @@ struct HomeView: View {
     @Environment(LanguageClient.self) private var languageClient
     @Environment(\.languageBundle) private var bundle
     @Environment(PremiumClient.self) private var premiumClient
-    @State private var viewModel = HomeViewModel()
-
     var body: some View {
         VStack(spacing: 0) {
             navigationView
 
             ScrollView {
                 LazyVStack(alignment: .leading, spacing: 24) {
-                    if let daily = viewModel.dailyQuestion {
+                    if let daily = questionHolder.dailyQuestion {
                         dailyView(daily)
                     }
 
-                    ForEach(viewModel.categories) { category in
+                    ForEach(questionHolder.categories) { category in
                         VStack(alignment: .leading, spacing: 12) {
                             sectionHeader(with: category.emoji, and: category.name)
 
@@ -40,10 +38,10 @@ struct HomeView: View {
             }
         }
         .onAppear {
-            viewModel.setup(holder: questionHolder, languageClient: languageClient, premiumClient: premiumClient)
+            Task { try? await questionHolder.load(language: languageClient.current, premiumClient: premiumClient) }
         }
         .onChange(of: languageClient.current) { _, newLang in
-            viewModel.reload(holder: questionHolder, language: newLang, premiumClient: premiumClient)
+            Task { try? await questionHolder.load(language: newLang, premiumClient: premiumClient) }
         }
     }
     

@@ -4,6 +4,7 @@ struct BadgesView: View {
     @Environment(AppCoordinator.self) private var coordinator
     @Environment(QuestionClientHolder.self) private var questionHolder
     @Environment(LanguageClient.self) private var languageClient
+    @Environment(PremiumClient.self) private var premiumClient
     @Environment(\.languageBundle) private var bundle
     @State private var viewModel = BadgesViewModel()
 
@@ -43,10 +44,14 @@ struct BadgesView: View {
         }
         .background(Color.backgroundPrimary)
         .onAppear {
-            viewModel.setup(holder: questionHolder, languageClient: languageClient)
+            viewModel.load(categories: questionHolder.categories)
+            Task { try? await questionHolder.load(language: languageClient.current, premiumClient: premiumClient) }
+        }
+        .onChange(of: questionHolder.categories) { _, cats in
+            viewModel.load(categories: cats)
         }
         .onChange(of: languageClient.current) { _, newLang in
-            viewModel.reload(holder: questionHolder, language: newLang)
+            Task { try? await questionHolder.load(language: newLang, premiumClient: premiumClient) }
         }
     }
     
