@@ -26,8 +26,8 @@ actor QuestionClient {
         let names = ["couple", "family", "friends"]
         let categories = try names.map { try loadCategory($0, language: language) }
 
-        let isPremium = UserDefaults(suiteName: "group.com.talk.shared")?
-            .bool(forKey: "isPremium") ?? false
+        let isPremium = UserDefaults(suiteName: AppGroupKey.suiteName)?
+            .bool(forKey: AppGroupKey.isPremium) ?? false
         saveQuestionsForWidget(categories: categories, isPremium: isPremium)
 
         return categories
@@ -45,7 +45,7 @@ actor QuestionClient {
         let today = Date()
         let text = await payload.holidayQuestion(for: today) ?? payload.question(for: today)
 
-        UserDefaults(suiteName: "group.com.talk.shared")?.set(text, forKey: "dailyQuestion")
+        UserDefaults(suiteName: AppGroupKey.suiteName)?.set(text, forKey: AppGroupKey.dailyQuestion)
         WidgetCenter.shared.reloadTimelines(ofKind: "DailyQuestionWidget")
 
         return DailyQuestion(text: text)
@@ -54,7 +54,7 @@ actor QuestionClient {
     func refreshWidgetData(for language: AppLanguage) async {
         let names = ["couple", "family", "friends"]
         if let categories = try? names.map({ try loadCategory($0, language: language) }) {
-            let isPremium = UserDefaults(suiteName: "group.com.talk.shared")?.bool(forKey: "isPremium") ?? false
+            let isPremium = UserDefaults(suiteName: AppGroupKey.suiteName)?.bool(forKey: AppGroupKey.isPremium) ?? false
             saveQuestionsForWidget(categories: categories, isPremium: isPremium)
         }
 
@@ -62,23 +62,23 @@ actor QuestionClient {
            let data = try? Data(contentsOf: url),
            let payload = try? JSONDecoder().decode(DailyQuestionsPayload.self, from: data) {
             let text = payload.holidayQuestion(for: .now) ?? payload.question(for: .now)
-            UserDefaults(suiteName: "group.com.talk.shared")?.set(text, forKey: "dailyQuestion")
+            UserDefaults(suiteName: AppGroupKey.suiteName)?.set(text, forKey: AppGroupKey.dailyQuestion)
         }
     }
 
     private func saveQuestionsForWidget(categories: [Category], isPremium: Bool) {
-        let defaults = UserDefaults(suiteName: "group.com.talk.shared")
+        let defaults = UserDefaults(suiteName: AppGroupKey.suiteName)
 
         for category in categories {
-            defaults?.set(category.name,  forKey: "widgetCategoryName_\(category.id)")
-            defaults?.set(category.emoji, forKey: "widgetCategoryEmoji_\(category.id)")
+            defaults?.set(category.name,  forKey: AppGroupKey.widgetCategoryName(categoryId: category.id))
+            defaults?.set(category.emoji, forKey: AppGroupKey.widgetCategoryEmoji(categoryId: category.id))
 
             let questions: [String] = isPremium
                 ? category.subcategories.flatMap { $0.questions.map(\.text) }
                 : category.subcategories.filter { !$0.isPremium }.flatMap { $0.questions.map(\.text) }
 
             if let data = try? JSONEncoder().encode(questions) {
-                defaults?.set(data, forKey: "widgetQuestions_\(category.id)")
+                defaults?.set(data, forKey: AppGroupKey.widgetQuestions(categoryId: category.id))
             }
         }
 

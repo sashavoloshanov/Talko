@@ -10,8 +10,8 @@ struct NextQuestionIntent: AppIntent {
     init(categoryId: String) { self.categoryId = categoryId }
 
     func perform() async throws -> some IntentResult {
-        let defaults = UserDefaults(suiteName: "group.com.talk.shared")
-        let key = "widgetIndex_\(categoryId)"
+        let defaults = UserDefaults(suiteName: AppGroupKey.suiteName)
+        let key = AppGroupKey.widgetIndex(categoryId: categoryId)
         let count = loadCount(from: defaults)
         let current = defaults?.integer(forKey: key) ?? 0
         defaults?.set((current + 1) % max(count, 1), forKey: key)
@@ -20,7 +20,7 @@ struct NextQuestionIntent: AppIntent {
 
     private func loadCount(from defaults: UserDefaults?) -> Int {
         guard
-            let data = defaults?.data(forKey: "widgetQuestions_\(categoryId)"),
+            let data = defaults?.data(forKey: AppGroupKey.widgetQuestions(categoryId: categoryId)),
             let q = try? JSONDecoder().decode([String].self, from: data)
         else { return 1 }
         return q.count
@@ -37,8 +37,8 @@ struct PrevQuestionIntent: AppIntent {
     init(categoryId: String) { self.categoryId = categoryId }
 
     func perform() async throws -> some IntentResult {
-        let defaults = UserDefaults(suiteName: "group.com.talk.shared")
-        let key = "widgetIndex_\(categoryId)"
+        let defaults = UserDefaults(suiteName: AppGroupKey.suiteName)
+        let key = AppGroupKey.widgetIndex(categoryId: categoryId)
         let count = loadCount(from: defaults)
         let current = defaults?.integer(forKey: key) ?? 0
         defaults?.set(current == 0 ? count - 1 : current - 1, forKey: key)
@@ -47,7 +47,7 @@ struct PrevQuestionIntent: AppIntent {
 
     private func loadCount(from defaults: UserDefaults?) -> Int {
         guard
-            let data = defaults?.data(forKey: "widgetQuestions_\(categoryId)"),
+            let data = defaults?.data(forKey: AppGroupKey.widgetQuestions(categoryId: categoryId)),
             let q = try? JSONDecoder().decode([String].self, from: data)
         else { return 1 }
         return q.count

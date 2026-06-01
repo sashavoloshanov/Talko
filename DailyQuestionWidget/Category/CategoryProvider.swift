@@ -20,9 +20,9 @@ struct CategoryProvider: TimelineProvider {
 
     // MARK: - Private
     private func makeEntry() -> CategoryEntry {
-        let defaults  = UserDefaults(suiteName: "group.com.talk.shared")
+        let defaults  = UserDefaults(suiteName: AppGroupKey.suiteName)
         let questions = loadQuestions(from: defaults)
-        let rawIndex  = defaults?.integer(forKey: "widgetIndex_\(categoryId)") ?? 0
+        let rawIndex  = defaults?.integer(forKey: AppGroupKey.widgetIndex(categoryId: categoryId)) ?? 0
         let safeIndex = questions.isEmpty ? 0 : rawIndex % questions.count
 
         return CategoryEntry(
@@ -31,8 +31,8 @@ struct CategoryProvider: TimelineProvider {
                 ? "Reload"
                 : questions[safeIndex],
             categoryId:    categoryId,
-            categoryName:  defaults?.string(forKey: "widgetCategoryName_\(categoryId)") ?? categoryId,
-            categoryEmoji: defaults?.string(forKey: "widgetCategoryEmoji_\(categoryId)") ?? "",
+            categoryName:  defaults?.string(forKey: AppGroupKey.widgetCategoryName(categoryId: categoryId)) ?? categoryId,
+            categoryEmoji: defaults?.string(forKey: AppGroupKey.widgetCategoryEmoji(categoryId: categoryId)) ?? "",
             currentIndex:  safeIndex + 1,
             totalCount:    max(questions.count, 1)
         )
@@ -40,7 +40,7 @@ struct CategoryProvider: TimelineProvider {
 
     private func loadQuestions(from defaults: UserDefaults?) -> [String] {
         guard
-            let data = defaults?.data(forKey: "widgetQuestions_\(categoryId)"),
+            let data = defaults?.data(forKey: AppGroupKey.widgetQuestions(categoryId: categoryId)),
             let q = try? JSONDecoder().decode([String].self, from: data)
         else { return [] }
         return q

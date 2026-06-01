@@ -22,15 +22,15 @@ struct DailyProvider: TimelineProvider {
     }
 
     private func loadQuestion() -> String {
-        if let defaults = UserDefaults(suiteName: "group.com.talk.shared"),
-           let cached = defaults.string(forKey: "dailyQuestion") {
+        if let defaults = UserDefaults(suiteName: AppGroupKey.suiteName),
+           let cached = defaults.string(forKey: AppGroupKey.dailyQuestion) {
             return cached
         }
         return loadFromBundle() ?? "What made you happy today?"
     }
 
     private func loadFromBundle() -> String? {
-        let langCode = UserDefaults(suiteName: "group.com.talk.shared")?.string(forKey: "appLanguage") ?? "uk"
+        let langCode = UserDefaults(suiteName: AppGroupKey.suiteName)?.string(forKey: AppGroupKey.appLanguage) ?? "uk"
         let bundle = Bundle(path: Bundle.main.path(forResource: langCode, ofType: "lproj") ?? "") ?? .main
         guard
             let url = bundle.url(forResource: "daily", withExtension: "json"),

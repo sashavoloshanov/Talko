@@ -39,7 +39,7 @@ final class LanguageClient {
     func setLanguage(_ lang: AppLanguage) {
         current = lang
         UserDefaultsClient.set(lang, for: .appLanguage)
-        UserDefaults(suiteName: "group.com.talk.shared")?.set(lang.rawValue, forKey: "appLanguage")
+        UserDefaults(suiteName: AppGroupKey.suiteName)?.set(lang.rawValue, forKey: AppGroupKey.appLanguage)
         subject.send(lang)
         Task {
             await QuestionClient.shared.refreshWidgetData(for: lang)

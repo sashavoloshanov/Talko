@@ -13,7 +13,7 @@ final class PremiumClient {
     var isPremium: Bool {
         didSet {
             UserDefaultsClient.set(isPremium, for: .isPremium)
-            UserDefaults(suiteName: "group.com.talk.shared")?.set(isPremium, forKey: "isPremium")
+            UserDefaults(suiteName: AppGroupKey.suiteName)?.set(isPremium, forKey: AppGroupKey.isPremium)
             WidgetCenter.shared.reloadAllTimelines()
         }
     }
