@@ -37,31 +37,38 @@ Talk is a SwiftUI app that delivers daily conversation-starter questions organiz
 
 ```
 Talk/
-├── App/                        # Entry point, app environment setup
+├── TalkApp.swift               # App entry point, DI root
 ├── Core/
-│   └── AppCoordinator.swift    # Navigation state (push / sheet / fullScreenCover)
+│   ├── AppCoordinator.swift    # Navigation state (push / sheet / fullScreenCover)
+│   └── Views/
+│       └── NavigationBar.swift # Custom nav bar (never use .navigationTitle)
 ├── Clients/
 │   ├── QuestionClient.swift    # Loads JSON content, syncs widget data
 │   ├── PremiumClient.swift     # StoreKit 2 purchases & entitlement checks
 │   ├── LanguageClient.swift    # Language selection & bundle switching
-│   ├── ThemeClient.swift       # Light / Dark theme management
-│   ├── BadgesClient.swift      # Badge calculation logic
+│   ├── ThemeClient.swift       # Light / Dark theme + Combine publisher
+│   ├── BadgesClient.swift      # Badge calculation logic (pure function)
 │   ├── UserDefaultsClient.swift# Typed UserDefaults wrapper
 │   └── StorageClient.swift     # Legacy storage helper
 ├── Model/
 │   ├── Category.swift          # Category / Subcategory / CardQuestion models
 │   └── DailyQuestion.swift     # DailyQuestion + DailyQuestionsPayload
 ├── Feature/
-│   ├── Home/                   # Main screen (daily question + category list)
-│   ├── Question/               # Question card swipe flow
-│   ├── LikedQuestions/         # Saved / liked questions list
-│   ├── Badges/                 # Badge collection screen
-│   ├── Settings/               # Language, theme, legal docs
-│   ├── Subscription/           # Paywall (SubscriptionView + ViewModel)
-│   └── Document/               # In-app HTML viewer (Privacy Policy, ToS)
+│   ├── Splash/                 # SplashView + SplashState (@Observable)
+│   ├── TabBar/                 # TabBarView, LiquidGlassTabBar, AppTab
+│   ├── Home/                   # HomeView + HomeViewModel
+│   ├── Question/               # QuestionView + QuestionViewModel
+│   ├── LikedQuestions/         # LikedQuestionsView + LikedQuestionsViewModel
+│   ├── Badges/                 # BadgesView + BadgesViewModel + BadgeDetailView
+│   ├── Settings/               # SettingsView + SettingsViewModel
+│   ├── Subscription/           # SubscriptionView + SubscriptionViewModel
+│   └── Document/               # DocumentView — in-app HTML viewer (ToS, Privacy)
+├── Utility/
+│   └── Colors.swift            # Colors enum with asset catalog references
 └── Resources/
-    ├── en.lproj/               # English JSON content + Localizable.strings
-    └── uk.lproj/               # Ukrainian JSON content + Localizable.strings
+    ├── Localizable.xcstrings   # String catalog (EN + UK)
+    ├── Colors.xcassets/        # Brand color assets
+    └── Documents/              # terms_of_use_en.html, terms_of_use_ua.html
 
 DailyQuestionWidget/
 ├── Daily/                      # DailyQuestionWidget (small + medium)
@@ -70,16 +77,18 @@ DailyQuestionWidget/
 └── Category/                   # Per-category widgets (large only)
     ├── CategoryProvider.swift
     ├── CategoryQuestionWidget.swift
-    ├── WidgetCategory.swift
-    └── WidgetCategoryIntent.swift
+    ├── Views/
+    │   └── LargeWidgetView.swift
+    └── WidgetCategoryIntent.swift  # NextQuestionIntent, PrevQuestionIntent
 ```
 
 ---
 
 ## Architecture
 
-- **SwiftUI** with `@Observable` (iOS 17 Observation framework) — no Combine in ViewModels, only in Clients where publishers are exposed.
-- **Environment-driven DI** — all clients (`PremiumClient`, `LanguageClient`, `ThemeClient`, `QuestionClientHolder`) are injected via `.environment(...)` at the app root.
+- **SwiftUI** with `@Observable` (iOS 17 Observation framework) — no Combine in ViewModels. Combine is used only in `LanguageClient` (`languagePublisher`) and `ThemeClient` (`themePublisher`) where external observers need a publisher interface.
+- **Environment-driven DI** — all clients (`PremiumClient`, `LanguageClient`, `ThemeClient`, `QuestionClientHolder`) are injected via `.environment(...)` at the app root (`TalkApp`).
+- **Splash gate** — `TalkApp` checks `SplashState.isFinished` (`@Observable`) before switching from `SplashView` to `TabBarView`. All environment objects are injected into both views.
 - **Actor-isolated data layer** — `QuestionClient` is a Swift `actor` (`static let shared`) to guarantee thread-safe JSON loading.
 - **Coordinator pattern** — `AppCoordinator` owns `NavigationPath`, `sheet`, and `fullScreenCover` state. Views call `coordinator.push()`, `coordinator.present()`, `coordinator.dismiss()`.
 - **BaseViewModel** — shared base class for `isLoading` and `errorMessage` state.
@@ -90,10 +99,11 @@ DailyQuestionWidget/
 |---|---|
 | `QuestionClient` | Loads `couple.json`, `family.json`, `friends.json`, `daily.json` from the localized bundle; writes widget data to App Group UserDefaults |
 | `PremiumClient` | StoreKit 2 — `fetchAvailableProducts`, `purchase`, `restorePurchases`, `checkPremiumStatus`, background transaction listener |
-| `LanguageClient` | Persists selected language; exposes `bundle` for localized string lookup |
-| `ThemeClient` | Persists selected theme; controls `preferredColorScheme` at app root |
-| `BadgesClient` | Pure function — computes badge earned/locked state from subcategory progress |
+| `LanguageClient` | Persists selected language; exposes `bundle` computed property and `languagePublisher` (Combine) for observers |
+| `ThemeClient` | Persists selected theme; exposes `themePublisher` (Combine); controls `preferredColorScheme` at app root |
+| `BadgesClient` | Pure static function — computes badge earned/locked state from subcategory progress in `UserDefaults` |
 | `UserDefaultsClient` | Generic `Codable` read/write wrapper around `UserDefaults.standard` |
+| `SplashState` | `@Observable` class; `isFinished` gates the transition from `SplashView` to `TabBarView` |
 
 ---
 
@@ -146,14 +156,14 @@ All content lives in **JSON files inside localized `.lproj` bundles** — no bac
 
 ## Localization
 
-The app supports **English (`en`)** and **Ukrainian (`uk`)**.
+The app supports **English (`en`)** and **Ukrainian (`uk`)**. The default language on first launch is **Ukrainian**.
 
 ### How it works
 
-- `AppLanguage` enum: `.english = "en"`, `.ukrainian = "uk"`
-- `LanguageClient` loads the matching `.lproj` bundle and exposes it via `languagePublisher` (Combine) and `\.languageBundle` environment key.
+- `AppLanguage` enum: `.ukrainian = "uk"`, `.english = "en"`
+- `LanguageClient` computes the matching `.lproj` `Bundle` via a `bundle` computed property and exposes it via `\.languageBundle` environment key and `languagePublisher` (Combine) for reactive observers.
 - All `Text(...)` calls use `String(localized: "key", bundle: bundle)` — **not** the system locale, but the user-selected language bundle.
-- JSON content files are duplicated per language inside `en.lproj/` and `uk.lproj/`.
+- UI strings live in `Localizable.xcstrings` (string catalog). Question JSON files are duplicated per language inside their respective `.lproj` bundles within the main app bundle.
 
 ### Rules for content files
 
@@ -172,9 +182,9 @@ The widget extension uses **App Group** `group.com.talk.shared` for data sharing
 | Widget | Kind | Sizes | Description |
 |---|---|---|---|
 | `DailyQuestionWidget` | `DailyQuestionWidget` | small, medium | Shows today's daily question; refreshes at midnight |
-| `CoupleQuestionWidget` | `CategoryWidget_couple` | large | Shows current question from Couple category |
-| `FamilyQuestionWidget` | `CategoryWidget_family` | large | Shows current question from Family category |
-| `FriendsQuestionWidget` | `CategoryWidget_friends` | large | Shows current question from Friends category |
+| `CoupleQuestionWidget` | `CategoryWidget_couple` | large | Interactive question browser for the Couple category |
+| `FamilyQuestionWidget` | `CategoryWidget_family` | large | Interactive question browser for the Family category |
+| `FriendsQuestionWidget` | `CategoryWidget_friends` | large | Interactive question browser for the Friends category |
 
 ### Data flow (App → Widget)
 
@@ -271,7 +281,13 @@ Add the corresponding image assets to the asset catalog when adding a new subcat
 
 ### Progress counting
 
-Progress per subcategory is stored in `subcategoryProgress` UserDefaults key as `[subcategoryId: count]`. It increments when the user navigates forward through questions or toggles a like.
+Progress per subcategory is stored in `subcategoryProgress` UserDefaults key as `[subcategoryId: count]`.
+
+- **Forward navigation** (`next()`) — saves `currentIndex + 1` directly.
+- **Toggle like** (`toggleLike()`) — calls `incrementProgressCount()`, which uses `max(current, currentIndex + 1)` so progress never goes backwards.
+- **Backward navigation** (`previous()`) — does **not** save progress in release builds; only saves in `#if DEBUG`.
+
+This means progress reflects how far into a subcategory the user has gone, not how many questions they have liked.
 
 ---
 
@@ -281,7 +297,17 @@ Progress per subcategory is stored in `subcategoryProgress` UserDefaults key as 
 
 Theme is applied at the app root via `.preferredColorScheme(themeClient.current.colorScheme)`.
 
-All colors are defined in `Colors` namespace (asset catalog + semantic color extensions). Never use hardcoded `Color` values — always reference `Colors.*`.
+All colors are defined in the `Colors` enum (`Utility/Colors.swift`) backed by the asset catalog. Never use hardcoded `Color` values — always reference `Colors.*`.
+
+| Token | Usage |
+|---|---|
+| `Colors.backgroundPrimary` | Main screen backgrounds |
+| `Colors.backgroundSecondary` | List rows, cards |
+| `Colors.backgroundElevated` | Elevated surfaces |
+| `Colors.textPrimary` | Primary text and icons |
+| `Colors.textSecondary` | Secondary / muted text |
+| `Colors.brandDark` | Splash background, brand accent |
+| `Colors.premiumGold` | Premium CTA button, crown icon |
 
 ---
 
@@ -293,25 +319,38 @@ All colors are defined in `Colors` namespace (asset catalog + semantic color ext
 |---|---|
 | `NavigationPath` (`push`) | Question flow, Liked Questions |
 | `sheet` | Subscription paywall, Legal documents |
-| `fullScreenCover` | Badge detail view |
+| `fullScreenCover` | Badge detail view (rendered as ZStack overlay in `TabBarView`) |
+
+> **Note:** `AppFullScreenCover.badge` is handled manually as a `ZStack` overlay with `.zIndex(1000)` inside `TabBarView`, not via the standard `.fullScreenCover` modifier. This avoids navigation stack conflicts.
 
 ### Routes
 
 ```swift
-enum AppRoute {
+enum AppRoute: Hashable {
     case question([CardQuestion], subcategoryId: String, title: String)
     case likedQuestions
 }
 
-enum AppSheet {
-    case document(DocumentItem)   // privacyPolicy | termsOfService
+enum AppSheet: Hashable, Identifiable {
+    case document(DocumentItem)   // termsOfService | privacyPolicy
     case subscription
 }
 
-enum AppFullScreenCover {
+enum AppFullScreenCover: Hashable, Identifiable {
     case badge(Badge)
 }
 ```
+
+---
+
+## Code Style
+
+- Views are composed of **private computed vars** (`navigationView`, `cardView`, `buttonStackView`, etc.) — no inline body bloat.
+- Always use the custom `NavigationBar` component — **never** `.navigationTitle` or system navigation bar.
+- Use `String(localized: "key", bundle: bundle)` — **never** `NSLocalizedString`.
+- Colors always via `Colors.*` — no hardcoded `Color(...)` values.
+- Previews always provide **Dark + Light** variants inside `#if DEBUG / #endif` using `@Previewable @State`.
+- No third-party dependencies — pure Apple frameworks only.
 
 ---
 
@@ -352,6 +391,13 @@ Add an entry to `holidays` in `daily.json` in both language bundles:
   "MM-DD": "Your holiday question here?"
 }
 ```
+
+---
+
+## Debug Notes
+
+- In `#if DEBUG`, `premiumClient.isPremium = true` is set at `TalkApp.init()` — all premium content is unlocked automatically in simulator/preview.
+- `QuestionViewModel.previous()` only saves progress in `DEBUG` builds — in release, going back does not update `subcategoryProgress`.
 
 ---
 
