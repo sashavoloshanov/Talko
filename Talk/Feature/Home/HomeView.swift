@@ -16,9 +16,6 @@ struct HomeView: View {
         .onAppear {
             Task { await viewModel.loadContent(holder: questionHolder, language: languageClient.current, premiumClient: premiumClient) }
         }
-        .onChange(of: languageClient.current) { _, newLang in
-            Task { await viewModel.loadContent(holder: questionHolder, language: newLang, premiumClient: premiumClient) }
-        }
         .alert(
             String(localized: "common_error_title", bundle: bundle),
             isPresented: Binding(
