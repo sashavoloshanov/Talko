@@ -129,50 +129,24 @@ struct QuestionView: View {
 }
 
 #if DEBUG
+private let previewQuestions: [CardQuestion] = [
+    CardQuestion(id: "test1", text: "Test question 1?"),
+    CardQuestion(id: "test2", text: "Test question 2?"),
+    CardQuestion(id: "test3", text: "Test question 3?")
+]
+
 #Preview("Dark") {
-    @Previewable @State var questionHolder = QuestionClientHolder()
-    @Previewable @State var languageClient = LanguageClient()
-    @Previewable @State var themeClient = ThemeClient()
-    @Previewable @State var premiumClient = PremiumClient()
-    @Previewable @State var coordinator = AppCoordinator()
-    
-    @Previewable var questions: [
-        CardQuestion] = [CardQuestion(id: "test1", text: "Test question 1?"),
-                         CardQuestion(id: "test2", text: "Test question 2?"),
-                         CardQuestion(id: "test3", text: "Test question 3?")
-        ]
-    
-    QuestionView(questions: questions, subcategoryId: "test", title: "Test")
-        .environment(languageClient)
-        .environment(\.languageBundle, languageClient.bundle)
-        .environment(themeClient)
-        .environment(premiumClient)
-        .environment(coordinator)
-        .environment(questionHolder)
-        .preferredColorScheme(ColorScheme.dark)
+    PreviewContainer {
+        QuestionView(questions: previewQuestions, subcategoryId: "test", title: "Test")
+    }
+    .preferredColorScheme(.dark)
 }
 
 #Preview("Light") {
-    @Previewable @State var questionHolder = QuestionClientHolder()
-    @Previewable @State var languageClient = LanguageClient()
-    @Previewable @State var themeClient = ThemeClient()
-    @Previewable @State var premiumClient = PremiumClient()
-    @Previewable @State var coordinator = AppCoordinator()
-    
-    @Previewable var questions: [
-        CardQuestion] = [CardQuestion(id: "test1", text: "Test question 1?"),
-                         CardQuestion(id: "test2", text: "Test question 2?"),
-                         CardQuestion(id: "test3", text: "Test question 3?")
-        ]
-    
-    QuestionView(questions: questions, subcategoryId: "test", title: "Test")
-        .environment(languageClient)
-        .environment(\.languageBundle, languageClient.bundle)
-        .environment(themeClient)
-        .environment(premiumClient)
-        .environment(coordinator)
-        .environment(questionHolder)
-        .preferredColorScheme(ColorScheme.light)
+    PreviewContainer {
+        QuestionView(questions: previewQuestions, subcategoryId: "test", title: "Test")
+    }
+    .preferredColorScheme(.light)
 }
 #endif
 

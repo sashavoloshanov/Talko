@@ -176,36 +176,12 @@ struct SettingsView: View {
 
 #if DEBUG
 #Preview("Dark") {
-    @Previewable @State var questionHolder = QuestionClientHolder()
-    @Previewable @State var languageClient = LanguageClient()
-    @Previewable @State var themeClient = ThemeClient()
-    @Previewable @State var premiumClient = PremiumClient()
-    @Previewable @State var coordinator = AppCoordinator()
-    
-    SettingsView()
-        .environment(languageClient)
-        .environment(\.languageBundle, languageClient.bundle)
-        .environment(themeClient)
-        .environment(premiumClient)
-        .environment(coordinator)
-        .environment(questionHolder)
+    PreviewContainer { SettingsView() }
         .preferredColorScheme(.dark)
 }
 
 #Preview("Light") {
-    @Previewable @State var questionHolder = QuestionClientHolder()
-    @Previewable @State var languageClient = LanguageClient()
-    @Previewable @State var themeClient = ThemeClient()
-    @Previewable @State var premiumClient = PremiumClient()
-    @Previewable @State var coordinator = AppCoordinator()
-    
-    SettingsView()
-        .environment(languageClient)
-        .environment(\.languageBundle, languageClient.bundle)
-        .environment(themeClient)
-        .environment(premiumClient)
-        .environment(coordinator)
-        .environment(questionHolder)
+    PreviewContainer { SettingsView() }
         .preferredColorScheme(.light)
 }
 #endif
