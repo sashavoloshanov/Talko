@@ -6,6 +6,7 @@ enum UDKey: String {
     case likedQuestions
     case subcategoryProgress
     case isPremium
+    case didMigrateFromStorageClient
 }
  
 struct UserDefaultsClient {

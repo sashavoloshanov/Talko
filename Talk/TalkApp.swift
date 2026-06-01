@@ -9,11 +9,12 @@ struct TalkApp: App {
     @State private var coordinator = AppCoordinator()
     @State private var questionHolder = QuestionClientHolder()
 
-    #if DEBUG
     init() {
+        MigrationClient.runIfNeeded()
+        #if DEBUG
         premiumClient.isPremium = true
+        #endif
     }
-    #endif
 
     var body: some Scene {
         WindowGroup {
