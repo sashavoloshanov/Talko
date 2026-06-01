@@ -3,8 +3,6 @@ import SwiftUI
 struct BadgesView: View {
     @Environment(AppCoordinator.self) private var coordinator
     @Environment(QuestionClientHolder.self) private var questionHolder
-    @Environment(LanguageClient.self) private var languageClient
-    @Environment(PremiumClient.self) private var premiumClient
     @Environment(\.languageBundle) private var bundle
     @State private var viewModel = BadgesViewModel()
 
@@ -16,29 +14,9 @@ struct BadgesView: View {
         .background(Color.backgroundPrimary)
         .onAppear {
             viewModel.load(categories: questionHolder.categories)
-            Task { await viewModel.loadContent(holder: questionHolder, language: languageClient.current, premiumClient: premiumClient) }
         }
         .onChange(of: questionHolder.categories) { _, cats in
             viewModel.load(categories: cats)
-        }
-        .onChange(of: languageClient.current) { _, newLang in
-            Task { await viewModel.loadContent(holder: questionHolder, language: newLang, premiumClient: premiumClient) }
-        }
-        .alert(
-            String(localized: "common_error_title", bundle: bundle),
-            isPresented: Binding(
-                get: { viewModel.errorMessage != nil },
-                set: { if !$0 { viewModel.errorMessage = nil } }
-            )
-        ) {
-            Button(String(localized: "common_retry", bundle: bundle)) {
-                Task { await viewModel.reloadContent(holder: questionHolder, language: languageClient.current, premiumClient: premiumClient) }
-            }
-            Button(String(localized: "common_cancel", bundle: bundle), role: .cancel) {
-                viewModel.errorMessage = nil
-            }
-        } message: {
-            Text(viewModel.errorMessage ?? "")
         }
     }
 
