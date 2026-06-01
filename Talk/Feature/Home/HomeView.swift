@@ -7,6 +7,7 @@ struct HomeView: View {
     @Environment(\.languageBundle) private var bundle
     @Environment(PremiumClient.self) private var premiumClient
     @State private var viewModel = HomeViewModel()
+    private let likesStore = LikesStore.shared
 
     var body: some View {
         VStack(spacing: 0) {
@@ -16,32 +17,20 @@ struct HomeView: View {
         .onAppear {
             Task { await viewModel.loadContent(holder: questionHolder, language: languageClient.current, premiumClient: premiumClient) }
         }
-        .alert(
-            String(localized: "common_error_title", bundle: bundle),
-            isPresented: Binding(
-                get: { viewModel.errorMessage != nil },
-                set: { if !$0 { viewModel.errorMessage = nil } }
-            )
-        ) {
-            Button(String(localized: "common_retry", bundle: bundle)) {
-                Task { await viewModel.reloadContent(holder: questionHolder, language: languageClient.current, premiumClient: premiumClient) }
-            }
-            Button(String(localized: "common_cancel", bundle: bundle), role: .cancel) {
-                viewModel.errorMessage = nil
-            }
-        } message: {
-            Text(viewModel.errorMessage ?? "")
+        .onChange(of: viewModel.errorMessage) { _, msg in
+            guard msg != nil, !questionHolder.isLoading else { return }
+            viewModel.errorMessage = nil
+            Task { await viewModel.reloadContent(holder: questionHolder, language: languageClient.current, premiumClient: premiumClient) }
         }
     }
 
     @ViewBuilder
     private var contentView: some View {
-        if questionHolder.isLoading && questionHolder.categories.isEmpty {
+        if questionHolder.categories.isEmpty {
             Spacer()
             ProgressView()
+                .tint(Colors.textPrimary)
             Spacer()
-        } else if !questionHolder.isLoading && questionHolder.categories.isEmpty {
-            emptyView
         } else {
             scrollContent
         }
@@ -76,30 +65,11 @@ struct HomeView: View {
         }
     }
 
-    private var emptyView: some View {
-        VStack(spacing: 16) {
-            Spacer()
-            Text(String(localized: "home_empty_title", bundle: bundle))
-                .font(.headline)
-                .multilineTextAlignment(.center)
-            Text(String(localized: "home_empty_description", bundle: bundle))
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-                .multilineTextAlignment(.center)
-            Button(String(localized: "common_retry", bundle: bundle)) {
-                Task { await viewModel.reloadContent(holder: questionHolder, language: languageClient.current, premiumClient: premiumClient) }
-            }
-            .buttonStyle(.bordered)
-            Spacer()
-        }
-        .padding(.horizontal, 32)
-    }
-    
     private var navigationView: some View {
         NavigationBar(
             leftButton: nil,
             centerContent: .text("Talk"),
-            rightButton: NavRightButton(
+            rightButton: likesStore.likedIds.isEmpty ? nil : NavRightButton(
                 icon: UIImage(systemName: "heart.fill") ?? UIImage(),
                 action: { coordinator.push(.likedQuestions) }
             )

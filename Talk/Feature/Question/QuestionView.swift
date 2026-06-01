@@ -4,24 +4,29 @@ struct QuestionView: View {
     let questions: [CardQuestion]
     let subcategoryId: String
     let title: String
-    
+    var startIndex: Int? = nil
+    var onUnlikeAt: ((Int) -> Void)? = nil
+
     @Environment(AppCoordinator.self) private var coordinator
     @Environment(LanguageClient.self) private var languageClient
     @Environment(\.languageBundle) private var bundle
-    
+
     @State private var viewModel: QuestionViewModel
     @State private var dragOffset: CGFloat = 0
     @State private var slideDirection: SlideDirection = .forward
- 
+
     enum SlideDirection {
         case forward, backward
     }
- 
-    init(questions: [CardQuestion], subcategoryId: String, title: String) {
+
+    init(questions: [CardQuestion], subcategoryId: String, title: String,
+         startIndex: Int? = nil, onUnlikeAt: ((Int) -> Void)? = nil) {
         self.questions = questions
         self.subcategoryId = subcategoryId
         self.title = title
-        _viewModel = State(initialValue: QuestionViewModel(questions: questions, subcategoryId: subcategoryId))
+        self.startIndex = startIndex
+        self.onUnlikeAt = onUnlikeAt
+        _viewModel = State(initialValue: QuestionViewModel(questions: questions, subcategoryId: subcategoryId, forceStartIndex: startIndex))
     }
     
     var body: some View {
@@ -54,7 +59,14 @@ struct QuestionView: View {
                 icon: viewModel.isCurrentLiked
                     ? (UIImage(systemName: "heart.fill") ?? UIImage())
                     : (UIImage(systemName: "heart") ?? UIImage()),
-                action: { viewModel.toggleLike() }
+                action: {
+                    let wasLiked = viewModel.isCurrentLiked
+                    let idx = viewModel.currentIndex
+                    viewModel.toggleLike()
+                    if wasLiked, let callback = onUnlikeAt {
+                        callback(idx)
+                    }
+                }
             )
         )
     }

@@ -6,30 +6,32 @@ final class QuestionViewModel: BaseViewModel {
     let questions: [CardQuestion]
     let subcategoryId: String
     private(set) var currentIndex: Int
-    private(set) var likedIds: Set<String>
- 
+    private let likesStore = LikesStore.shared
+
     var current: CardQuestion { questions[currentIndex] }
     var canGoNext: Bool { currentIndex < questions.count - 1 }
     var canGoPrevious: Bool { currentIndex > 0 }
     var progress: String { "\(currentIndex + 1) / \(questions.count)" }
     var progressValue: Double { Double(currentIndex + 1) / Double(questions.count) }
-    var isCurrentLiked: Bool { likedIds.contains(current.id) }
- 
-    init(questions: [CardQuestion], subcategoryId: String) {
+    var isCurrentLiked: Bool { likesStore.likedIds.contains(current.id) }
+
+    init(questions: [CardQuestion], subcategoryId: String, forceStartIndex: Int? = nil) {
         self.questions = questions
         self.subcategoryId = subcategoryId
-        let progress = UserDefaultsClient.get([String: Int].self, for: .subcategoryProgress) ?? [:]
-        self.currentIndex = min(progress[subcategoryId] ?? 0, max(0, questions.count - 1))
-        let liked = UserDefaultsClient.get([String].self, for: .likedQuestions) ?? []
-        self.likedIds = Set(liked)
+        if let forced = forceStartIndex {
+            self.currentIndex = min(forced, max(0, questions.count - 1))
+        } else {
+            let progress = UserDefaultsClient.get([String: Int].self, for: .subcategoryProgress) ?? [:]
+            self.currentIndex = min(progress[subcategoryId] ?? 0, max(0, questions.count - 1))
+        }
     }
- 
+
     func next() {
         guard canGoNext else { return }
         currentIndex += 1
         saveProgress()
     }
- 
+
     func previous() {
         guard canGoPrevious else { return }
         currentIndex -= 1
@@ -37,15 +39,9 @@ final class QuestionViewModel: BaseViewModel {
         saveProgress()
         #endif
     }
- 
+
     func toggleLike() {
-        let id = current.id
-        if likedIds.contains(id) {
-            likedIds.remove(id)
-        } else {
-            likedIds.insert(id)
-        }
-        UserDefaultsClient.set(Array(likedIds), for: .likedQuestions)
+        likesStore.toggle(current.id)
         incrementProgressCount()
     }
  

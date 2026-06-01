@@ -1,20 +1,25 @@
 import Foundation
 import Observation
- 
+
 @Observable
 final class LikedQuestionsViewModel: BaseViewModel {
-    var questions: [CardQuestion] = []
- 
-    func load(allCategories: [Category]) {
-        let likedIds = Set(UserDefaultsClient.get([String].self, for: .likedQuestions) ?? [])
+    private let likesStore = LikesStore.shared
+    private var allCategories: [Category] = []
+
+    var questions: [CardQuestion] {
+        let ids = likesStore.likedIds
         var found: [CardQuestion] = []
         for category in allCategories {
             for sub in category.subcategories {
-                for q in sub.questions where likedIds.contains(q.id) {
+                for q in sub.questions where ids.contains(q.id) {
                     found.append(q)
                 }
             }
         }
-        questions = found
+        return found
+    }
+
+    func load(allCategories: [Category]) {
+        self.allCategories = allCategories
     }
 }
