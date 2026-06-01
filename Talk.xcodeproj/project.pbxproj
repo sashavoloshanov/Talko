@@ -80,6 +80,11 @@
 			path = Talk;
 			sourceTree = "<group>";
 		};
+		AA11AA11BB22BB22CC33CC33 /* Shared */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Shared;
+			sourceTree = "<group>";
+		};
 		937E6FC52FC0A2AF00FE3589 /* DailyQuestionWidget */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
@@ -114,6 +119,7 @@
 			isa = PBXGroup;
 			children = (
 				937E6FDC2FC0A33A00FE3589 /* DailyQuestionWidgetExtension.entitlements */,
+				AA11AA11BB22BB22CC33CC33 /* Shared */,
 				9310DF5A2F66EEF600E1C965 /* Talk */,
 				937E6FC52FC0A2AF00FE3589 /* DailyQuestionWidget */,
 				937E6FC02FC0A2AF00FE3589 /* Frameworks */,
@@ -157,6 +163,7 @@
 				937E6FD42FC0A2B000FE3589 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
+				AA11AA11BB22BB22CC33CC33 /* Shared */,
 				9310DF5A2F66EEF600E1C965 /* Talk */,
 			);
 			name = Talk;
@@ -179,6 +186,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
+				AA11AA11BB22BB22CC33CC33 /* Shared */,
 				937E6FC52FC0A2AF00FE3589 /* DailyQuestionWidget */,
 			);
 			name = DailyQuestionWidgetExtension;
