@@ -93,8 +93,7 @@ struct HomeView: View {
                 coordinator.present(.subscription)
                 return
             }
-            let questions = viewModel.questionsForSubcategory(subcategory)
-            coordinator.push(.question(questions, subcategoryId: subcategory.id, title: subcategory.name))
+            coordinator.push(.question(subcategoryId: subcategory.id, title: subcategory.name))
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .padding(.horizontal, 8)
