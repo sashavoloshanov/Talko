@@ -93,8 +93,6 @@ actor QuestionClient {
         WidgetCenter.shared.reloadAllTimelines()
     }
 
-    // MARK: - Private
-
     private func loadCategory(_ name: String, language: AppLanguage) throws -> Category {
         let url = try fileURL(name: name, language: language)
         let data = try Data(contentsOf: url)
