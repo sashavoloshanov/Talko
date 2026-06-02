@@ -1,6 +1,7 @@
 import Foundation
 import WidgetKit
 
+@MainActor
 @Observable
 final class QuestionClientHolder {
     var categories: [Category] = []
