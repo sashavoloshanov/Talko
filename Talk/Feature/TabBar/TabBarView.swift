@@ -52,7 +52,10 @@ struct TabBarView: View {
     @ViewBuilder
     private func routeView(_ route: AppRoute) -> some View {
         switch route {
-        case .question(let questions, let subcategoryId, let title):
+        case .question(let subcategoryId, let title):
+            let questions = questionHolder.categories
+                .flatMap(\.subcategories)
+                .first(where: { $0.id == subcategoryId })?.questions ?? []
             QuestionView(questions: questions, subcategoryId: subcategoryId, title: title)
                 .background(Colors.backgroundPrimary)
         case .likedQuestions:

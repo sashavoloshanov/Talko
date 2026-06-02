@@ -2,7 +2,7 @@ import SwiftUI
 import Observation
 
 enum AppRoute: Hashable {
-    case question([CardQuestion], subcategoryId: String, title: String)
+    case question(subcategoryId: String, title: String)
     case likedQuestions
 }
 
