@@ -51,7 +51,7 @@ actor QuestionClient {
         }
 
         let today = Date()
-        let text = await payload.holidayQuestion(for: today) ?? payload.question(for: today)
+        let text = payload.holidayQuestion(for: today) ?? payload.question(for: today)
 
         UserDefaults(suiteName: AppGroupKey.suiteName)?.set(text, forKey: AppGroupKey.dailyQuestion)
         WidgetCenter.shared.reloadTimelines(ofKind: "DailyQuestionWidget")
