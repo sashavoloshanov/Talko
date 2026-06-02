@@ -82,27 +82,31 @@ struct QuestionView: View {
     }
     
     private var cardView: some View {
-        QuestionCardView(text: viewModel.current.text)
-            .padding(.horizontal, 20)
-            .id(viewModel.currentIndex)
-            .transition(
-                .asymmetric(
-                    insertion: .move(edge: slideDirection == .forward ? .trailing : .leading),
-                    removal: .move(edge: slideDirection == .forward ? .leading : .trailing)
-                )
-            )
-            .gesture(
-                DragGesture()
-                    .onEnded { value in
-                        if value.translation.width < -50 {
-                            slideDirection = .forward
-                            withAnimation(.spring()) { viewModel.next() }
-                        } else if value.translation.width > 50 {
-                            slideDirection = .backward
-                            withAnimation(.spring()) { viewModel.previous() }
-                        }
-                    }
-            )
+        Group {
+            if let current = viewModel.current {
+                QuestionCardView(text: current.text)
+                    .padding(.horizontal, 20)
+                    .id(viewModel.currentIndex)
+                    .transition(
+                        .asymmetric(
+                            insertion: .move(edge: slideDirection == .forward ? .trailing : .leading),
+                            removal: .move(edge: slideDirection == .forward ? .leading : .trailing)
+                        )
+                    )
+                    .gesture(
+                        DragGesture()
+                            .onEnded { value in
+                                if value.translation.width < -50 {
+                                    slideDirection = .forward
+                                    withAnimation(.spring()) { viewModel.next() }
+                                } else if value.translation.width > 50 {
+                                    slideDirection = .backward
+                                    withAnimation(.spring()) { viewModel.previous() }
+                                }
+                            }
+                    )
+            }
+        }
     }
     
     private var buttonStackView: some View {
