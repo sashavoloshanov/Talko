@@ -18,11 +18,10 @@ struct CategoryProvider: TimelineProvider {
         completion(Timeline(entries: [makeEntry()], policy: .never))
     }
 
-    // MARK: - Private
     private func makeEntry() -> CategoryEntry {
-        let defaults  = UserDefaults(suiteName: AppGroupKey.suiteName)
+        let defaults = UserDefaults(suiteName: AppGroupKey.suiteName)
         let questions = loadQuestions(from: defaults)
-        let rawIndex  = defaults?.integer(forKey: AppGroupKey.widgetIndex(categoryId: categoryId)) ?? 0
+        let rawIndex = defaults?.integer(forKey: AppGroupKey.widgetIndex(categoryId: categoryId)) ?? 0
         let safeIndex = questions.isEmpty ? 0 : rawIndex % questions.count
 
         return CategoryEntry(

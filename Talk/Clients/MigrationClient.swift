@@ -12,7 +12,6 @@ struct MigrationClient {
         migrateSubcategoryProgress()
     }
 
-    // "favorites" was stored as a raw [String] by StorageClient
     private static func migrateLikedQuestions() {
         let defaults = UserDefaults.standard
         guard let legacyArray = defaults.stringArray(forKey: "favorites"), !legacyArray.isEmpty else { return }
@@ -23,7 +22,6 @@ struct MigrationClient {
         defaults.removeObject(forKey: "favorites")
     }
 
-    // "lastQuestionIndex_<categoryId>" was stored as a raw Int by StorageClient
     private static func migrateSubcategoryProgress() {
         let defaults = UserDefaults.standard
         let prefix = "lastQuestionIndex_"
