@@ -1,6 +1,10 @@
 import Foundation
 import WidgetKit
 
+/// @MainActor isolation makes the `guard !isLoading` check and the `isLoading = true`
+/// assignment a single atomic step on the main actor's serial executor, eliminating
+/// the check-then-set race that allowed two concurrent Tasks to both enter `load()`.
+@MainActor
 @Observable
 final class QuestionClientHolder {
     var categories: [Category] = []
