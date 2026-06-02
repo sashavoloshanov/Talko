@@ -56,8 +56,12 @@ struct TabBarView: View {
             let questions = questionHolder.categories
                 .flatMap(\.subcategories)
                 .first(where: { $0.id == subcategoryId })?.questions ?? []
-            QuestionView(questions: questions, subcategoryId: subcategoryId, title: title)
-                .background(Colors.backgroundPrimary)
+            if questions.isEmpty {
+                EmptyView().onAppear { coordinator.pop() }
+            } else {
+                QuestionView(questions: questions, subcategoryId: subcategoryId, title: title)
+                    .background(Colors.backgroundPrimary)
+            }
         case .likedQuestions:
             LikedQuestionsView()
                 .background(Colors.backgroundPrimary)
