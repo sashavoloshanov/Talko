@@ -9,7 +9,7 @@ struct BadgeDetailView: View {
             Color.white.opacity(0.4)
                 .background(.ultraThinMaterial)
                 .ignoresSafeArea()
-                .onTapGesture { coordinator.dismiss() }
+                .onTapGesture { coordinator.dismissCover() }
 
             VStack {
                 Spacer()
@@ -22,7 +22,7 @@ struct BadgeDetailView: View {
                 Spacer()
             }
             .contentShape(Rectangle())
-            .onTapGesture { coordinator.dismiss() }
+            .onTapGesture { coordinator.dismissCover() }
 
             ShareLink(
                 item: Image(badge.imageName),

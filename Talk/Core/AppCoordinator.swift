@@ -45,8 +45,11 @@ final class AppCoordinator {
         fullScreenCover = screen
     }
     
-    func dismiss() {
+    func dismissSheet() {
         sheet = nil
+    }
+
+    func dismissCover() {
         fullScreenCover = nil
     }
 }

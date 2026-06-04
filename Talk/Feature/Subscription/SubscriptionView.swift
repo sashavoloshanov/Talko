@@ -13,7 +13,7 @@ struct SubscriptionView: View {
                 HStack {
                     Spacer()
                     Button {
-                        coordinator.dismiss()
+                        coordinator.dismissSheet()
                     } label: {
                         Image(systemName: "xmark")
                             .font(.system(size: 14, weight: .semibold))
@@ -110,7 +110,7 @@ struct SubscriptionView: View {
             viewModel.setup(premiumClient: premiumClient)
         }
         .onChange(of: viewModel.purchaseSuccess) { _, success in
-            if success { coordinator.dismiss() }
+            if success { coordinator.dismissSheet() }
         }
     }
 }
