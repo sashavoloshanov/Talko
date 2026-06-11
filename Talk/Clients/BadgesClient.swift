@@ -1,11 +1,10 @@
 import Foundation
  
 struct BadgesClient {
-    static func badges(for categories: [Category]) -> [String: [Badge]] {
+    static func badges(for categories: [Category], progress: [String: Int]) -> [String: [Badge]] {
         var result: [String: [Badge]] = [:]
         let thresholds = [10, 30, 50]
-        let progress = UserDefaultsClient.get([String: Int].self, for: .subcategoryProgress) ?? [:]
- 
+
         for category in categories {
             var categoryBadges: [Badge] = []
             for sub in category.subcategories {
@@ -27,5 +26,10 @@ struct BadgesClient {
             result[category.id] = categoryBadges
         }
         return result
+    }
+
+    static func badges(for categories: [Category]) -> [String: [Badge]] {
+        let progress = UserDefaultsClient.get([String: Int].self, for: .subcategoryProgress) ?? [:]
+        return badges(for: categories, progress: progress)
     }
 }
