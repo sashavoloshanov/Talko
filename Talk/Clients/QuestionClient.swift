@@ -9,15 +9,20 @@ final class QuestionClientHolder {
     private(set) var loadedLanguage: AppLanguage?
     private(set) var isLoading: Bool = false
 
+    private let client: any QuestionClientProtocol
     private var loadingTask: Task<Void, Error>?
+
+    init(client: any QuestionClientProtocol = QuestionClient.shared) {
+        self.client = client
+    }
 
     func load(language: AppLanguage, premiumClient: PremiumClient) async throws {
         guard loadedLanguage != language, !isLoading else { return }
         isLoading = true
         let task = Task {
             defer { isLoading = false }
-            async let cats = QuestionClient.shared.loadCategories(language: language)
-            async let daily = QuestionClient.shared.loadDailyQuestion(language: language)
+            async let cats = client.loadCategories(language: language)
+            async let daily = client.loadDailyQuestion(language: language)
             async let _: () = premiumClient.checkPremiumStatus()
             let (c, d) = try await (cats, daily)
             self.categories = c
@@ -36,7 +41,13 @@ final class QuestionClientHolder {
     }
 }
 
-actor QuestionClient {
+protocol QuestionClientProtocol: Actor {
+    func loadCategories(language: AppLanguage) async throws -> [Category]
+    func loadDailyQuestion(language: AppLanguage) async throws -> DailyQuestion
+    func refreshWidgetData(for language: AppLanguage) async
+}
+
+actor QuestionClient: QuestionClientProtocol {
     static let shared = QuestionClient()
 
     private let contentBundle: Bundle
