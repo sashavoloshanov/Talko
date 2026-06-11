@@ -13,7 +13,7 @@ struct MigrationClient {
     }
 
     private static func migrateLikedQuestions() {
-        let defaults = UserDefaults.standard
+        let defaults = UserDefaultsClient.defaults
         guard let legacyArray = defaults.stringArray(forKey: "favorites"), !legacyArray.isEmpty else { return }
 
         let existing = UserDefaultsClient.get([String].self, for: .likedQuestions) ?? []
@@ -23,7 +23,7 @@ struct MigrationClient {
     }
 
     private static func migrateSubcategoryProgress() {
-        let defaults = UserDefaults.standard
+        let defaults = UserDefaultsClient.defaults
         let prefix = "lastQuestionIndex_"
         let legacyKeys = defaults.dictionaryRepresentation().keys.filter { $0.hasPrefix(prefix) }
         guard !legacyKeys.isEmpty else { return }
