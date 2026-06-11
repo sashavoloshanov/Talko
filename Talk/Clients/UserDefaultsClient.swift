@@ -10,7 +10,7 @@ enum UDKey: String {
 }
  
 struct UserDefaultsClient {
-    private static let defaults = UserDefaults.standard
+    static var defaults: UserDefaults = .standard
  
     static func set<T: Codable>(_ value: T, for key: UDKey) {
         if let data = try? JSONEncoder().encode(value) {
