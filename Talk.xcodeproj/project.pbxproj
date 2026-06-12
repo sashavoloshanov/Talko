@@ -20,6 +20,13 @@
 			remoteGlobalIDString = 937E6FBE2FC0A2AF00FE3589;
 			remoteInfo = DailyQuestionWidgetExtension;
 		};
+		93C766A42FDBFE780092E077 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9310DF502F66EEF600E1C965 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 9310DF572F66EEF600E1C965;
+			remoteInfo = Talk;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -42,6 +49,7 @@
 		937E6FC12FC0A2AF00FE3589 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		937E6FC32FC0A2AF00FE3589 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		937E6FDC2FC0A33A00FE3589 /* DailyQuestionWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = DailyQuestionWidgetExtension.entitlements; sourceTree = "<group>"; };
+		93C766A02FDBFE770092E077 /* TalkTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TalkTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -88,6 +96,11 @@
 			path = DailyQuestionWidget;
 			sourceTree = "<group>";
 		};
+		93C766A12FDBFE780092E077 /* TalkTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = TalkTests;
+			sourceTree = "<group>";
+		};
 		AA11AA11BB22BB22CC33CC33 /* Shared */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = Shared;
@@ -112,6 +125,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		93C7669D2FDBFE770092E077 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -122,6 +142,7 @@
 				AA11AA11BB22BB22CC33CC33 /* Shared */,
 				9310DF5A2F66EEF600E1C965 /* Talk */,
 				937E6FC52FC0A2AF00FE3589 /* DailyQuestionWidget */,
+				93C766A12FDBFE780092E077 /* TalkTests */,
 				937E6FC02FC0A2AF00FE3589 /* Frameworks */,
 				9310DF592F66EEF600E1C965 /* Products */,
 			);
@@ -132,6 +153,7 @@
 			children = (
 				9310DF582F66EEF600E1C965 /* Talk.app */,
 				937E6FBF2FC0A2AF00FE3589 /* DailyQuestionWidgetExtension.appex */,
+				93C766A02FDBFE770092E077 /* TalkTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -196,6 +218,29 @@
 			productReference = 937E6FBF2FC0A2AF00FE3589 /* DailyQuestionWidgetExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
+		93C7669F2FDBFE770092E077 /* TalkTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 93C766A62FDBFE780092E077 /* Build configuration list for PBXNativeTarget "TalkTests" */;
+			buildPhases = (
+				93C7669C2FDBFE770092E077 /* Sources */,
+				93C7669D2FDBFE770092E077 /* Frameworks */,
+				93C7669E2FDBFE770092E077 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				93C766A52FDBFE780092E077 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				93C766A12FDBFE780092E077 /* TalkTests */,
+			);
+			name = TalkTests;
+			packageProductDependencies = (
+			);
+			productName = TalkTests;
+			productReference = 93C766A02FDBFE770092E077 /* TalkTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -211,6 +256,10 @@
 					};
 					937E6FBE2FC0A2AF00FE3589 = {
 						CreatedOnToolsVersion = 26.5;
+					};
+					93C7669F2FDBFE770092E077 = {
+						CreatedOnToolsVersion = 26.5;
+						TestTargetID = 9310DF572F66EEF600E1C965;
 					};
 				};
 			};
@@ -233,6 +282,7 @@
 			targets = (
 				9310DF572F66EEF600E1C965 /* Talk */,
 				937E6FBE2FC0A2AF00FE3589 /* DailyQuestionWidgetExtension */,
+				93C7669F2FDBFE770092E077 /* TalkTests */,
 			);
 		};
 /* End PBXProject section */
@@ -246,6 +296,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		937E6FBD2FC0A2AF00FE3589 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		93C7669E2FDBFE770092E077 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -269,6 +326,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		93C7669C2FDBFE770092E077 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -276,6 +340,11 @@
 			isa = PBXTargetDependency;
 			target = 937E6FBE2FC0A2AF00FE3589 /* DailyQuestionWidgetExtension */;
 			targetProxy = 937E6FD32FC0A2B000FE3589 /* PBXContainerItemProxy */;
+		};
+		93C766A52FDBFE780092E077 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 9310DF572F66EEF600E1C965 /* Talk */;
+			targetProxy = 93C766A42FDBFE780092E077 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -539,6 +608,50 @@
 			};
 			name = Release;
 		};
+		93C766A72FDBFE780092E077 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = DT2DFK4E8J;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.svoloshanov.TalkTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Talk.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Talk";
+			};
+			name = Debug;
+		};
+		93C766A82FDBFE780092E077 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = DT2DFK4E8J;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.svoloshanov.TalkTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Talk.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Talk";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -565,6 +678,15 @@
 			buildConfigurations = (
 				937E6FD72FC0A2B000FE3589 /* Debug */,
 				937E6FD82FC0A2B000FE3589 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		93C766A62FDBFE780092E077 /* Build configuration list for PBXNativeTarget "TalkTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				93C766A72FDBFE780092E077 /* Debug */,
+				93C766A82FDBFE780092E077 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
