@@ -2,7 +2,8 @@ import Testing
 import Foundation
 @testable import Talk
 
-@Suite("BadgesClient")
+@Suite("BadgesClient", .serialized)
+@MainActor
 struct BadgesClientTests {
 
     private let subcategoryId = "couple"
@@ -10,7 +11,8 @@ struct BadgesClientTests {
         .fixture(id: "cat1", subcategories: [.fixture(id: subcategoryId)])
     }
 
-    @Suite("earned / locked за прогресом")
+    @Suite("earned / locked by progress")
+    @MainActor
     struct EarnedLocked {
         let subId = "couple"
         let category: Talk.Category = .fixture(id: "cat1", subcategories: [.fixture(id: "couple")])
@@ -60,6 +62,7 @@ struct BadgesClientTests {
     }
 
     @Suite("imageName")
+    @MainActor
     struct ImageName {
         let subId = "couple"
         let category: Talk.Category = .fixture(id: "cat1", subcategories: [.fixture(id: "couple")])
@@ -77,6 +80,7 @@ struct BadgesClientTests {
     }
 
     @Suite("badge.id")
+    @MainActor
     struct BadgeId {
         let subId = "couple"
         let category: Talk.Category = .fixture(id: "cat1", subcategories: [.fixture(id: "couple")])
@@ -90,7 +94,8 @@ struct BadgesClientTests {
         }
     }
 
-    @Suite("Структура результату")
+    @Suite("result structure")
+    @MainActor
     struct ResultStructure {
         @Test func emptyCategoriesReturnsEmptyDict() {
             let result = BadgesClient.badges(for: [], progress: [:])
@@ -117,6 +122,50 @@ struct BadgesClientTests {
             ]
             let result = BadgesClient.badges(for: cats, progress: [:])
             #expect(result.keys.count == 3)
+        }
+    }
+
+    @Suite("badges(for:) — reads UserDefaults progress")
+    @MainActor
+    struct WithUserDefaults {
+        let defaults: UserDefaults
+        let suite: String
+
+        init() {
+            suite = "com.talk.tests.badgesclient.\(UUID().uuidString)"
+            defaults = UserDefaults(suiteName: suite)!
+        }
+
+        @Test func noProgressInDefaults_allLocked() {
+            UserDefaultsClient.defaults = defaults
+            defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
+            let sub = Subcategory.fixture(id: "sub1")
+            let cat = Talk.Category.fixture(id: "cat1", subcategories: [sub])
+            let result = BadgesClient.badges(for: [cat])
+            #expect(result["cat1"]?.allSatisfy { !$0.isEarned } == true)
+        }
+
+        @Test func progressInDefaults_badgesReflectProgress() {
+            UserDefaultsClient.defaults = defaults
+            defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
+            UserDefaultsClient.set(["sub1": 10], for: .subcategoryProgress)
+            UserDefaultsClient.defaults = defaults
+            let sub = Subcategory.fixture(id: "sub1")
+            let cat = Talk.Category.fixture(id: "cat1", subcategories: [sub])
+            let result = BadgesClient.badges(for: [cat])
+            let badge10 = result["cat1"]?.first { $0.id == "sub1_10" }
+            #expect(badge10?.isEarned == true)
+        }
+
+        @Test func progressFor50_allEarned() {
+            UserDefaultsClient.defaults = defaults
+            defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
+            UserDefaultsClient.set(["sub1": 50], for: .subcategoryProgress)
+            UserDefaultsClient.defaults = defaults
+            let sub = Subcategory.fixture(id: "sub1")
+            let cat = Talk.Category.fixture(id: "cat1", subcategories: [sub])
+            let result = BadgesClient.badges(for: [cat])
+            #expect(result["cat1"]?.allSatisfy { $0.isEarned } == true)
         }
     }
 }
