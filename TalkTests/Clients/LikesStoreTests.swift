@@ -2,11 +2,6 @@ import Testing
 import Foundation
 @testable import Talk
 
-private func makeLikesDefaults() -> (UserDefaults, String) {
-    let suite = "com.talk.tests.likes.\(UUID().uuidString)"
-    return (UserDefaults(suiteName: suite)!, suite)
-}
-
 @Suite("LikesStore", .serialized)
 @MainActor
 struct LikesStoreTests {
@@ -17,29 +12,30 @@ struct LikesStoreTests {
         let suite: String
 
         init() {
-            (defaults, suite) = makeLikesDefaults()
-            UserDefaultsClient.defaults = defaults
+            suite = "com.talk.tests.likes.\(UUID().uuidString)"
+            defaults = UserDefaults(suiteName: suite)!
         }
 
         @Test @MainActor func toggleAddsId() {
             UserDefaultsClient.defaults = defaults
+            defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let store = LikesStore()
             store.toggle("q1")
             #expect(store.likedIds.contains("q1"))
-            UserDefaults.standard.removePersistentDomain(forName: suite)
         }
 
         @Test @MainActor func toggleTwiceRemovesId() {
             UserDefaultsClient.defaults = defaults
+            defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let store = LikesStore()
             store.toggle("q1")
             store.toggle("q1")
             #expect(!store.likedIds.contains("q1"))
-            UserDefaults.standard.removePersistentDomain(forName: suite)
         }
 
         @Test @MainActor func toggleMultipleDifferentIds() {
             UserDefaultsClient.defaults = defaults
+            defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let store = LikesStore()
             store.toggle("q1")
             store.toggle("q2")
@@ -47,55 +43,54 @@ struct LikesStoreTests {
             #expect(store.likedIds.contains("q1"))
             #expect(store.likedIds.contains("q2"))
             #expect(store.likedIds.contains("q3"))
-            UserDefaults.standard.removePersistentDomain(forName: suite)
         }
     }
 
-    @Suite("Персистенція")
+    @Suite("Persistence")
     struct Persistence {
         let defaults: UserDefaults
         let suite: String
 
         init() {
-            (defaults, suite) = makeLikesDefaults()
-            UserDefaultsClient.defaults = defaults
+            suite = "com.talk.tests.likes.\(UUID().uuidString)"
+            defaults = UserDefaults(suiteName: suite)!
         }
 
         @Test @MainActor func toggleThenReloadContainsId() {
             UserDefaultsClient.defaults = defaults
+            defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let store1 = LikesStore()
             store1.toggle("q1")
             let store2 = LikesStore()
             #expect(store2.likedIds.contains("q1"))
-            UserDefaults.standard.removePersistentDomain(forName: suite)
         }
 
         @Test @MainActor func toggleTwiceThenReloadIsEmpty() {
             UserDefaultsClient.defaults = defaults
+            defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let store1 = LikesStore()
             store1.toggle("q1")
             store1.toggle("q1")
             let store2 = LikesStore()
             #expect(store2.likedIds.isEmpty)
-            UserDefaults.standard.removePersistentDomain(forName: suite)
         }
     }
 
-    @Suite("Початковий стан")
+    @Suite("Initial state")
     struct InitialState {
         let defaults: UserDefaults
         let suite: String
 
         init() {
-            (defaults, suite) = makeLikesDefaults()
-            UserDefaultsClient.defaults = defaults
+            suite = "com.talk.tests.likes.\(UUID().uuidString)"
+            defaults = UserDefaults(suiteName: suite)!
         }
 
         @Test @MainActor func freshStoreIsEmpty() {
             UserDefaultsClient.defaults = defaults
+            defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let store = LikesStore()
             #expect(store.likedIds.isEmpty)
-            UserDefaults.standard.removePersistentDomain(forName: suite)
         }
     }
 }

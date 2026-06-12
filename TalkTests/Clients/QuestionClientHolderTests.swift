@@ -6,7 +6,7 @@ import Foundation
 @MainActor
 struct QuestionClientHolderTests {
 
-    @Suite("load() — успіх")
+    @Suite("load() — success")
     @MainActor
     struct LoadSuccess {
         @Test func categoriesSetFromStub() async throws {
@@ -44,7 +44,7 @@ struct QuestionClientHolderTests {
         }
     }
 
-    @Suite("Дедуплікація")
+    @Suite("Deduplication")
     @MainActor
     struct Deduplication {
         @Test func loadSameLanguageTwiceCallsOnce() async throws {
@@ -101,7 +101,7 @@ struct QuestionClientHolderTests {
         }
     }
 
-    @Suite("load() — помилка")
+    @Suite("load() — error")
     @MainActor
     struct LoadError {
         @Test func throwingClientThrows() async {

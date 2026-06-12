@@ -2,11 +2,6 @@ import Testing
 import Foundation
 @testable import Talk
 
-private func makeHomeDefaults() -> (UserDefaults, String) {
-    let suite = "com.talk.tests.home.\(UUID().uuidString)"
-    return (UserDefaults(suiteName: suite)!, suite)
-}
-
 @Suite("HomeViewModel", .serialized)
 @MainActor
 struct HomeViewModelTests {
@@ -17,40 +12,40 @@ struct HomeViewModelTests {
         let suite: String
 
         init() {
-            (defaults, suite) = makeHomeDefaults()
-            UserDefaultsClient.defaults = defaults
+            suite = "com.talk.tests.home.\(UUID().uuidString)"
+            defaults = UserDefaults(suiteName: suite)!
         }
 
         @Test @MainActor func premiumSubNotPremiumUser_isLocked() {
             UserDefaultsClient.defaults = defaults
+            defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let vm = HomeViewModel()
             let sub = Subcategory.fixture(isPremium: true)
             #expect(vm.isLocked(sub, isPremium: false) == true)
-            UserDefaults.standard.removePersistentDomain(forName: suite)
         }
 
         @Test @MainActor func premiumSubPremiumUser_notLocked() {
             UserDefaultsClient.defaults = defaults
+            defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let vm = HomeViewModel()
             let sub = Subcategory.fixture(isPremium: true)
             #expect(vm.isLocked(sub, isPremium: true) == false)
-            UserDefaults.standard.removePersistentDomain(forName: suite)
         }
 
         @Test @MainActor func freeSubNotPremiumUser_notLocked() {
             UserDefaultsClient.defaults = defaults
+            defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let vm = HomeViewModel()
             let sub = Subcategory.fixture(isPremium: false)
             #expect(vm.isLocked(sub, isPremium: false) == false)
-            UserDefaults.standard.removePersistentDomain(forName: suite)
         }
 
         @Test @MainActor func freeSubPremiumUser_notLocked() {
             UserDefaultsClient.defaults = defaults
+            defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let vm = HomeViewModel()
             let sub = Subcategory.fixture(isPremium: false)
             #expect(vm.isLocked(sub, isPremium: true) == false)
-            UserDefaults.standard.removePersistentDomain(forName: suite)
         }
     }
 
@@ -60,35 +55,35 @@ struct HomeViewModelTests {
         let suite: String
 
         init() {
-            (defaults, suite) = makeHomeDefaults()
-            UserDefaultsClient.defaults = defaults
+            suite = "com.talk.tests.home.\(UUID().uuidString)"
+            defaults = UserDefaults(suiteName: suite)!
         }
 
         @Test @MainActor func emptyStoreReturnsFalse() {
             UserDefaultsClient.defaults = defaults
+            defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let vm = HomeViewModel()
             let store = LikesStore()
             #expect(vm.hasLikedQuestions(store) == false)
-            UserDefaults.standard.removePersistentDomain(forName: suite)
         }
 
         @Test @MainActor func afterToggleReturnsTrue() {
             UserDefaultsClient.defaults = defaults
+            defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let vm = HomeViewModel()
             let store = LikesStore()
             store.toggle("q1")
             #expect(vm.hasLikedQuestions(store) == true)
-            UserDefaults.standard.removePersistentDomain(forName: suite)
         }
 
         @Test @MainActor func afterDoubleToggleReturnsFalse() {
             UserDefaultsClient.defaults = defaults
+            defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let vm = HomeViewModel()
             let store = LikesStore()
             store.toggle("q1")
             store.toggle("q1")
             #expect(vm.hasLikedQuestions(store) == false)
-            UserDefaults.standard.removePersistentDomain(forName: suite)
         }
     }
 
@@ -98,23 +93,24 @@ struct HomeViewModelTests {
         let suite: String
 
         init() {
-            (defaults, suite) = makeHomeDefaults()
-            UserDefaultsClient.defaults = defaults
+            suite = "com.talk.tests.home.\(UUID().uuidString)"
+            defaults = UserDefaults(suiteName: suite)!
         }
 
         @Test @MainActor func successClearsErrorMessage() async {
             UserDefaultsClient.defaults = defaults
+            defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let mock = MockQuestionClient()
             let holder = QuestionClientHolder(client: mock)
             let premium = PremiumClient()
             let vm = HomeViewModel()
             await vm.loadContent(holder: holder, language: .english, premiumClient: premium)
             #expect(vm.errorMessage == nil)
-            UserDefaults.standard.removePersistentDomain(forName: suite)
         }
 
         @Test @MainActor func throwingSetsErrorMessage() async {
             UserDefaultsClient.defaults = defaults
+            defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let mock = MockQuestionClient()
             await mock.setThrow(true)
             let holder = QuestionClientHolder(client: mock)
@@ -122,7 +118,6 @@ struct HomeViewModelTests {
             let vm = HomeViewModel()
             await vm.loadContent(holder: holder, language: .english, premiumClient: premium)
             #expect(vm.errorMessage != nil)
-            UserDefaults.standard.removePersistentDomain(forName: suite)
         }
     }
 
@@ -132,12 +127,13 @@ struct HomeViewModelTests {
         let suite: String
 
         init() {
-            (defaults, suite) = makeHomeDefaults()
-            UserDefaultsClient.defaults = defaults
+            suite = "com.talk.tests.home.\(UUID().uuidString)"
+            defaults = UserDefaults(suiteName: suite)!
         }
 
-        @Test @MainActor func reloadResetsLoadedLanguage() async {
+        @Test @MainActor func reloadCallsLoadTwice() async {
             UserDefaultsClient.defaults = defaults
+            defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let mock = MockQuestionClient()
             let holder = QuestionClientHolder(client: mock)
             let premium = PremiumClient()
@@ -146,7 +142,6 @@ struct HomeViewModelTests {
             await vm.reloadContent(holder: holder, language: .english, premiumClient: premium)
             let count = await mock.loadCategoriesCallCount
             #expect(count == 2)
-            UserDefaults.standard.removePersistentDomain(forName: suite)
         }
     }
 }
