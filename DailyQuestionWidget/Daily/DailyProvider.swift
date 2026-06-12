@@ -8,11 +8,11 @@ struct DailyProvider: TimelineProvider {
     }
 
     func getSnapshot(in context: Context, completion: @escaping (DailyEntry) -> Void) {
-        completion(DailyEntry(date: .now, questionText: loadQuestion()))
+        completion(DailyEntry(date: .now, questionText: loadQuestion(defaults: UserDefaults(suiteName: AppGroupKey.suiteName))))
     }
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<DailyEntry>) -> Void) {
-        let entry = DailyEntry(date: .now, questionText: loadQuestion())
+        let entry = DailyEntry(date: .now, questionText: loadQuestion(defaults: UserDefaults(suiteName: AppGroupKey.suiteName)))
         let midnight = Calendar.current.nextDate(
             after: .now,
             matching: DateComponents(hour: 0, minute: 0),
@@ -21,15 +21,14 @@ struct DailyProvider: TimelineProvider {
         completion(Timeline(entries: [entry], policy: .after(midnight)))
     }
 
-    private func loadQuestion() -> String {
-        if let defaults = UserDefaults(suiteName: AppGroupKey.suiteName),
-           let cached = defaults.string(forKey: AppGroupKey.dailyQuestion) {
+    func loadQuestion(defaults: UserDefaults?) -> String {
+        if let cached = defaults?.string(forKey: AppGroupKey.dailyQuestion) {
             return cached
         }
         return loadFromBundle() ?? "What made you happy today?"
     }
 
-    private func loadFromBundle() -> String? {
+    func loadFromBundle() -> String? {
         let langCode = UserDefaults(suiteName: AppGroupKey.suiteName)?.string(forKey: AppGroupKey.appLanguage) ?? "uk"
         let bundle = Bundle(path: Bundle.main.path(forResource: langCode, ofType: "lproj") ?? "") ?? .main
         guard

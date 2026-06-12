@@ -50,9 +50,25 @@
 		937E6FC32FC0A2AF00FE3589 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		937E6FDC2FC0A33A00FE3589 /* DailyQuestionWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = DailyQuestionWidgetExtension.entitlements; sourceTree = "<group>"; };
 		93C766A02FDBFE770092E077 /* TalkTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TalkTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		BB10000BBB10000BBB10000B /* DailyQuestionWidgetExtensionTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DailyQuestionWidgetExtensionTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		BB100002BB100002BB100002 /* Exceptions for "DailyQuestionWidget" folder in "DailyQuestionWidgetExtensionTests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				DailyQuestionWidgetBundle.swift,
+				Info.plist,
+			);
+			target = BB10000ABB10000ABB10000A /* DailyQuestionWidgetExtensionTests */;
+		};
+		BB100003BB100003BB100003 /* Exceptions for "Talk" folder in "DailyQuestionWidgetExtensionTests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Model/DailyQuestion.swift,
+			);
+			target = BB10000ABB10000ABB10000A /* DailyQuestionWidgetExtensionTests */;
+		};
 		930534EC2F79B6DF00993401 /* Exceptions for "Talk" folder in "Talk" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -84,6 +100,7 @@
 			exceptions = (
 				930534EC2F79B6DF00993401 /* Exceptions for "Talk" folder in "Talk" target */,
 				937E6FDE2FC0A35700FE3589 /* Exceptions for "Talk" folder in "DailyQuestionWidgetExtension" target */,
+				BB100003BB100003BB100003 /* Exceptions for "Talk" folder in "DailyQuestionWidgetExtensionTests" target */,
 			);
 			path = Talk;
 			sourceTree = "<group>";
@@ -92,6 +109,7 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				937E6FDA2FC0A2B000FE3589 /* Exceptions for "DailyQuestionWidget" folder in "DailyQuestionWidgetExtension" target */,
+				BB100002BB100002BB100002 /* Exceptions for "DailyQuestionWidget" folder in "DailyQuestionWidgetExtensionTests" target */,
 			);
 			path = DailyQuestionWidget;
 			sourceTree = "<group>";
@@ -99,6 +117,11 @@
 		93C766A12FDBFE780092E077 /* TalkTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = TalkTests;
+			sourceTree = "<group>";
+		};
+		BB100001BB100001BB100001 /* DailyQuestionWidgetExtensionTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = DailyQuestionWidgetExtensionTests;
 			sourceTree = "<group>";
 		};
 		AA11AA11BB22BB22CC33CC33 /* Shared */ = {
@@ -132,6 +155,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		BB100005BB100005BB100005 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -143,6 +173,7 @@
 				9310DF5A2F66EEF600E1C965 /* Talk */,
 				937E6FC52FC0A2AF00FE3589 /* DailyQuestionWidget */,
 				93C766A12FDBFE780092E077 /* TalkTests */,
+				BB100001BB100001BB100001 /* DailyQuestionWidgetExtensionTests */,
 				937E6FC02FC0A2AF00FE3589 /* Frameworks */,
 				9310DF592F66EEF600E1C965 /* Products */,
 			);
@@ -154,6 +185,7 @@
 				9310DF582F66EEF600E1C965 /* Talk.app */,
 				937E6FBF2FC0A2AF00FE3589 /* DailyQuestionWidgetExtension.appex */,
 				93C766A02FDBFE770092E077 /* TalkTests.xctest */,
+				BB10000BBB10000BBB10000B /* DailyQuestionWidgetExtensionTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -218,6 +250,30 @@
 			productReference = 937E6FBF2FC0A2AF00FE3589 /* DailyQuestionWidgetExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
+		BB10000ABB10000ABB10000A /* DailyQuestionWidgetExtensionTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BB100009BB100009BB100009 /* Build configuration list for PBXNativeTarget "DailyQuestionWidgetExtensionTests" */;
+			buildPhases = (
+				BB100004BB100004BB100004 /* Sources */,
+				BB100005BB100005BB100005 /* Frameworks */,
+				BB100006BB100006BB100006 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				BB100001BB100001BB100001 /* DailyQuestionWidgetExtensionTests */,
+				937E6FC52FC0A2AF00FE3589 /* DailyQuestionWidget */,
+				AA11AA11BB22BB22CC33CC33 /* Shared */,
+			);
+			name = DailyQuestionWidgetExtensionTests;
+			packageProductDependencies = (
+			);
+			productName = DailyQuestionWidgetExtensionTests;
+			productReference = BB10000BBB10000BBB10000B /* DailyQuestionWidgetExtensionTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		93C7669F2FDBFE770092E077 /* TalkTests */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 93C766A62FDBFE780092E077 /* Build configuration list for PBXNativeTarget "TalkTests" */;
@@ -261,6 +317,9 @@
 						CreatedOnToolsVersion = 26.5;
 						TestTargetID = 9310DF572F66EEF600E1C965;
 					};
+					BB10000ABB10000ABB10000A = {
+						CreatedOnToolsVersion = 26.5;
+					};
 				};
 			};
 			buildConfigurationList = 9310DF532F66EEF600E1C965 /* Build configuration list for PBXProject "Talk" */;
@@ -283,6 +342,7 @@
 				9310DF572F66EEF600E1C965 /* Talk */,
 				937E6FBE2FC0A2AF00FE3589 /* DailyQuestionWidgetExtension */,
 				93C7669F2FDBFE770092E077 /* TalkTests */,
+				BB10000ABB10000ABB10000A /* DailyQuestionWidgetExtensionTests */,
 			);
 		};
 /* End PBXProject section */
@@ -309,6 +369,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		BB100006BB100006BB100006 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -327,6 +394,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		93C7669C2FDBFE770092E077 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BB100004BB100004BB100004 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -652,6 +726,46 @@
 			};
 			name = Release;
 		};
+		BB100007BB100007BB100007 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = DT2DFK4E8J;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.svoloshanov.DailyQuestionWidgetExtensionTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		BB100008BB100008BB100008 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = DT2DFK4E8J;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.svoloshanov.DailyQuestionWidgetExtensionTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -687,6 +801,15 @@
 			buildConfigurations = (
 				93C766A72FDBFE780092E077 /* Debug */,
 				93C766A82FDBFE780092E077 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BB100009BB100009BB100009 /* Build configuration list for PBXNativeTarget "DailyQuestionWidgetExtensionTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BB100007BB100007BB100007 /* Debug */,
+				BB100008BB100008BB100008 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

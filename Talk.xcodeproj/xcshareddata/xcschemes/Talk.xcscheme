@@ -41,6 +41,17 @@
                ReferencedContainer = "container:Talk.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "BB10000ABB10000ABB10000A"
+               BuildableName = "DailyQuestionWidgetExtensionTests.xctest"
+               BlueprintName = "DailyQuestionWidgetExtensionTests"
+               ReferencedContainer = "container:Talk.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction
