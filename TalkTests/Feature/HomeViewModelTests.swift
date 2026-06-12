@@ -7,6 +7,7 @@ import Foundation
 struct HomeViewModelTests {
 
     @Suite("isLocked")
+    @MainActor
     struct IsLocked {
         let defaults: UserDefaults
         let suite: String
@@ -16,7 +17,7 @@ struct HomeViewModelTests {
             defaults = UserDefaults(suiteName: suite)!
         }
 
-        @Test @MainActor func premiumSubNotPremiumUser_isLocked() {
+        @Test func premiumSubNotPremiumUser_isLocked() {
             UserDefaultsClient.defaults = defaults
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let vm = HomeViewModel()
@@ -24,7 +25,7 @@ struct HomeViewModelTests {
             #expect(vm.isLocked(sub, isPremium: false) == true)
         }
 
-        @Test @MainActor func premiumSubPremiumUser_notLocked() {
+        @Test func premiumSubPremiumUser_notLocked() {
             UserDefaultsClient.defaults = defaults
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let vm = HomeViewModel()
@@ -32,7 +33,7 @@ struct HomeViewModelTests {
             #expect(vm.isLocked(sub, isPremium: true) == false)
         }
 
-        @Test @MainActor func freeSubNotPremiumUser_notLocked() {
+        @Test func freeSubNotPremiumUser_notLocked() {
             UserDefaultsClient.defaults = defaults
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let vm = HomeViewModel()
@@ -40,7 +41,7 @@ struct HomeViewModelTests {
             #expect(vm.isLocked(sub, isPremium: false) == false)
         }
 
-        @Test @MainActor func freeSubPremiumUser_notLocked() {
+        @Test func freeSubPremiumUser_notLocked() {
             UserDefaultsClient.defaults = defaults
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let vm = HomeViewModel()
@@ -50,6 +51,7 @@ struct HomeViewModelTests {
     }
 
     @Suite("hasLikedQuestions")
+    @MainActor
     struct HasLiked {
         let defaults: UserDefaults
         let suite: String
@@ -59,7 +61,7 @@ struct HomeViewModelTests {
             defaults = UserDefaults(suiteName: suite)!
         }
 
-        @Test @MainActor func emptyStoreReturnsFalse() {
+        @Test func emptyStoreReturnsFalse() {
             UserDefaultsClient.defaults = defaults
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let vm = HomeViewModel()
@@ -67,7 +69,7 @@ struct HomeViewModelTests {
             #expect(vm.hasLikedQuestions(store) == false)
         }
 
-        @Test @MainActor func afterToggleReturnsTrue() {
+        @Test func afterToggleReturnsTrue() {
             UserDefaultsClient.defaults = defaults
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let vm = HomeViewModel()
@@ -76,7 +78,7 @@ struct HomeViewModelTests {
             #expect(vm.hasLikedQuestions(store) == true)
         }
 
-        @Test @MainActor func afterDoubleToggleReturnsFalse() {
+        @Test func afterDoubleToggleReturnsFalse() {
             UserDefaultsClient.defaults = defaults
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let vm = HomeViewModel()
@@ -88,6 +90,7 @@ struct HomeViewModelTests {
     }
 
     @Suite("loadContent")
+    @MainActor
     struct LoadContent {
         let defaults: UserDefaults
         let suite: String
@@ -97,7 +100,7 @@ struct HomeViewModelTests {
             defaults = UserDefaults(suiteName: suite)!
         }
 
-        @Test @MainActor func successClearsErrorMessage() async {
+        @Test func successClearsErrorMessage() async {
             UserDefaultsClient.defaults = defaults
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let mock = MockQuestionClient()
@@ -108,7 +111,7 @@ struct HomeViewModelTests {
             #expect(vm.errorMessage == nil)
         }
 
-        @Test @MainActor func throwingSetsErrorMessage() async {
+        @Test func throwingSetsErrorMessage() async {
             UserDefaultsClient.defaults = defaults
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let mock = MockQuestionClient()
@@ -122,6 +125,7 @@ struct HomeViewModelTests {
     }
 
     @Suite("reloadContent")
+    @MainActor
     struct ReloadContent {
         let defaults: UserDefaults
         let suite: String
@@ -131,7 +135,7 @@ struct HomeViewModelTests {
             defaults = UserDefaults(suiteName: suite)!
         }
 
-        @Test @MainActor func reloadCallsLoadTwice() async {
+        @Test func reloadCallsLoadTwice() async {
             UserDefaultsClient.defaults = defaults
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let mock = MockQuestionClient()

@@ -11,6 +11,7 @@ private func makeQuestions(_ count: Int) -> [CardQuestion] {
 struct QuestionViewModelTests {
 
     @Suite("init")
+    @MainActor
     struct Init {
         let defaults: UserDefaults
         let suite: String
@@ -20,7 +21,7 @@ struct QuestionViewModelTests {
             defaults = UserDefaults(suiteName: suite)!
         }
 
-        @Test @MainActor func defaultInitStartsAt0() {
+        @Test func defaultInitStartsAt0() {
             UserDefaultsClient.defaults = defaults
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let vm = QuestionViewModel(questions: makeQuestions(3), subcategoryId: "sub")
@@ -28,7 +29,7 @@ struct QuestionViewModelTests {
             #expect(vm.isStateLoaded == false)
         }
 
-        @Test @MainActor func forceStartIndex2() {
+        @Test func forceStartIndex2() {
             UserDefaultsClient.defaults = defaults
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let vm = QuestionViewModel(questions: makeQuestions(5), subcategoryId: "sub", forceStartIndex: 2)
@@ -36,14 +37,14 @@ struct QuestionViewModelTests {
             #expect(vm.isStateLoaded == true)
         }
 
-        @Test @MainActor func forceStartIndexClampsToCountMinus1() {
+        @Test func forceStartIndexClampsToCountMinus1() {
             UserDefaultsClient.defaults = defaults
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let vm = QuestionViewModel(questions: makeQuestions(3), subcategoryId: "sub", forceStartIndex: 10)
             #expect(vm.currentIndex == 2)
         }
 
-        @Test @MainActor func emptyQuestionsCurrentIsNil() {
+        @Test func emptyQuestionsCurrentIsNil() {
             UserDefaultsClient.defaults = defaults
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let vm = QuestionViewModel(questions: [], subcategoryId: "sub")
@@ -53,6 +54,7 @@ struct QuestionViewModelTests {
     }
 
     @Suite("Computed properties")
+    @MainActor
     struct ComputedProperties {
         let defaults: UserDefaults
         let suite: String
@@ -62,35 +64,35 @@ struct QuestionViewModelTests {
             defaults = UserDefaults(suiteName: suite)!
         }
 
-        @Test @MainActor func canGoNextTrueInMiddle() {
+        @Test func canGoNextTrueInMiddle() {
             UserDefaultsClient.defaults = defaults
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let vm = QuestionViewModel(questions: makeQuestions(3), subcategoryId: "sub")
             #expect(vm.canGoNext == true)
         }
 
-        @Test @MainActor func canGoNextFalseAtLast() {
+        @Test func canGoNextFalseAtLast() {
             UserDefaultsClient.defaults = defaults
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let vm = QuestionViewModel(questions: makeQuestions(1), subcategoryId: "sub")
             #expect(vm.canGoNext == false)
         }
 
-        @Test @MainActor func canGoPreviousTrueInMiddle() {
+        @Test func canGoPreviousTrueInMiddle() {
             UserDefaultsClient.defaults = defaults
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let vm = QuestionViewModel(questions: makeQuestions(3), subcategoryId: "sub", forceStartIndex: 1)
             #expect(vm.canGoPrevious == true)
         }
 
-        @Test @MainActor func canGoPreviousFalseAtFirst() {
+        @Test func canGoPreviousFalseAtFirst() {
             UserDefaultsClient.defaults = defaults
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let vm = QuestionViewModel(questions: makeQuestions(3), subcategoryId: "sub")
             #expect(vm.canGoPrevious == false)
         }
 
-        @Test @MainActor func progressString() {
+        @Test func progressString() {
             UserDefaultsClient.defaults = defaults
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let vm = QuestionViewModel(questions: makeQuestions(3), subcategoryId: "sub")
@@ -101,21 +103,21 @@ struct QuestionViewModelTests {
             #expect(vm.progress == "3 / 3")
         }
 
-        @Test @MainActor func progressValueCalculation() {
+        @Test func progressValueCalculation() {
             UserDefaultsClient.defaults = defaults
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let vm = QuestionViewModel(questions: makeQuestions(4), subcategoryId: "sub")
             #expect(vm.progressValue == 1.0 / 4.0)
         }
 
-        @Test @MainActor func progressValueEmptyQuestionsIsZero() {
+        @Test func progressValueEmptyQuestionsIsZero() {
             UserDefaultsClient.defaults = defaults
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let vm = QuestionViewModel(questions: [], subcategoryId: "sub")
             #expect(vm.progressValue == 0)
         }
 
-        @Test @MainActor func isCurrentLiked() {
+        @Test func isCurrentLiked() {
             UserDefaultsClient.defaults = defaults
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let store = LikesStore()
@@ -127,6 +129,7 @@ struct QuestionViewModelTests {
     }
 
     @Suite("next()")
+    @MainActor
     struct Next {
         let defaults: UserDefaults
         let suite: String
@@ -136,7 +139,7 @@ struct QuestionViewModelTests {
             defaults = UserDefaults(suiteName: suite)!
         }
 
-        @Test @MainActor func nextIncrementsIndex() {
+        @Test func nextIncrementsIndex() {
             UserDefaultsClient.defaults = defaults
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let vm = QuestionViewModel(questions: makeQuestions(3), subcategoryId: "sub")
@@ -144,16 +147,17 @@ struct QuestionViewModelTests {
             #expect(vm.currentIndex == 1)
         }
 
-        @Test @MainActor func nextWritesProgressToDefaults() {
+        @Test func nextWritesProgressToDefaults() {
             UserDefaultsClient.defaults = defaults
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let vm = QuestionViewModel(questions: makeQuestions(3), subcategoryId: "sub")
             vm.next()
+            UserDefaultsClient.defaults = defaults
             let progress = UserDefaultsClient.get([String: Int].self, for: .subcategoryProgress)
             #expect(progress?["sub"] == 2)
         }
 
-        @Test @MainActor func nextDoesNotExceedBounds() {
+        @Test func nextDoesNotExceedBounds() {
             UserDefaultsClient.defaults = defaults
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let vm = QuestionViewModel(questions: makeQuestions(1), subcategoryId: "sub")
@@ -163,6 +167,7 @@ struct QuestionViewModelTests {
     }
 
     @Suite("previous()")
+    @MainActor
     struct Previous {
         let defaults: UserDefaults
         let suite: String
@@ -172,7 +177,7 @@ struct QuestionViewModelTests {
             defaults = UserDefaults(suiteName: suite)!
         }
 
-        @Test @MainActor func previousDecrementsIndex() {
+        @Test func previousDecrementsIndex() {
             UserDefaultsClient.defaults = defaults
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let vm = QuestionViewModel(questions: makeQuestions(3), subcategoryId: "sub", forceStartIndex: 2)
@@ -180,7 +185,7 @@ struct QuestionViewModelTests {
             #expect(vm.currentIndex == 1)
         }
 
-        @Test @MainActor func previousDoesNotGoBelowZero() {
+        @Test func previousDoesNotGoBelowZero() {
             UserDefaultsClient.defaults = defaults
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let vm = QuestionViewModel(questions: makeQuestions(3), subcategoryId: "sub")
@@ -190,6 +195,7 @@ struct QuestionViewModelTests {
     }
 
     @Suite("loadState()")
+    @MainActor
     struct LoadState {
         let defaults: UserDefaults
         let suite: String
@@ -199,7 +205,7 @@ struct QuestionViewModelTests {
             defaults = UserDefaults(suiteName: suite)!
         }
 
-        @Test @MainActor func loadStateRestoresSavedIndex() async {
+        @Test func loadStateRestoresSavedIndex() async {
             UserDefaultsClient.defaults = defaults
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             UserDefaultsClient.set(["sub": 2], for: .subcategoryProgress)
@@ -208,7 +214,7 @@ struct QuestionViewModelTests {
             #expect(vm.currentIndex == 2)
         }
 
-        @Test @MainActor func loadStateClampsSavedIndex() async {
+        @Test func loadStateClampsSavedIndex() async {
             UserDefaultsClient.defaults = defaults
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             UserDefaultsClient.set(["sub": 100], for: .subcategoryProgress)
@@ -217,7 +223,7 @@ struct QuestionViewModelTests {
             #expect(vm.currentIndex == 2)
         }
 
-        @Test @MainActor func loadStateDefaultsToZeroWhenNoRecord() async {
+        @Test func loadStateDefaultsToZeroWhenNoRecord() async {
             UserDefaultsClient.defaults = defaults
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let vm = QuestionViewModel(questions: makeQuestions(3), subcategoryId: "sub")
@@ -225,7 +231,7 @@ struct QuestionViewModelTests {
             #expect(vm.currentIndex == 0)
         }
 
-        @Test @MainActor func loadStateSetsIsStateLoaded() async {
+        @Test func loadStateSetsIsStateLoaded() async {
             UserDefaultsClient.defaults = defaults
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let vm = QuestionViewModel(questions: makeQuestions(3), subcategoryId: "sub")
@@ -233,12 +239,13 @@ struct QuestionViewModelTests {
             #expect(vm.isStateLoaded == true)
         }
 
-        @Test @MainActor func secondLoadStateIsIgnored() async {
+        @Test func secondLoadStateIsIgnored() async {
             UserDefaultsClient.defaults = defaults
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             UserDefaultsClient.set(["sub": 2], for: .subcategoryProgress)
             let vm = QuestionViewModel(questions: makeQuestions(5), subcategoryId: "sub")
             await vm.loadState()
+            UserDefaultsClient.defaults = defaults
             UserDefaultsClient.set(["sub": 4], for: .subcategoryProgress)
             await vm.loadState()
             #expect(vm.currentIndex == 2)
@@ -246,6 +253,7 @@ struct QuestionViewModelTests {
     }
 
     @Suite("incrementProgressCount")
+    @MainActor
     struct IncrementProgress {
         let defaults: UserDefaults
         let suite: String
@@ -255,34 +263,37 @@ struct QuestionViewModelTests {
             defaults = UserDefaults(suiteName: suite)!
         }
 
-        @Test @MainActor func existing0CurrentIndex2Writes3() {
+        @Test func existing0CurrentIndex2Writes3() {
             UserDefaultsClient.defaults = defaults
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let store = LikesStore()
             let vm = QuestionViewModel(questions: makeQuestions(5), subcategoryId: "sub", forceStartIndex: 2)
             vm.toggleLike(in: store)
+            UserDefaultsClient.defaults = defaults
             let progress = UserDefaultsClient.get([String: Int].self, for: .subcategoryProgress)
             #expect(progress?["sub"] == 3)
         }
 
-        @Test @MainActor func existing5CurrentIndex2Stays5() {
+        @Test func existing5CurrentIndex2Stays5() {
             UserDefaultsClient.defaults = defaults
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             UserDefaultsClient.set(["sub": 5], for: .subcategoryProgress)
             let store = LikesStore()
             let vm = QuestionViewModel(questions: makeQuestions(5), subcategoryId: "sub", forceStartIndex: 2)
             vm.toggleLike(in: store)
+            UserDefaultsClient.defaults = defaults
             let progress = UserDefaultsClient.get([String: Int].self, for: .subcategoryProgress)
             #expect(progress?["sub"] == 5)
         }
 
-        @Test @MainActor func existing2CurrentIndex4Writes5() {
+        @Test func existing2CurrentIndex4Writes5() {
             UserDefaultsClient.defaults = defaults
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             UserDefaultsClient.set(["sub": 2], for: .subcategoryProgress)
             let store = LikesStore()
             let vm = QuestionViewModel(questions: makeQuestions(5), subcategoryId: "sub", forceStartIndex: 4)
             vm.toggleLike(in: store)
+            UserDefaultsClient.defaults = defaults
             let progress = UserDefaultsClient.get([String: Int].self, for: .subcategoryProgress)
             #expect(progress?["sub"] == 5)
         }

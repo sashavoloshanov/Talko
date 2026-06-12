@@ -7,6 +7,7 @@ import Foundation
 struct LikedQuestionsViewModelTests {
 
     @Suite("questions(for:) before load")
+    @MainActor
     struct BeforeLoad {
         let defaults: UserDefaults
         let suite: String
@@ -16,7 +17,7 @@ struct LikedQuestionsViewModelTests {
             defaults = UserDefaults(suiteName: suite)!
         }
 
-        @Test @MainActor func emptyStoreReturnsEmpty() {
+        @Test func emptyStoreReturnsEmpty() {
             UserDefaultsClient.defaults = defaults
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let vm = LikedQuestionsViewModel()
@@ -24,7 +25,7 @@ struct LikedQuestionsViewModelTests {
             #expect(vm.questions(for: store).isEmpty)
         }
 
-        @Test @MainActor func emptyCategories_returnsEmptyEvenWithLikedIds() {
+        @Test func emptyCategories_returnsEmptyEvenWithLikedIds() {
             UserDefaultsClient.defaults = defaults
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let vm = LikedQuestionsViewModel()
@@ -35,6 +36,7 @@ struct LikedQuestionsViewModelTests {
     }
 
     @Suite("questions(for:) after load")
+    @MainActor
     struct AfterLoad {
         let defaults: UserDefaults
         let suite: String
@@ -44,7 +46,7 @@ struct LikedQuestionsViewModelTests {
             defaults = UserDefaults(suiteName: suite)!
         }
 
-        @Test @MainActor func returnsOnlyLikedQuestions() {
+        @Test func returnsOnlyLikedQuestions() {
             UserDefaultsClient.defaults = defaults
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let q1 = CardQuestion.fixture(id: "q1")
@@ -59,7 +61,7 @@ struct LikedQuestionsViewModelTests {
             #expect(result[0].id == "q1")
         }
 
-        @Test @MainActor func questionsFromMultipleSubcategories() {
+        @Test func questionsFromMultipleSubcategories() {
             UserDefaultsClient.defaults = defaults
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let q1 = CardQuestion.fixture(id: "q1")
@@ -76,7 +78,7 @@ struct LikedQuestionsViewModelTests {
             #expect(vm.questions(for: store).count == 2)
         }
 
-        @Test @MainActor func questionsFromMultipleCategories() {
+        @Test func questionsFromMultipleCategories() {
             UserDefaultsClient.defaults = defaults
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let q1 = CardQuestion.fixture(id: "q1")
@@ -91,7 +93,7 @@ struct LikedQuestionsViewModelTests {
             #expect(vm.questions(for: store).count == 2)
         }
 
-        @Test @MainActor func orderFollowsCategoriesSubcategoriesQuestions() {
+        @Test func orderFollowsCategoriesSubcategoriesQuestions() {
             UserDefaultsClient.defaults = defaults
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let q1 = CardQuestion.fixture(id: "q1")
@@ -111,7 +113,7 @@ struct LikedQuestionsViewModelTests {
             #expect(result.map(\.id) == ["q1", "q2", "q3"])
         }
 
-        @Test @MainActor func unknownIdDoesNotAppear() {
+        @Test func unknownIdDoesNotAppear() {
             UserDefaultsClient.defaults = defaults
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let q1 = CardQuestion.fixture(id: "q1")
@@ -125,6 +127,7 @@ struct LikedQuestionsViewModelTests {
     }
 
     @Suite("load(allCategories:)")
+    @MainActor
     struct Load {
         let defaults: UserDefaults
         let suite: String
@@ -134,7 +137,7 @@ struct LikedQuestionsViewModelTests {
             defaults = UserDefaults(suiteName: suite)!
         }
 
-        @Test @MainActor func afterLoadReturnsData() {
+        @Test func afterLoadReturnsData() {
             UserDefaultsClient.defaults = defaults
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let q1 = CardQuestion.fixture(id: "q1")
@@ -146,7 +149,7 @@ struct LikedQuestionsViewModelTests {
             #expect(vm.questions(for: store).count == 1)
         }
 
-        @Test @MainActor func reloadReplacesCategories() {
+        @Test func reloadReplacesCategories() {
             UserDefaultsClient.defaults = defaults
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let q1 = CardQuestion.fixture(id: "q1")

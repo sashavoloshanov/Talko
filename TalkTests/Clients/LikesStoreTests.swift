@@ -7,6 +7,7 @@ import Foundation
 struct LikesStoreTests {
 
     @Suite("toggle")
+    @MainActor
     struct Toggle {
         let defaults: UserDefaults
         let suite: String
@@ -16,7 +17,7 @@ struct LikesStoreTests {
             defaults = UserDefaults(suiteName: suite)!
         }
 
-        @Test @MainActor func toggleAddsId() {
+        @Test func toggleAddsId() {
             UserDefaultsClient.defaults = defaults
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let store = LikesStore()
@@ -24,7 +25,7 @@ struct LikesStoreTests {
             #expect(store.likedIds.contains("q1"))
         }
 
-        @Test @MainActor func toggleTwiceRemovesId() {
+        @Test func toggleTwiceRemovesId() {
             UserDefaultsClient.defaults = defaults
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let store = LikesStore()
@@ -33,7 +34,7 @@ struct LikesStoreTests {
             #expect(!store.likedIds.contains("q1"))
         }
 
-        @Test @MainActor func toggleMultipleDifferentIds() {
+        @Test func toggleMultipleDifferentIds() {
             UserDefaultsClient.defaults = defaults
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let store = LikesStore()
@@ -47,6 +48,7 @@ struct LikesStoreTests {
     }
 
     @Suite("Persistence")
+    @MainActor
     struct Persistence {
         let defaults: UserDefaults
         let suite: String
@@ -56,27 +58,30 @@ struct LikesStoreTests {
             defaults = UserDefaults(suiteName: suite)!
         }
 
-        @Test @MainActor func toggleThenReloadContainsId() {
+        @Test func toggleThenReloadContainsId() {
             UserDefaultsClient.defaults = defaults
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let store1 = LikesStore()
             store1.toggle("q1")
+            UserDefaultsClient.defaults = defaults
             let store2 = LikesStore()
             #expect(store2.likedIds.contains("q1"))
         }
 
-        @Test @MainActor func toggleTwiceThenReloadIsEmpty() {
+        @Test func toggleTwiceThenReloadIsEmpty() {
             UserDefaultsClient.defaults = defaults
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let store1 = LikesStore()
             store1.toggle("q1")
             store1.toggle("q1")
+            UserDefaultsClient.defaults = defaults
             let store2 = LikesStore()
             #expect(store2.likedIds.isEmpty)
         }
     }
 
     @Suite("Initial state")
+    @MainActor
     struct InitialState {
         let defaults: UserDefaults
         let suite: String
@@ -86,7 +91,7 @@ struct LikesStoreTests {
             defaults = UserDefaults(suiteName: suite)!
         }
 
-        @Test @MainActor func freshStoreIsEmpty() {
+        @Test func freshStoreIsEmpty() {
             UserDefaultsClient.defaults = defaults
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let store = LikesStore()

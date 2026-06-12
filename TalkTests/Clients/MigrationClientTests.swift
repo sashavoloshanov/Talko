@@ -3,9 +3,11 @@ import Foundation
 @testable import Talk
 
 @Suite("MigrationClient", .serialized)
+@MainActor
 struct MigrationClientTests {
 
     @Suite("Guard / idempotency")
+    @MainActor
     struct Idempotency {
         let defaults: UserDefaults
         let suite: String
@@ -19,6 +21,7 @@ struct MigrationClientTests {
             UserDefaultsClient.defaults = defaults
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             MigrationClient.runIfNeeded()
+            UserDefaultsClient.defaults = defaults
             let flag = UserDefaultsClient.get(Bool.self, for: .didMigrateFromStorageClient)
             #expect(flag == true)
         }
@@ -36,6 +39,7 @@ struct MigrationClientTests {
     }
 
     @Suite("migrateLikedQuestions")
+    @MainActor
     struct MigrateLiked {
         let defaults: UserDefaults
         let suite: String
@@ -50,6 +54,7 @@ struct MigrationClientTests {
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             defaults.set(["q1", "q2"], forKey: "favorites")
             MigrationClient.runIfNeeded()
+            UserDefaultsClient.defaults = defaults
             let liked = UserDefaultsClient.get([String].self, for: .likedQuestions) ?? []
             #expect(liked.contains("q1"))
             #expect(liked.contains("q2"))
@@ -60,6 +65,7 @@ struct MigrationClientTests {
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             defaults.set([String](), forKey: "favorites")
             MigrationClient.runIfNeeded()
+            UserDefaultsClient.defaults = defaults
             let liked = UserDefaultsClient.get([String].self, for: .likedQuestions)
             #expect(liked == nil || liked!.isEmpty)
         }
@@ -70,6 +76,7 @@ struct MigrationClientTests {
             UserDefaultsClient.set(["q2"], for: .likedQuestions)
             defaults.set(["q1"], forKey: "favorites")
             MigrationClient.runIfNeeded()
+            UserDefaultsClient.defaults = defaults
             let liked = UserDefaultsClient.get([String].self, for: .likedQuestions) ?? []
             #expect(liked.contains("q1"))
             #expect(liked.contains("q2"))
@@ -81,6 +88,7 @@ struct MigrationClientTests {
             UserDefaultsClient.set(["q1"], for: .likedQuestions)
             defaults.set(["q1", "q2"], forKey: "favorites")
             MigrationClient.runIfNeeded()
+            UserDefaultsClient.defaults = defaults
             let liked = UserDefaultsClient.get([String].self, for: .likedQuestions) ?? []
             #expect(liked.count == Set(liked).count)
         }
@@ -95,6 +103,7 @@ struct MigrationClientTests {
     }
 
     @Suite("migrateSubcategoryProgress")
+    @MainActor
     struct MigrateProgress {
         let defaults: UserDefaults
         let suite: String
@@ -109,6 +118,7 @@ struct MigrationClientTests {
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             defaults.set(5, forKey: "lastQuestionIndex_couple")
             MigrationClient.runIfNeeded()
+            UserDefaultsClient.defaults = defaults
             let progress = UserDefaultsClient.get([String: Int].self, for: .subcategoryProgress)
             #expect(progress?["couple"] == 5)
         }
@@ -127,6 +137,7 @@ struct MigrationClientTests {
             UserDefaultsClient.set(["couple": 10], for: .subcategoryProgress)
             defaults.set(5, forKey: "lastQuestionIndex_couple")
             MigrationClient.runIfNeeded()
+            UserDefaultsClient.defaults = defaults
             let progress = UserDefaultsClient.get([String: Int].self, for: .subcategoryProgress)
             #expect(progress?["couple"] == 10)
         }
@@ -137,6 +148,7 @@ struct MigrationClientTests {
             defaults.set(3, forKey: "lastQuestionIndex_couple")
             defaults.set(7, forKey: "lastQuestionIndex_family")
             MigrationClient.runIfNeeded()
+            UserDefaultsClient.defaults = defaults
             let progress = UserDefaultsClient.get([String: Int].self, for: .subcategoryProgress)
             #expect(progress?["couple"] == 3)
             #expect(progress?["family"] == 7)
@@ -146,6 +158,7 @@ struct MigrationClientTests {
             UserDefaultsClient.defaults = defaults
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             MigrationClient.runIfNeeded()
+            UserDefaultsClient.defaults = defaults
             let progress = UserDefaultsClient.get([String: Int].self, for: .subcategoryProgress)
             #expect(progress == nil || progress!.isEmpty)
         }
