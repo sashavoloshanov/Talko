@@ -12,6 +12,7 @@ private func sampleBadge() -> Badge {
 struct AppCoordinatorTests {
 
     @Suite("push / pop")
+    @MainActor
     struct PushPop {
         @Test func pushAddsRouteToPath() {
             let coordinator = AppCoordinator()
@@ -50,6 +51,7 @@ struct AppCoordinatorTests {
     }
 
     @Suite("sheet")
+    @MainActor
     struct Sheet {
         @Test func presentSheetSetsSheet() {
             let coordinator = AppCoordinator()
@@ -80,6 +82,7 @@ struct AppCoordinatorTests {
     }
 
     @Suite("fullScreenCover")
+    @MainActor
     struct FullScreenCover {
         @Test func presentCoverSetsCover() {
             let coordinator = AppCoordinator()
