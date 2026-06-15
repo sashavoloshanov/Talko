@@ -49,26 +49,12 @@
 		937E6FC12FC0A2AF00FE3589 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		937E6FC32FC0A2AF00FE3589 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		937E6FDC2FC0A33A00FE3589 /* DailyQuestionWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = DailyQuestionWidgetExtension.entitlements; sourceTree = "<group>"; };
+		93B5F16B2FDFF6610042E162 /* Tests.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = Tests.xctestplan; sourceTree = "<group>"; };
 		93C766A02FDBFE770092E077 /* TalkTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TalkTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		BB10000BBB10000BBB10000B /* DailyQuestionWidgetExtensionTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DailyQuestionWidgetExtensionTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		BB100002BB100002BB100002 /* Exceptions for "DailyQuestionWidget" folder in "DailyQuestionWidgetExtensionTests" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				DailyQuestionWidgetBundle.swift,
-				Info.plist,
-			);
-			target = BB10000ABB10000ABB10000A /* DailyQuestionWidgetExtensionTests */;
-		};
-		BB100003BB100003BB100003 /* Exceptions for "Talk" folder in "DailyQuestionWidgetExtensionTests" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Model/DailyQuestion.swift,
-			);
-			target = BB10000ABB10000ABB10000A /* DailyQuestionWidgetExtensionTests */;
-		};
 		930534EC2F79B6DF00993401 /* Exceptions for "Talk" folder in "Talk" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -91,6 +77,21 @@
 				Model/DailyQuestion.swift,
 			);
 			target = 937E6FBE2FC0A2AF00FE3589 /* DailyQuestionWidgetExtension */;
+		};
+		BB100002BB100002BB100002 /* Exceptions for "DailyQuestionWidget" folder in "DailyQuestionWidgetExtensionTests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				DailyQuestionWidgetBundle.swift,
+				Info.plist,
+			);
+			target = BB10000ABB10000ABB10000A /* DailyQuestionWidgetExtensionTests */;
+		};
+		BB100003BB100003BB100003 /* Exceptions for "Talk" folder in "DailyQuestionWidgetExtensionTests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Model/DailyQuestion.swift,
+			);
+			target = BB10000ABB10000ABB10000A /* DailyQuestionWidgetExtensionTests */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
@@ -119,14 +120,14 @@
 			path = TalkTests;
 			sourceTree = "<group>";
 		};
-		BB100001BB100001BB100001 /* DailyQuestionWidgetExtensionTests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = DailyQuestionWidgetExtensionTests;
-			sourceTree = "<group>";
-		};
 		AA11AA11BB22BB22CC33CC33 /* Shared */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = Shared;
+			sourceTree = "<group>";
+		};
+		BB100001BB100001BB100001 /* DailyQuestionWidgetExtensionTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = DailyQuestionWidgetExtensionTests;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -168,6 +169,7 @@
 		9310DF4F2F66EEF600E1C965 = {
 			isa = PBXGroup;
 			children = (
+				93B5F16B2FDFF6610042E162 /* Tests.xctestplan */,
 				937E6FDC2FC0A33A00FE3589 /* DailyQuestionWidgetExtension.entitlements */,
 				AA11AA11BB22BB22CC33CC33 /* Shared */,
 				9310DF5A2F66EEF600E1C965 /* Talk */,
@@ -250,30 +252,6 @@
 			productReference = 937E6FBF2FC0A2AF00FE3589 /* DailyQuestionWidgetExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
-		BB10000ABB10000ABB10000A /* DailyQuestionWidgetExtensionTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = BB100009BB100009BB100009 /* Build configuration list for PBXNativeTarget "DailyQuestionWidgetExtensionTests" */;
-			buildPhases = (
-				BB100004BB100004BB100004 /* Sources */,
-				BB100005BB100005BB100005 /* Frameworks */,
-				BB100006BB100006BB100006 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			fileSystemSynchronizedGroups = (
-				BB100001BB100001BB100001 /* DailyQuestionWidgetExtensionTests */,
-				937E6FC52FC0A2AF00FE3589 /* DailyQuestionWidget */,
-				AA11AA11BB22BB22CC33CC33 /* Shared */,
-			);
-			name = DailyQuestionWidgetExtensionTests;
-			packageProductDependencies = (
-			);
-			productName = DailyQuestionWidgetExtensionTests;
-			productReference = BB10000BBB10000BBB10000B /* DailyQuestionWidgetExtensionTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
 		93C7669F2FDBFE770092E077 /* TalkTests */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 93C766A62FDBFE780092E077 /* Build configuration list for PBXNativeTarget "TalkTests" */;
@@ -295,6 +273,30 @@
 			);
 			productName = TalkTests;
 			productReference = 93C766A02FDBFE770092E077 /* TalkTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		BB10000ABB10000ABB10000A /* DailyQuestionWidgetExtensionTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BB100009BB100009BB100009 /* Build configuration list for PBXNativeTarget "DailyQuestionWidgetExtensionTests" */;
+			buildPhases = (
+				BB100004BB100004BB100004 /* Sources */,
+				BB100005BB100005BB100005 /* Frameworks */,
+				BB100006BB100006BB100006 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				937E6FC52FC0A2AF00FE3589 /* DailyQuestionWidget */,
+				AA11AA11BB22BB22CC33CC33 /* Shared */,
+				BB100001BB100001BB100001 /* DailyQuestionWidgetExtensionTests */,
+			);
+			name = DailyQuestionWidgetExtensionTests;
+			packageProductDependencies = (
+			);
+			productName = DailyQuestionWidgetExtensionTests;
+			productReference = BB10000BBB10000BBB10000B /* DailyQuestionWidgetExtensionTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
