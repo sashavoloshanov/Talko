@@ -20,6 +20,13 @@
 			remoteGlobalIDString = 937E6FBE2FC0A2AF00FE3589;
 			remoteInfo = DailyQuestionWidgetExtension;
 		};
+		93B5F16C2FDFF8230042E162 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9310DF502F66EEF600E1C965 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 9310DF572F66EEF600E1C965;
+			remoteInfo = Talk;
+		};
 		93C766A42FDBFE780092E077 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 9310DF502F66EEF600E1C965 /* Project object */;
@@ -286,6 +293,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				93B5F16D2FDFF8230042E162 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				937E6FC52FC0A2AF00FE3589 /* DailyQuestionWidget */,
@@ -321,6 +329,7 @@
 					};
 					BB10000ABB10000ABB10000A = {
 						CreatedOnToolsVersion = 26.5;
+						TestTargetID = 9310DF572F66EEF600E1C965;
 					};
 				};
 			};
@@ -416,6 +425,11 @@
 			isa = PBXTargetDependency;
 			target = 937E6FBE2FC0A2AF00FE3589 /* DailyQuestionWidgetExtension */;
 			targetProxy = 937E6FD32FC0A2B000FE3589 /* PBXContainerItemProxy */;
+		};
+		93B5F16D2FDFF8230042E162 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 9310DF572F66EEF600E1C965 /* Talk */;
+			targetProxy = 93B5F16C2FDFF8230042E162 /* PBXContainerItemProxy */;
 		};
 		93C766A52FDBFE780092E077 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -560,10 +574,11 @@
 				CODE_SIGN_ENTITLEMENTS = Talk/Talk.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 42C8RCBYWJ;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Talk/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Talk;
+				INFOPLIST_KEY_CFBundleDisplayName = Talko;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.word-games";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -575,7 +590,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.svoloshanov.Talk;
+				PRODUCT_BUNDLE_IDENTIFIER = com.voloshanov.Talk;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -595,10 +610,11 @@
 				CODE_SIGN_ENTITLEMENTS = Talk/Talk.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 42C8RCBYWJ;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Talk/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Talk;
+				INFOPLIST_KEY_CFBundleDisplayName = Talko;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.word-games";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -610,7 +626,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.svoloshanov.Talk;
+				PRODUCT_BUNDLE_IDENTIFIER = com.voloshanov.Talk;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -630,6 +646,7 @@
 				CODE_SIGN_ENTITLEMENTS = DailyQuestionWidgetExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 42C8RCBYWJ;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = DailyQuestionWidget/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = DailyQuestionWidget;
@@ -641,7 +658,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.svoloshanov.Talk.DailyQuestionWidget;
+				PRODUCT_BUNDLE_IDENTIFIER = com.voloshanov.Talk.DailyQuestionWidget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -661,6 +678,7 @@
 				CODE_SIGN_ENTITLEMENTS = DailyQuestionWidgetExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 42C8RCBYWJ;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = DailyQuestionWidget/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = DailyQuestionWidget;
@@ -672,7 +690,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.svoloshanov.Talk.DailyQuestionWidget;
+				PRODUCT_BUNDLE_IDENTIFIER = com.voloshanov.Talk.DailyQuestionWidget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -690,11 +708,11 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = DT2DFK4E8J;
+				DEVELOPMENT_TEAM = 42C8RCBYWJ;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.svoloshanov.TalkTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.voloshanov.TalkTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -712,11 +730,11 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = DT2DFK4E8J;
+				DEVELOPMENT_TEAM = 42C8RCBYWJ;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.svoloshanov.TalkTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.voloshanov.TalkTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -733,11 +751,11 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = DT2DFK4E8J;
+				DEVELOPMENT_TEAM = 42C8RCBYWJ;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.svoloshanov.DailyQuestionWidgetExtensionTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.voloshanov.DailyQuestionWidgetExtensionTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -745,6 +763,7 @@
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Talk.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Talk";
 			};
 			name = Debug;
 		};
@@ -753,11 +772,11 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = DT2DFK4E8J;
+				DEVELOPMENT_TEAM = 42C8RCBYWJ;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.svoloshanov.DailyQuestionWidgetExtensionTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.voloshanov.DailyQuestionWidgetExtensionTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -765,6 +784,7 @@
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Talk.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Talk";
 			};
 			name = Release;
 		};
