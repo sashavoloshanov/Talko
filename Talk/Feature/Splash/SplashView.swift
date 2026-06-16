@@ -23,7 +23,7 @@ struct SplashView: View {
                     .scaleEffect(iconScale)
                     .opacity(iconOpacity)
 
-                Text("Talk")
+                Text("Talko")
                     .font(.system(size: 64, weight: .bold, design: .rounded))
                     .foregroundColor(.white)
                     .scaleEffect(textScale)

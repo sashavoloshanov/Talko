@@ -126,7 +126,7 @@ struct SettingsView: View {
             .foregroundStyle(.textPrimary)
             
             Button(String(localized: "settings_contact", bundle: bundle)) {
-                if let url = URL(string: "mailto:hello@talkapp.com") {
+                if let url = URL(string: "mailto:voloshanov.developer@icloud.com") {
                     UIApplication.shared.open(url)
                 }
             }

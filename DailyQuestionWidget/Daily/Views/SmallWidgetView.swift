@@ -14,7 +14,7 @@ struct SmallWidgetView: View {
                         .frame(width: 20, height: 20)
                         .clipShape(RoundedRectangle(cornerRadius: 4, style: .continuous))
                     
-                    Text("Talk")
+                    Text("Talko")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                         .textCase(.uppercase)

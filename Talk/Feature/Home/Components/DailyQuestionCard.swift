@@ -31,7 +31,7 @@ struct DailyQuestionCard: View {
         """
         \(question.text)
 
-        By Talk
+        By Talko
         https://apps.apple.com/app/idYOUR_APP_ID
         """
     }

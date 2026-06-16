@@ -10,6 +10,7 @@
 		937E6FC22FC0A2AF00FE3589 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 937E6FC12FC0A2AF00FE3589 /* WidgetKit.framework */; };
 		937E6FC42FC0A2AF00FE3589 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 937E6FC32FC0A2AF00FE3589 /* SwiftUI.framework */; };
 		937E6FD52FC0A2B000FE3589 /* DailyQuestionWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 937E6FBF2FC0A2AF00FE3589 /* DailyQuestionWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		93B5F16F2FE1485A0042E162 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93B5F16E2FE1485A0042E162 /* StoreKit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -57,6 +58,7 @@
 		937E6FC32FC0A2AF00FE3589 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		937E6FDC2FC0A33A00FE3589 /* DailyQuestionWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = DailyQuestionWidgetExtension.entitlements; sourceTree = "<group>"; };
 		93B5F16B2FDFF6610042E162 /* Tests.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = Tests.xctestplan; sourceTree = "<group>"; };
+		93B5F16E2FE1485A0042E162 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		93C766A02FDBFE770092E077 /* TalkTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TalkTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		BB10000BBB10000BBB10000B /* DailyQuestionWidgetExtensionTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DailyQuestionWidgetExtensionTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -144,6 +146,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				93B5F16F2FE1485A0042E162 /* StoreKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -202,6 +205,7 @@
 		937E6FC02FC0A2AF00FE3589 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				93B5F16E2FE1485A0042E162 /* StoreKit.framework */,
 				937E6FC12FC0A2AF00FE3589 /* WidgetKit.framework */,
 				937E6FC32FC0A2AF00FE3589 /* SwiftUI.framework */,
 			);

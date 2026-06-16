@@ -13,7 +13,7 @@ struct MediumWidgetView: View {
                 .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
             
             VStack(alignment: .leading, spacing: 4) {
-                Text("Talk")
+                Text("Talko")
                     .font(.caption2)
                     .foregroundStyle(.secondary)
                     .textCase(.uppercase)

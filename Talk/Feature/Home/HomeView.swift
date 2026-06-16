@@ -68,7 +68,7 @@ struct HomeView: View {
     private var navigationView: some View {
         NavigationBar(
             leftButton: nil,
-            centerContent: .text("Talk"),
+            centerContent: .text("Talko"),
             rightButton: viewModel.hasLikedQuestions(likesStore) ? NavRightButton(
                 icon: UIImage(systemName: "heart.fill") ?? UIImage(),
                 action: { coordinator.push(.likedQuestions) }
