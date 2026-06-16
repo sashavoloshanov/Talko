@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Support</title>
+<style>
+  :root {
+    --bg: #ffffff;
+    --text: #111827;
+    --muted: #6B7280;
+    --accent: #2563EB;
+    --accent-bg: #EFF6FF;
+    --accent-border: #BFDBFE;
+    --divider: #E5E7EB;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #111827;
+      --text: #F9FAFB;
+      --muted: #9CA3AF;
+      --accent: #60A5FA;
+      --accent-bg: #1E3A5F;
+      --accent-border: #1D4ED8;
+      --divider: #374151;
+    }
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, 'SF Pro Text', sans-serif;
+    font-size: 16px;
+    line-height: 1.7;
+    padding: 28px 24px 60px;
+    max-width: 680px;
+    margin: 0 auto;
+  }
+  .badge {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent);
+    background: var(--accent-bg);
+    border-radius: 6px;
+    padding: 3px 10px;
+    margin-bottom: 10px;
+    letter-spacing: 0.3px;
+  }
+  h1 {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+  .subtitle {
+    font-size: 15px;
+    color: var(--muted);
+    margin-bottom: 28px;
+  }
+  .note {
+    background: var(--accent-bg);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 8px 8px 0;
+    padding: 14px 16px;
+    margin-bottom: 28px;
+    font-size: 15px;
+    color: var(--accent);
+    line-height: 1.5;
+  }
+  .note a { color: var(--accent); font-weight: 600; }
+  hr {
+    border: none;
+    border-top: 1px solid var(--divider);
+    margin: 28px 0;
+  }
+  h2 {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--text);
+    margin: 28px 0 8px;
+  }
+  h3 {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    margin: 18px 0 6px;
+  }
+  p { color: var(--muted); margin-bottom: 10px; font-size: 15px; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 8px 0 10px;
+  }
+  ul li {
+    color: var(--muted);
+    font-size: 15px;
+    padding: 3px 0 3px 18px;
+    position: relative;
+  }
+  ul li::before {
+    content: "–";
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+  }
+  .links {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-top: 6px;
+  }
+  .footer {
+    margin-top: 40px;
+    font-size: 13px;
+    color: var(--muted);
+    text-align: center;
+    font-style: italic;
+  }
+</style>
+</head>
+<body>
+
+<div class="badge">Talko</div>
+<h1>Support</h1>
+<p class="subtitle">We're here to help with Talko – Daily Questions.</p>
+
+<div class="note">
+  Need help fast? Email us at <a href="mailto:voloshanov.developer@icloud.com">voloshanov.developer@icloud.com</a> and we'll get back to you as soon as possible.
+</div>
+
+<hr>
+
+<h2>Frequently Asked Questions</h2>
+
+<h3>How do I cancel my subscription?</h3>
+<p>Open the Settings app on your iPhone or iPad → tap your name at the top → Subscriptions → Talko – Daily Questions → Cancel Subscription. Your access continues until the end of the current billing period; no partial refunds are issued for unused time.</p>
+
+<h3>How do I restore a previous purchase?</h3>
+<p>Open Talko → Settings tab → Get Premium → Restore Purchases. Make sure you're signed in with the same Apple ID used for the original purchase.</p>
+
+<h3>Why don't I see the free trial?</h3>
+<p>Introductory offers are only available to accounts that haven't previously subscribed to that plan. If you've used a trial before, the option won't appear again for the same Apple ID.</p>
+
+<h3>How do I change the app language?</h3>
+<p>Open Talko → Settings tab → Language, and choose between English and Ukrainian. The daily question and all category packs update automatically.</p>
+
+<h3>The widget isn't updating. What should I do?</h3>
+<p>Long-press the widget on your Home Screen and check it's still linked to Talko. If the question still looks outdated, try removing and re-adding the widget, or reopen the app once to refresh the data.</p>
+
+<h3>I found a bug or have a feature suggestion.</h3>
+<p>We'd love to hear from you — email us at <a href="mailto:voloshanov.developer@icloud.com">voloshanov.developer@icloud.com</a> with as much detail as you can (device model, iOS version, and steps to reproduce, if it's a bug).</p>
+
+<hr>
+
+<h2>Legal</h2>
+<div class="links">
+  <a href="./privacy_policy_en.html">Privacy Policy</a>
+  <a href="./terms_of_use_en.html">Terms of Use</a>
+</div>
+
+<hr>
+<p class="footer">© 2026 Talko</p>
+
+</body>
+</html>
