@@ -1,0 +1,27 @@
+{
+  "id": "couple",
+  "name": "Couple",
+  "emoji": "💑",
+  "subcategories": [
+    {
+      "id": "couple_free",
+      "emoji": "💬",
+      "name": "Free Sub",
+      "description": "Free subcategory",
+      "isPremium": false,
+      "questions": [
+        {"id": "q_free_1", "text": "Free question 1"}
+      ]
+    },
+    {
+      "id": "couple_premium",
+      "emoji": "⭐",
+      "name": "Premium Sub",
+      "description": "Premium subcategory",
+      "isPremium": true,
+      "questions": [
+        {"id": "q_premium_1", "text": "Premium question 1"}
+      ]
+    }
+  ]
+}

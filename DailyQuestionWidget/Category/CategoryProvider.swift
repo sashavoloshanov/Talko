@@ -11,15 +11,14 @@ struct CategoryProvider: TimelineProvider {
     }
 
     func getSnapshot(in context: Context, completion: @escaping (CategoryEntry) -> Void) {
-        completion(makeEntry())
+        completion(makeEntry(defaults: UserDefaults(suiteName: AppGroupKey.suiteName)))
     }
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<CategoryEntry>) -> Void) {
-        completion(Timeline(entries: [makeEntry()], policy: .never))
+        completion(Timeline(entries: [makeEntry(defaults: UserDefaults(suiteName: AppGroupKey.suiteName))], policy: .never))
     }
 
-    private func makeEntry() -> CategoryEntry {
-        let defaults = UserDefaults(suiteName: AppGroupKey.suiteName)
+    func makeEntry(defaults: UserDefaults?) -> CategoryEntry {
         let questions = loadQuestions(from: defaults)
         let rawIndex = defaults?.integer(forKey: AppGroupKey.widgetIndex(categoryId: categoryId)) ?? 0
         let safeIndex = questions.isEmpty ? 0 : rawIndex % questions.count
@@ -37,7 +36,7 @@ struct CategoryProvider: TimelineProvider {
         )
     }
 
-    private func loadQuestions(from defaults: UserDefaults?) -> [String] {
+    func loadQuestions(from defaults: UserDefaults?) -> [String] {
         guard
             let data = defaults?.data(forKey: AppGroupKey.widgetQuestions(categoryId: categoryId)),
             let q = try? JSONDecoder().decode([String].self, from: data)

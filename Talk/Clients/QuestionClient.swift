@@ -68,7 +68,7 @@ actor QuestionClient: QuestionClientProtocol {
         let names = ["couple", "family", "friends"]
         let categories = try names.map { try loadCategory($0, language: language) }
 
-        let isPremium = widgetDefaults?.bool(forKey: AppGroupKey.isPremium) ?? false
+        let isPremium = await widgetDefaults?.bool(forKey: AppGroupKey.isPremium) ?? false
         saveQuestionsForWidget(categories: categories, isPremium: isPremium)
 
         return categories
@@ -84,10 +84,10 @@ actor QuestionClient: QuestionClientProtocol {
         }
 
         let today = Date()
-        let text = payload.holidayQuestion(for: today) ?? payload.question(for: today)
+        let text = await payload.holidayQuestion(for: today) ?? payload.question(for: today)
 
-        widgetDefaults?.set(text, forKey: AppGroupKey.dailyQuestion)
-        widgetCenter.reloadTimelines(ofKind: "DailyQuestionWidget")
+        await widgetDefaults?.set(text, forKey: AppGroupKey.dailyQuestion)
+        await widgetCenter.reloadTimelines(ofKind: "DailyQuestionWidget")
 
         return DailyQuestion(text: text)
     }
@@ -95,15 +95,15 @@ actor QuestionClient: QuestionClientProtocol {
     func refreshWidgetData(for language: AppLanguage) async {
         let names = ["couple", "family", "friends"]
         if let categories = try? names.map({ try loadCategory($0, language: language) }) {
-            let isPremium = widgetDefaults?.bool(forKey: AppGroupKey.isPremium) ?? false
+            let isPremium = await widgetDefaults?.bool(forKey: AppGroupKey.isPremium) ?? false
             saveQuestionsForWidget(categories: categories, isPremium: isPremium)
         }
 
         if let url = try? fileURL(name: "daily", language: language),
            let data = try? Data(contentsOf: url),
            let payload = try? JSONDecoder().decode(DailyQuestionsPayload.self, from: data) {
-            let text = payload.holidayQuestion(for: .now) ?? payload.question(for: .now)
-            widgetDefaults?.set(text, forKey: AppGroupKey.dailyQuestion)
+            let text = await payload.holidayQuestion(for: .now) ?? payload.question(for: .now)
+            await widgetDefaults?.set(text, forKey: AppGroupKey.dailyQuestion)
         }
     }
 

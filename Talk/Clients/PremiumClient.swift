@@ -6,8 +6,8 @@ import WidgetKit
 @Observable
 final class PremiumClient {
 
-    static let monthlyProductID = "com.talkapp.premium.monthly"
-    static let annualProductID  = "com.talkapp.premium.annual"
+    static let monthlyProductID = "com.voloshanov.talko.premium.monthly"
+    static let annualProductID  = "com.voloshanov.talko.premium.annual"
     private static let allProductIDs: Set<String> = [monthlyProductID, annualProductID]
 
     var isPremium: Bool {

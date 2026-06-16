@@ -1,0 +1,31 @@
+{
+  "configurations" : [
+    {
+      "id" : "BA10FFAF-7AD6-4472-9C7F-C51BDD010C8E",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:Talk.xcodeproj",
+        "identifier" : "93C7669F2FDBFE770092E077",
+        "name" : "TalkTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Talk.xcodeproj",
+        "identifier" : "BB10000ABB10000ABB10000A",
+        "name" : "DailyQuestionWidgetExtensionTests"
+      }
+    }
+  ],
+  "version" : 1
+}
