@@ -7,6 +7,8 @@ struct SettingsView: View {
     @Environment(ThemeClient.self) private var themeClient
     @Environment(PremiumClient.self) private var premiumClient
     @State private var viewModel = SettingsViewModel()
+
+    private let isCouponFeatureEnabled = false
  
     private var appVersion: String {
         Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0"
@@ -20,11 +22,15 @@ struct SettingsView: View {
                 if !premiumClient.isPremium {
                     premiumSection
                 }
-                
+
                 selectedSection
-                
+
                 enteredSection
-                
+
+                if isCouponFeatureEnabled {
+                    couponSection
+                }
+
                 documentSection
             }
             .scrollContentBackground(.hidden)
@@ -124,14 +130,19 @@ struct SettingsView: View {
                 }
             }
             .foregroundStyle(.textPrimary)
-            
+
             Button(String(localized: "settings_contact", bundle: bundle)) {
                 if let url = URL(string: "mailto:voloshanov.developer@icloud.com") {
                     UIApplication.shared.open(url)
                 }
             }
             .foregroundStyle(.primary)
-            
+        }
+        .listRowBackground(Colors.backgroundSecondary)
+    }
+
+    private var couponSection: some View {
+        Section {
             VStack(alignment: .leading, spacing: 8) {
                 HStack {
                     TextField(String(localized: "settings_coupon_placeholder", bundle: bundle), text: $viewModel.couponCode)
@@ -149,16 +160,21 @@ struct SettingsView: View {
         }
         .listRowBackground(Colors.backgroundSecondary)
     }
-    
+
     private var documentSection: some View {
         Section {
             Button(String(localized: "settings_privacy", bundle: bundle)) {
                 coordinator.present(.document(.privacyPolicy))
             }
             .foregroundStyle(.textPrimary)
-            
+
             Button(String(localized: "settings_terms", bundle: bundle)) {
                 coordinator.present(.document(.termsOfService))
+            }
+            .foregroundStyle(.textPrimary)
+
+            Button(String(localized: "settings_support", bundle: bundle)) {
+                coordinator.present(.document(.support))
             }
             .foregroundStyle(.textPrimary)
         }

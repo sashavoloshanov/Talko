@@ -313,6 +313,22 @@
         }
       }
     },
+    "settings_support" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Support"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Підтримка"
+          }
+        }
+      }
+    },
     "settings_privacy" : {
       "localizations" : {
         "en" : {

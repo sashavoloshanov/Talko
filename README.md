@@ -1,8 +1,7 @@
-# Talk — Daily Question App
+# Talko — Daily Questions
 
 > A daily question app that sparks meaningful conversations between couples, families, and friends.
 
-**Bundle ID:** `com.svoloshanov.Talk`  
 **Platform:** iOS 17+ (iPhone & iPad)  
 **Category:** Word Games  
 **Languages:** English · Ukrainian
@@ -29,7 +28,7 @@
 
 ## Overview
 
-Talk is a SwiftUI app that delivers daily conversation-starter questions organized by category and subcategory. Users swipe through question cards, like favorites, unlock premium content, and add home-screen widgets that surface questions at a glance.
+Talko is a SwiftUI app that delivers daily conversation-starter questions organized by category and subcategory. Users swipe through question cards, like favorites, unlock premium content, and add home-screen widgets that surface questions at a glance.
 
 ---
 
@@ -50,7 +49,8 @@ Talk/
 │   ├── BadgesClient.swift      # Badge calculation logic (pure function)
 │   ├── BadgeImageClient.swift  # Remote badge image download + disk/memory cache
 │   ├── UserDefaultsClient.swift# Typed UserDefaults wrapper
-│   └── StorageClient.swift     # Legacy storage helper
+│   ├── LikesStore.swift        # @MainActor @Observable; manages liked question IDs
+│   └── MigrationClient.swift   # One-time migration from legacy UserDefaults keys
 ├── Model/
 │   ├── Category.swift          # Category / Subcategory / CardQuestion models
 │   └── DailyQuestion.swift     # DailyQuestion + DailyQuestionsPayload
@@ -74,7 +74,7 @@ Talk/
 └── Resources/
     ├── Localizable.xcstrings   # String catalog (EN + UK)
     ├── Colors.xcassets/        # Brand color assets
-    └── Documents/              # terms_of_use_en.html, terms_of_use_ua.html
+    └── Documents/              # privacy_policy_*.html, terms_of_use_*.html, support_*.html
 
 DailyQuestionWidget/
 ├── Daily/                      # DailyQuestionWidget (small + medium)
@@ -110,6 +110,8 @@ DailyQuestionWidget/
 | `BadgesClient` | Pure static function — computes badge earned/locked state from subcategory progress in `UserDefaults` |
 | `BadgeImageClient` | Actor — downloads earned badge PNGs from `Talko-content` CDN, caches on disk (`Caches/BadgeImages/`) and in memory; deduplicates parallel requests |
 | `UserDefaultsClient` | Generic `Codable` read/write wrapper around `UserDefaults.standard` |
+| `LikesStore` | `@MainActor @Observable` — manages liked question IDs; replaces direct `UserDefaultsClient.likedQuestions` access from views |
+| `MigrationClient` | One-time migration from legacy keys (`favorites`, `lastQuestionIndex_*`) to current keys (`likedQuestions`, `subcategoryProgress`); run in `TalkApp.init()` |
 | `SplashState` | `@Observable` class; `isFinished` gates the transition from `SplashView` to `TabBarView` |
 
 ---
@@ -182,7 +184,7 @@ The app supports **English (`en`)** and **Ukrainian (`uk`)**. The default langua
 
 ## Widgets (WidgetKit)
 
-The widget extension uses **App Group** `group.com.talk.shared` for data sharing.
+The widget extension uses **App Group** `group.com.voloshanov.talk.shared` for data sharing.
 
 ### Widget Types
 
@@ -222,8 +224,8 @@ Managed via **StoreKit 2** in `PremiumClient`.
 
 | Product | ID |
 |---|---|
-| Monthly | `com.talkapp.premium.monthly` |
-| Annual | `com.talkapp.premium.annual` |
+| Monthly | `com.voloshanov.talko.premium.monthly` |
+| Annual | `com.voloshanov.talko.premium.annual` |
 
 ### Trial periods
 
@@ -256,12 +258,13 @@ Accessed via `UserDefaultsClient` with typed `UDKey` enum:
 | `subcategoryProgress` | `[String: Int]` | Last viewed index per subcategory |
 | `isPremium` | `Bool` | Cached premium status |
 
-### `UserDefaults(suiteName: "group.com.talk.shared")` (shared with widget)
+### `UserDefaults(suiteName: "group.com.voloshanov.talk.shared")` (shared with widget)
 
 | Key | Type | Purpose |
 |---|---|---|
 | `dailyQuestion` | `String` | Today's daily question text |
 | `isPremium` | `Bool` | Premium flag for widget filtering |
+| `appLanguage` | `String` | Selected UI language (shared with widget) |
 | `widgetCategoryName_{id}` | `String` | Category display name |
 | `widgetCategoryEmoji_{id}` | `String` | Category emoji |
 | `widgetQuestions_{id}` | `Data` (JSON `[String]`) | Questions pool for widget |
@@ -347,7 +350,7 @@ enum AppRoute: Hashable {
 }
 
 enum AppSheet: Hashable, Identifiable {
-    case document(DocumentItem)   // termsOfService | privacyPolicy
+    case document(DocumentItem)   // termsOfService | privacyPolicy | support
     case subscription
 }
 
@@ -421,5 +424,5 @@ Add an entry to `holidays` in `daily.json` in both language bundles:
 - Xcode 15+
 - iOS 17.0+ deployment target
 - Swift 5.9+
-- App Group capability: `group.com.talk.shared` (must be enabled on both the main target and the widget extension target in the Apple Developer portal)
+- App Group capability: `group.com.voloshanov.talk.shared` (must be enabled on both the main target and the widget extension target in the Apple Developer portal)
 - In-App Purchase products configured in App Store Connect matching the product IDs above
