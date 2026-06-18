@@ -51,6 +51,18 @@ struct NextQuestionIntentTests {
             defaults.set((current + 1) % max(count, 1), forKey: key)
             #expect(defaults.integer(forKey: key) == 0)
         }
+
+        // Calls the real perform() — App Group defaults are nil in tests so it
+        // falls back gracefully (count=1, current=0, no-op write) and returns .result().
+        @Test func perform_doesNotThrow() async throws {
+            let intent = NextQuestionIntent(categoryId: "couple")
+            _ = try await intent.perform()
+        }
+
+        @Test func perform_differentCategory_doesNotThrow() async throws {
+            let intent = NextQuestionIntent(categoryId: "family")
+            _ = try await intent.perform()
+        }
     }
 }
 
@@ -97,6 +109,18 @@ struct PrevQuestionIntentTests {
             let current = defaults.integer(forKey: key)
             defaults.set(current == 0 ? count - 1 : current - 1, forKey: key)
             #expect(defaults.integer(forKey: key) == 2)
+        }
+
+        // Calls the real perform() — App Group defaults are nil in tests so it
+        // falls back gracefully (count=1, wraps to 0) and returns .result().
+        @Test func perform_doesNotThrow() async throws {
+            let intent = PrevQuestionIntent(categoryId: "friends")
+            _ = try await intent.perform()
+        }
+
+        @Test func perform_differentCategory_doesNotThrow() async throws {
+            let intent = PrevQuestionIntent(categoryId: "couple")
+            _ = try await intent.perform()
         }
     }
 }

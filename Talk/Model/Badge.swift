@@ -11,6 +11,10 @@ struct Badge: Identifiable {
 
 extension Badge: Hashable {
     static func == (lhs: Badge, rhs: Badge) -> Bool {
-        return lhs.id == rhs.id
+        lhs.id == rhs.id
+    }
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
     }
 }

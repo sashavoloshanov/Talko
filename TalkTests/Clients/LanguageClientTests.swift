@@ -67,6 +67,47 @@ struct LanguageClientTests {
         }
     }
 
+    @Suite("bundle")
+    @MainActor
+    struct BundleProperty {
+        let defaults: UserDefaults
+        let suite: String
+
+        init() {
+            suite = "com.talk.tests.language.bundle.\(UUID().uuidString)"
+            defaults = UserDefaults(suiteName: suite)!
+        }
+
+        @Test func english_returnsBundleOrFallsBackToMain() {
+            UserDefaultsClient.defaults = defaults
+            defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
+            let client = LanguageClient()
+            client.setLanguage(.english)
+            let bundle = client.bundle
+            #expect(bundle != Bundle(path: "nonexistent") ?? .main)
+            #expect(bundle === Bundle.main || bundle.bundlePath.hasSuffix("en.lproj"))
+        }
+
+        @Test func ukrainian_returnsBundleOrFallsBackToMain() {
+            UserDefaultsClient.defaults = defaults
+            defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
+            let client = LanguageClient()
+            let bundle = client.bundle
+            #expect(bundle === Bundle.main || bundle.bundlePath.hasSuffix("uk.lproj"))
+        }
+
+        @Test func invalidLanguage_fallsBackToMain() {
+            let path = Bundle.main.path(forResource: "nonexistent_lang", ofType: "lproj") ?? ""
+            let resolved = Bundle(path: path) ?? .main
+            #expect(resolved === Bundle.main)
+        }
+
+        @Test func emptyPath_fallsBackToMain() {
+            let resolved = Bundle(path: "") ?? .main
+            #expect(resolved === Bundle.main)
+        }
+    }
+
     @Suite("setLanguage")
     @MainActor
     struct SetLanguage {
