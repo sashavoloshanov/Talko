@@ -7,15 +7,6 @@ struct DocumentView: View {
     @Environment(AppCoordinator.self) private var coordinator
     @Environment(LanguageClient.self) private var languageClient
     @Environment(\.languageBundle) private var bundle
-    
-    private var title: String {
-        switch document {
-        case .privacyPolicy:
-            return String(localized: "settings_privacy", bundle: bundle)
-        case .termsOfService:
-            return String(localized: "settings_terms", bundle: bundle)
-        }
-    }
 
     var body: some View {
         VStack(spacing: 0) {
