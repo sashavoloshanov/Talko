@@ -60,4 +60,41 @@ struct DailyProviderTests {
             #expect(!text.isEmpty)
         }
     }
+
+    @Suite("loadFromBundle()")
+    @MainActor
+    struct LoadFromBundle {
+
+        @Test func doesNotCrash() {
+            let provider = DailyProvider()
+            // In the test environment Bundle.main is the test runner — daily.json
+            // may not be present, so nil is the expected fallback; no crash is the guarantee.
+            _ = provider.loadFromBundle()
+        }
+
+        @Test func returnsNilOrNonEmptyString() {
+            let provider = DailyProvider()
+            let result = provider.loadFromBundle()
+            if let text = result {
+                #expect(!text.isEmpty)
+            }
+        }
+
+        @Test func loadQuestion_fallsBackToBundleWhenNoCachedValue() {
+            // No cached question → loadQuestion calls loadFromBundle → falls back to hardcoded
+            let provider = DailyProvider()
+            let result = provider.loadQuestion(defaults: nil)
+            #expect(!result.isEmpty)
+        }
+
+        @Test func loadQuestion_bundleFallbackProducesNonEmptyString() {
+            // Empty defaults (no daily question key) triggers loadFromBundle path
+            let suite = "com.talk.widget.bundle.\(UUID().uuidString)"
+            let defaults = UserDefaults(suiteName: suite)!
+            defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
+            let provider = DailyProvider()
+            let result = provider.loadQuestion(defaults: defaults)
+            #expect(!result.isEmpty)
+        }
+    }
 }
