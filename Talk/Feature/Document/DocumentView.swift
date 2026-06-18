@@ -10,6 +10,21 @@ struct DocumentView: View {
 
     var body: some View {
         VStack(spacing: 0) {
+            HStack {
+                Spacer()
+                Button {
+                    coordinator.dismissSheet()
+                } label: {
+                    Image(systemName: "xmark")
+                        .font(.system(size: 14, weight: .semibold))
+                        .foregroundColor(Colors.textSecondary)
+                        .frame(width: 32, height: 32)
+                        .background(Circle().fill(Color.white.opacity(0.1)))
+                }
+            }
+            .padding(.horizontal, 20)
+            .padding(.top, 16)
+            
             if let url = document.localURL(languageClient.current) {
                 LocalWebView(url: url)
                     .ignoresSafeArea(edges: .bottom)
