@@ -55,6 +55,33 @@ struct BadgesViewModelTests {
             #expect(vm.categories.isEmpty)
             #expect(vm.badgesByCategory.isEmpty)
         }
+
+        @Test func withEarnedBadges_populatesEarnedCount() {
+            UserDefaultsClient.defaults = defaults
+            defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
+            UserDefaultsClient.set(["sub1": 50], for: .subcategoryProgress)
+            UserDefaultsClient.defaults = defaults
+            let sub = Subcategory.fixture(id: "sub1")
+            let cat = Talk.Category.fixture(id: "cat1", subcategories: [sub])
+            let vm = BadgesViewModel()
+            vm.load(categories: [cat])
+            let earned = vm.badgesByCategory["cat1"]?.filter { $0.isEarned } ?? []
+            #expect(earned.count == 3)
+        }
+
+        @Test func multipleCategoriesAllPopulated() {
+            UserDefaultsClient.defaults = defaults
+            defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
+            let cats = [
+                Talk.Category.fixture(id: "cat1", subcategories: [.fixture(id: "s1")]),
+                Talk.Category.fixture(id: "cat2", subcategories: [.fixture(id: "s2")])
+            ]
+            let vm = BadgesViewModel()
+            vm.load(categories: cats)
+            #expect(vm.badgesByCategory.keys.count == 2)
+            #expect(vm.badgesByCategory["cat1"]?.count == 3)
+            #expect(vm.badgesByCategory["cat2"]?.count == 3)
+        }
     }
 
     @Suite("loadContent")

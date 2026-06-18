@@ -82,7 +82,7 @@ actor BadgeImageClient {
     }
 }
 
-enum BadgeImageError: Error {
+enum BadgeImageError: Error, Equatable {
     case invalidURL
     case invalidData
 }

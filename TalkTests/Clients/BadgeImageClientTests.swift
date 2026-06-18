@@ -69,4 +69,54 @@ struct BadgeImageClientTests {
         let count = await session.requestCount
         #expect(count == 1)
     }
+
+    @Test func retryAfterNetworkErrorSucceeds() async throws {
+        let session = MockURLSession(error: URLError(.notConnectedToInternet))
+        let client = BadgeImageClient(session: session, cacheDirectory: tempDir())
+
+        await #expect(throws: (any Error).self) {
+            _ = try await client.image(named: "badge_retry_10")
+        }
+
+        await session.setResult(.success(sampleImageData()))
+        let image = try await client.image(named: "badge_retry_10")
+        #expect(image != nil)
+
+        let count = await session.requestCount
+        #expect(count == 2)
+    }
+
+    @Test func invalidDataThrowsInvalidDataError() async throws {
+        let session = MockURLSession(data: Data("not a png".utf8))
+        let client = BadgeImageClient(session: session, cacheDirectory: tempDir())
+
+        await #expect(throws: BadgeImageError.invalidData) {
+            _ = try await client.image(named: "badge_invalid")
+        }
+    }
+
+    @Test func differentNamesAreIndependentRequests() async throws {
+        let data = sampleImageData()
+        let session = MockURLSession(data: data)
+        let client = BadgeImageClient(session: session, cacheDirectory: tempDir())
+
+        _ = try await client.image(named: "badge_a_10")
+        _ = try await client.image(named: "badge_b_10")
+        _ = try await client.image(named: "badge_a_10")
+
+        let count = await session.requestCount
+        #expect(count == 2)
+    }
+
+    @Test func diskFileIsCreatedAfterDownload() async throws {
+        let data = sampleImageData()
+        let dir = tempDir()
+        let session = MockURLSession(data: data)
+        let client = BadgeImageClient(session: session, cacheDirectory: dir)
+
+        _ = try await client.image(named: "badge_saved_10")
+
+        let fileURL = dir.appendingPathComponent("badge_saved_10.png")
+        #expect(FileManager.default.fileExists(atPath: fileURL.path))
+    }
 }

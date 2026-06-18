@@ -168,4 +168,52 @@ struct BadgesClientTests {
             #expect(result["cat1"]?.allSatisfy { $0.isEarned } == true)
         }
     }
+
+    @Suite("badge fields")
+    @MainActor
+    struct BadgeFields {
+        let subId = "know_me"
+        let subName = "Know Me"
+
+        private var category: Talk.Category {
+            .fixture(id: "cat1", subcategories: [.fixture(id: subId, name: subName)])
+        }
+
+        @Test func subcategoryIdMatchesSubcategory() {
+            let badges = BadgesClient.badges(for: [category], progress: [:])["cat1"] ?? []
+            #expect(badges.allSatisfy { $0.subcategoryId == subId })
+        }
+
+        @Test func subcategoryNameMatchesSubcategory() {
+            let badges = BadgesClient.badges(for: [category], progress: [:])["cat1"] ?? []
+            #expect(badges.allSatisfy { $0.subcategoryName == subName })
+        }
+
+        @Test func nameMatchesSubcategoryName() {
+            let badges = BadgesClient.badges(for: [category], progress: [:])["cat1"] ?? []
+            #expect(badges.allSatisfy { $0.name == subName })
+        }
+
+        @Test func mixedProgressAcrossSubcategoriesIsIndependent() {
+            let sub1 = Subcategory.fixture(id: "sub1")
+            let sub2 = Subcategory.fixture(id: "sub2")
+            let cat = Talk.Category.fixture(id: "cat1", subcategories: [sub1, sub2])
+            let badges = BadgesClient.badges(for: [cat], progress: ["sub1": 30, "sub2": 9])["cat1"] ?? []
+            let sub1Earned = badges.filter { $0.subcategoryId == "sub1" && $0.isEarned }
+            let sub2Earned = badges.filter { $0.subcategoryId == "sub2" && $0.isEarned }
+            #expect(sub1Earned.count == 2)
+            #expect(sub2Earned.count == 0)
+        }
+
+        @Test func earnedBadgeHasRemoteImageName() {
+            let badges = BadgesClient.badges(for: [category], progress: [subId: 10])["cat1"] ?? []
+            let earned = badges.filter { $0.isEarned }
+            #expect(earned.allSatisfy { $0.imageName.hasPrefix("badge_") })
+        }
+
+        @Test func lockedBadgeHasLockedBadgeIconName() {
+            let badges = BadgesClient.badges(for: [category], progress: [:])["cat1"] ?? []
+            #expect(badges.allSatisfy { $0.imageName == "lockedBadgeIcon" })
+        }
+    }
 }
