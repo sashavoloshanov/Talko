@@ -44,15 +44,20 @@ final class PremiumClient {
     }
 
     func checkPremiumStatus() async {
-        var hasActive = false
+        if await hasActiveEntitlement() {
+            await MainActor.run { isPremium = true }
+        }
+    }
+
+    private func hasActiveEntitlement() async -> Bool {
         for await result in Transaction.currentEntitlements {
             if case .verified(let tx) = result,
                Self.allProductIDs.contains(tx.productID),
                tx.revocationDate == nil {
-                hasActive = true
+                return true
             }
         }
-        await MainActor.run { isPremium = hasActive }
+        return false
     }
 
     func fetchAvailableProducts() async {
@@ -88,7 +93,8 @@ final class PremiumClient {
     func restorePurchases() async {
         do {
             try await AppStore.sync()
-            await checkPremiumStatus()
+            let hasActive = await hasActiveEntitlement()
+            await MainActor.run { isPremium = hasActive }
         } catch {
             await MainActor.run { lastPurchaseError = error.localizedDescription }
         }

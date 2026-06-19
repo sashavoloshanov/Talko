@@ -12,9 +12,6 @@ struct TalkApp: App {
 
     init() {
         MigrationClient.runIfNeeded()
-        #if DEBUG
-        premiumClient.isPremium = true
-        #endif
     }
 
     var body: some Scene {

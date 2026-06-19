@@ -26,7 +26,7 @@ struct TabBarView: View {
         .onChange(of: languageClient.current) { _, newLang in
             Task {
                 questionHolder.reload()
-                try? await questionHolder.load(language: newLang, premiumClient: premiumClient)
+                try? await questionHolder.load(language: newLang)
             }
         }
     }

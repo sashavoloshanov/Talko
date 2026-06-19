@@ -14,7 +14,7 @@ final class BadgesViewModel: BaseViewModel {
 
     func loadContent(holder: QuestionClientHolder, language: AppLanguage, premiumClient: PremiumClient) async {
         do {
-            try await holder.load(language: language, premiumClient: premiumClient)
+            try await holder.load(language: language)
             load(categories: holder.categories)
         } catch is CancellationError {
         } catch {

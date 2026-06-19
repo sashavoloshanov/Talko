@@ -13,8 +13,7 @@ struct QuestionClientHolderTests {
             let mock = MockQuestionClient()
             await mock.setCategories([.fixture()])
             let holder = QuestionClientHolder(client: mock)
-            let premium = PremiumClient()
-            try await holder.load(language: .english, premiumClient: premium)
+            try await holder.load(language: .english)
             #expect(holder.categories.count == 1)
         }
 
@@ -22,24 +21,21 @@ struct QuestionClientHolderTests {
             let mock = MockQuestionClient()
             await mock.setDailyQuestion(DailyQuestion(text: "Test question"))
             let holder = QuestionClientHolder(client: mock)
-            let premium = PremiumClient()
-            try await holder.load(language: .english, premiumClient: premium)
+            try await holder.load(language: .english)
             #expect(holder.dailyQuestion?.text == "Test question")
         }
 
         @Test func isLoadingFalseAfterCompletion() async throws {
             let mock = MockQuestionClient()
             let holder = QuestionClientHolder(client: mock)
-            let premium = PremiumClient()
-            try await holder.load(language: .english, premiumClient: premium)
+            try await holder.load(language: .english)
             #expect(holder.isLoading == false)
         }
 
         @Test func loadedLanguageSetAfterSuccess() async throws {
             let mock = MockQuestionClient()
             let holder = QuestionClientHolder(client: mock)
-            let premium = PremiumClient()
-            try await holder.load(language: .english, premiumClient: premium)
+            try await holder.load(language: .english)
             #expect(holder.loadedLanguage == .english)
         }
     }
@@ -50,9 +46,8 @@ struct QuestionClientHolderTests {
         @Test func loadSameLanguageTwiceCallsOnce() async throws {
             let mock = MockQuestionClient()
             let holder = QuestionClientHolder(client: mock)
-            let premium = PremiumClient()
-            try await holder.load(language: .english, premiumClient: premium)
-            try await holder.load(language: .english, premiumClient: premium)
+            try await holder.load(language: .english)
+            try await holder.load(language: .english)
             let count = await mock.loadCategoriesCallCount
             #expect(count == 1)
         }
@@ -60,9 +55,8 @@ struct QuestionClientHolderTests {
         @Test func loadDifferentLanguagesCallsTwice() async throws {
             let mock = MockQuestionClient()
             let holder = QuestionClientHolder(client: mock)
-            let premium = PremiumClient()
-            try await holder.load(language: .english, premiumClient: premium)
-            try await holder.load(language: .ukrainian, premiumClient: premium)
+            try await holder.load(language: .english)
+            try await holder.load(language: .ukrainian)
             let count = await mock.loadCategoriesCallCount
             #expect(count == 2)
         }
@@ -74,8 +68,7 @@ struct QuestionClientHolderTests {
         @Test func afterReloadLoadedLanguageIsNil() async throws {
             let mock = MockQuestionClient()
             let holder = QuestionClientHolder(client: mock)
-            let premium = PremiumClient()
-            try await holder.load(language: .english, premiumClient: premium)
+            try await holder.load(language: .english)
             holder.reload()
             #expect(holder.loadedLanguage == nil)
         }
@@ -83,10 +76,9 @@ struct QuestionClientHolderTests {
         @Test func afterReloadNextLoadExecutes() async throws {
             let mock = MockQuestionClient()
             let holder = QuestionClientHolder(client: mock)
-            let premium = PremiumClient()
-            try await holder.load(language: .english, premiumClient: premium)
+            try await holder.load(language: .english)
             holder.reload()
-            try await holder.load(language: .english, premiumClient: premium)
+            try await holder.load(language: .english)
             let count = await mock.loadCategoriesCallCount
             #expect(count == 2)
         }
@@ -94,8 +86,7 @@ struct QuestionClientHolderTests {
         @Test func isLoadingFalseAfterReload() async throws {
             let mock = MockQuestionClient()
             let holder = QuestionClientHolder(client: mock)
-            let premium = PremiumClient()
-            try await holder.load(language: .english, premiumClient: premium)
+            try await holder.load(language: .english)
             holder.reload()
             #expect(holder.isLoading == false)
         }
@@ -108,9 +99,8 @@ struct QuestionClientHolderTests {
             let mock = MockQuestionClient()
             await mock.setThrow(true)
             let holder = QuestionClientHolder(client: mock)
-            let premium = PremiumClient()
             await #expect(throws: (any Error).self) {
-                try await holder.load(language: .english, premiumClient: premium)
+                try await holder.load(language: .english)
             }
         }
 
@@ -118,8 +108,7 @@ struct QuestionClientHolderTests {
             let mock = MockQuestionClient()
             await mock.setThrow(true)
             let holder = QuestionClientHolder(client: mock)
-            let premium = PremiumClient()
-            try? await holder.load(language: .english, premiumClient: premium)
+            try? await holder.load(language: .english)
             #expect(holder.isLoading == false)
         }
 
@@ -127,8 +116,7 @@ struct QuestionClientHolderTests {
             let mock = MockQuestionClient()
             await mock.setThrow(true)
             let holder = QuestionClientHolder(client: mock)
-            let premium = PremiumClient()
-            try? await holder.load(language: .english, premiumClient: premium)
+            try? await holder.load(language: .english)
             #expect(holder.categories.isEmpty)
         }
     }

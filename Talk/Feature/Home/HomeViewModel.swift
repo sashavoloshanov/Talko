@@ -14,7 +14,7 @@ final class HomeViewModel: BaseViewModel {
 
     func loadContent(holder: QuestionClientHolder, language: AppLanguage, premiumClient: PremiumClient, likesStore: LikesStore) async {
         do {
-            try await holder.load(language: language, premiumClient: premiumClient)
+            try await holder.load(language: language)
             if !premiumClient.isPremium {
                 likesStore.removePremiumLikes(categories: holder.categories)
             }

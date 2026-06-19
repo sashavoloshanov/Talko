@@ -57,12 +57,10 @@ struct SplashView: View {
 
 #if DEBUG
 #Preview("Dark") {
-    SplashView(state: SplashState())
-        .preferredColorScheme(.dark)
+    PreviewContainer(scheme: .dark) { SplashView(state: SplashState()) }
 }
 
 #Preview("Light") {
-    SplashView(state: SplashState())
-        .preferredColorScheme(.light)
+    PreviewContainer(scheme: .light) { SplashView(state: SplashState()) }
 }
 #endif

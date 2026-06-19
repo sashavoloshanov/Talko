@@ -16,14 +16,13 @@ final class QuestionClientHolder {
         self.client = client
     }
 
-    func load(language: AppLanguage, premiumClient: PremiumClient) async throws {
+    func load(language: AppLanguage) async throws {
         guard loadedLanguage != language, !isLoading else { return }
         isLoading = true
         let task = Task {
             defer { isLoading = false }
             async let cats = client.loadCategories(language: language)
             async let daily = client.loadDailyQuestion(language: language)
-            async let _: () = premiumClient.checkPremiumStatus()
             let (c, d) = try await (cats, daily)
             self.categories = c
             self.dailyQuestion = d
