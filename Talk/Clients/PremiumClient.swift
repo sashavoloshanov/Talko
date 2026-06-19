@@ -56,11 +56,19 @@ final class PremiumClient {
     }
 
     func fetchAvailableProducts() async {
-        guard let fetched = try? await Product.products(for: Self.allProductIDs) else { return }
-        let sorted = fetched.sorted {
-            $0.id == Self.monthlyProductID && $1.id != Self.monthlyProductID
+        do {
+            let fetched = try await Product.products(for: Self.allProductIDs)
+            await MainActor.run {
+                self.products = fetched.sorted {
+                    $0.id == Self.monthlyProductID && $1.id != Self.monthlyProductID
+                }
+                if fetched.isEmpty {
+                    self.lastPurchaseError = "No products returned by the App Store."
+                }
+            }
+        } catch {
+            await MainActor.run { self.lastPurchaseError = error.localizedDescription }
         }
-        await MainActor.run { self.products = sorted }
     }
 
     func purchase(_ productId: String) async {

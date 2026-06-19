@@ -35,7 +35,7 @@ struct DocumentView: View {
                 )
             }
         }
-        .background(Colors.brandDark)
+        .background(Colors.backgroundPrimary)
         .navigationBarBackButtonHidden(true)
         .navigationBarHidden(true)
     }

@@ -102,7 +102,25 @@ struct SubscriptionView: View {
                         .foregroundColor(Colors.textSecondary)
                 }
                 .padding(.top, 12)
-                .padding(.bottom, 32)
+                .padding(.bottom, 16)
+                
+                HStack(spacing: 16) {
+                    Button {
+                        coordinator.present(.document(.privacyPolicy))
+                    } label: {
+                        Text(String(localized: "settings_privacy", bundle: bundle))
+                            .font(.caption2)
+                            .foregroundColor(Colors.textSecondary)
+                    }
+                    Button {
+                        coordinator.present(.document(.termsOfService))
+                    } label: {
+                        Text(String(localized: "settings_terms", bundle: bundle))
+                            .font(.caption2)
+                            .foregroundColor(Colors.textSecondary)
+                    }
+                }
+                .padding(.bottom, 16)
             }
         }
         .background(Colors.backgroundPrimary)
