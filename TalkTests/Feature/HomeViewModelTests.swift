@@ -106,8 +106,9 @@ struct HomeViewModelTests {
             let mock = MockQuestionClient()
             let holder = QuestionClientHolder(client: mock)
             let premium = PremiumClient()
+            let store = LikesStore()
             let vm = HomeViewModel()
-            await vm.loadContent(holder: holder, language: .english, premiumClient: premium)
+            await vm.loadContent(holder: holder, language: .english, premiumClient: premium, likesStore: store)
             #expect(vm.errorMessage == nil)
         }
 
@@ -118,9 +119,26 @@ struct HomeViewModelTests {
             await mock.setThrow(true)
             let holder = QuestionClientHolder(client: mock)
             let premium = PremiumClient()
+            let store = LikesStore()
             let vm = HomeViewModel()
-            await vm.loadContent(holder: holder, language: .english, premiumClient: premium)
+            await vm.loadContent(holder: holder, language: .english, premiumClient: premium, likesStore: store)
             #expect(vm.errorMessage != nil)
+        }
+
+        @Test func removesPremiumLikedQuestionsWhenNotPremium() async {
+            UserDefaultsClient.defaults = defaults
+            defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
+            let premSub = Subcategory.fixture(id: "ps1", isPremium: true, questions: [.fixture(id: "pq1")])
+            let cat = Category.fixture(subcategories: [premSub])
+            let mock = MockQuestionClient()
+            await mock.setCategories([cat])
+            let holder = QuestionClientHolder(client: mock)
+            let premium = PremiumClient()
+            let store = LikesStore()
+            store.toggle("pq1")
+            let vm = HomeViewModel()
+            await vm.loadContent(holder: holder, language: .english, premiumClient: premium, likesStore: store)
+            #expect(!store.likedIds.contains("pq1"))
         }
     }
 
@@ -141,9 +159,10 @@ struct HomeViewModelTests {
             let mock = MockQuestionClient()
             let holder = QuestionClientHolder(client: mock)
             let premium = PremiumClient()
+            let store = LikesStore()
             let vm = HomeViewModel()
-            await vm.loadContent(holder: holder, language: .english, premiumClient: premium)
-            await vm.reloadContent(holder: holder, language: .english, premiumClient: premium)
+            await vm.loadContent(holder: holder, language: .english, premiumClient: premium, likesStore: store)
+            await vm.reloadContent(holder: holder, language: .english, premiumClient: premium, likesStore: store)
             let count = await mock.loadCategoriesCallCount
             #expect(count == 2)
         }

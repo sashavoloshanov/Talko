@@ -3,6 +3,7 @@ import SwiftUI
 struct SplashView: View {
     var state: SplashState
 
+    @Environment(PremiumClient.self) private var premiumClient
     @State private var textScale: CGFloat = 0.3
     @State private var textOpacity: Double = 0
     @State private var iconScale: CGFloat = 0.8
@@ -42,10 +43,9 @@ struct SplashView: View {
             withAnimation(.easeIn(duration: 0.4).delay(0.5)) {
                 textOpacity = 1.0
             }
+            let client = premiumClient
             splashTask = Task {
-                try? await Task.sleep(for: .seconds(1.5))
-                guard !Task.isCancelled else { return }
-                state.isFinished = true
+                await state.complete { await client.checkPremiumStatus() }
             }
         }
         .onDisappear {

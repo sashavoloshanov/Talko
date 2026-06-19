@@ -12,17 +12,20 @@ final class HomeViewModel: BaseViewModel {
         !store.likedIds.isEmpty
     }
 
-    func loadContent(holder: QuestionClientHolder, language: AppLanguage, premiumClient: PremiumClient) async {
+    func loadContent(holder: QuestionClientHolder, language: AppLanguage, premiumClient: PremiumClient, likesStore: LikesStore) async {
         do {
             try await holder.load(language: language, premiumClient: premiumClient)
+            if !premiumClient.isPremium {
+                likesStore.removePremiumLikes(categories: holder.categories)
+            }
         } catch is CancellationError {
         } catch {
             errorMessage = error.localizedDescription
         }
     }
 
-    func reloadContent(holder: QuestionClientHolder, language: AppLanguage, premiumClient: PremiumClient) async {
+    func reloadContent(holder: QuestionClientHolder, language: AppLanguage, premiumClient: PremiumClient, likesStore: LikesStore) async {
         holder.reload()
-        await loadContent(holder: holder, language: language, premiumClient: premiumClient)
+        await loadContent(holder: holder, language: language, premiumClient: premiumClient, likesStore: likesStore)
     }
 }

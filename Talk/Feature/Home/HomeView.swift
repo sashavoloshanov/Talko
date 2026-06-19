@@ -15,12 +15,12 @@ struct HomeView: View {
             contentView
         }
         .onAppear {
-            Task { await viewModel.loadContent(holder: questionHolder, language: languageClient.current, premiumClient: premiumClient) }
+            Task { await viewModel.loadContent(holder: questionHolder, language: languageClient.current, premiumClient: premiumClient, likesStore: likesStore) }
         }
         .onChange(of: viewModel.errorMessage) { _, msg in
             guard msg != nil, !questionHolder.isLoading else { return }
             viewModel.errorMessage = nil
-            Task { await viewModel.reloadContent(holder: questionHolder, language: languageClient.current, premiumClient: premiumClient) }
+            Task { await viewModel.reloadContent(holder: questionHolder, language: languageClient.current, premiumClient: premiumClient, likesStore: likesStore) }
         }
     }
 

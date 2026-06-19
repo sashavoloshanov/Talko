@@ -19,4 +19,15 @@ final class LikesStore {
         }
         UserDefaultsClient.set(Array(likedIds), for: .likedQuestions)
     }
+
+    func removePremiumLikes(categories: [Category]) {
+        let premiumIds = Set(
+            categories
+                .flatMap(\.subcategories)
+                .filter(\.isPremium)
+                .flatMap { $0.questions.map(\.id) }
+        )
+        likedIds.subtract(premiumIds)
+        UserDefaultsClient.set(Array(likedIds), for: .likedQuestions)
+    }
 }
