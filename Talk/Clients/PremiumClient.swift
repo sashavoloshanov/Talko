@@ -44,9 +44,8 @@ final class PremiumClient {
     }
 
     func checkPremiumStatus() async {
-        if await hasActiveEntitlement() {
-            await MainActor.run { isPremium = true }
-        }
+        let hasActive = await hasActiveEntitlement()
+        await MainActor.run { isPremium = hasActive }
     }
 
     private func hasActiveEntitlement() async -> Bool {

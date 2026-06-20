@@ -4,8 +4,20 @@ import StoreKit
 struct SubscriptionView: View {
     @Environment(AppCoordinator.self) private var coordinator
     @Environment(PremiumClient.self) private var premiumClient
+    @Environment(LanguageClient.self) private var languageClient
     @Environment(\.languageBundle) private var bundle
+    @Environment(\.openURL) private var openURL
     @State private var viewModel = SubscriptionViewModel()
+
+    private var privacyPolicyURL: URL {
+        let suffix = languageClient.current == .ukrainian ? "privacy_policy_ua" : "privacy_policy_en"
+        return URL(string: "https://sashavoloshanov.github.io/Talko/\(suffix)")!
+    }
+
+    private var termsOfUseURL: URL {
+        let suffix = languageClient.current == .ukrainian ? "terms_of_use_ua" : "terms_of_use_en"
+        return URL(string: "https://sashavoloshanov.github.io/Talko/\(suffix)")!
+    }
     
     var body: some View {
         ZStack {
@@ -106,14 +118,14 @@ struct SubscriptionView: View {
                 
                 HStack(spacing: 16) {
                     Button {
-                        coordinator.present(.document(.privacyPolicy))
+                        openURL(privacyPolicyURL)
                     } label: {
                         Text(String(localized: "settings_privacy", bundle: bundle))
                             .font(.caption2)
                             .foregroundColor(Colors.textSecondary)
                     }
                     Button {
-                        coordinator.present(.document(.termsOfService))
+                        openURL(termsOfUseURL)
                     } label: {
                         Text(String(localized: "settings_terms", bundle: bundle))
                             .font(.caption2)
