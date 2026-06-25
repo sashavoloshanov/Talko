@@ -21,6 +21,8 @@ struct SettingsView: View {
             List {
                 if !premiumClient.isPremium {
                     premiumSection
+                } else {
+                    crownSection
                 }
 
                 selectedSection
@@ -73,6 +75,22 @@ struct SettingsView: View {
                 
             }
             .padding(.vertical, 8)
+        }
+        .listRowBackground(Colors.backgroundSecondary)
+    }
+    
+    private var crownSection: some View {
+        Section {
+            HStack(spacing: 12) {
+                Image(systemName: "crown.fill")
+                    .font(.system(size: 22, weight: .semibold))
+                    .foregroundColor(Colors.premiumGold)
+                
+                Text(String(localized: "settings_crown", bundle: bundle))
+                    .font(.headline)
+                    .foregroundColor(.primary)
+            }
+            .padding(.vertical, 4)
         }
         .listRowBackground(Colors.backgroundSecondary)
     }

@@ -461,6 +461,23 @@
         }
       }
     },
+    "settings_crown" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You're Premium! All questions are unlocked for you"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "У вас Premium! Всі питання вже доступні"
+          }
+        }
+      }
+    },
     "settings_language" : {
       "localizations" : {
         "en" : {
