@@ -1,6 +1,10 @@
 # Talko — Daily Questions
 
-> A daily question app that sparks meaningful conversations between couples, families, and friends.
+[![Download on the App Store](https://img.shields.io/badge/Download-App%20Store-0D96F6?logo=apple&logoColor=white)](https://apps.apple.com/ua/app/talko-daily-questions/id6780755565)
+
+A daily question app that sparks meaningful conversations between couples, families, and friends.
+
+**[Download on the App Store →](https://apps.apple.com/ua/app/talko-daily-questions/id6780755565)**
 
 **Platform:** iOS 17+ (iPhone & iPad)  
 **Category:** Word Games  
