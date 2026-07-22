@@ -18,28 +18,63 @@ struct TalkApp: App {
 
     var body: some Scene {
         WindowGroup {
-            if splashState.isFinished {
-                TabBarView()
-                    .background(Colors.brandDark)
-                    .environment(languageClient)
-                    .environment(\.languageBundle, languageClient.bundle)
-                    .environment(themeClient)
-                    .environment(premiumClient)
-                    .environment(coordinator)
-                    .environment(questionHolder)
-                    .environment(likesStore)
-                    .preferredColorScheme(themeClient.current.colorScheme)
-            } else {
-                SplashView(state: splashState)
-                    .environment(languageClient)
-                    .environment(\.languageBundle, languageClient.bundle)
-                    .environment(themeClient)
-                    .environment(premiumClient)
-                    .environment(coordinator)
-                    .environment(questionHolder)
-                    .environment(likesStore)
-                    .preferredColorScheme(themeClient.current.colorScheme)
+            Group {
+                if splashState.isFinished {
+                    TabBarView()
+                        .background(Colors.brandDark)
+                } else {
+                    SplashView(state: splashState)
+                }
             }
+            .appEnvironment(
+                languageClient: languageClient,
+                themeClient: themeClient,
+                premiumClient: premiumClient,
+                coordinator: coordinator,
+                questionHolder: questionHolder,
+                likesStore: likesStore
+            )
         }
+    }
+}
+
+private struct AppEnvironmentModifier: ViewModifier {
+    let languageClient: LanguageClient
+    let themeClient: ThemeClient
+    let premiumClient: PremiumClient
+    let coordinator: AppCoordinator
+    let questionHolder: QuestionClientHolder
+    let likesStore: LikesStore
+
+    func body(content: Content) -> some View {
+        content
+            .environment(languageClient)
+            .environment(\.languageBundle, languageClient.bundle)
+            .environment(themeClient)
+            .environment(premiumClient)
+            .environment(coordinator)
+            .environment(questionHolder)
+            .environment(likesStore)
+            .preferredColorScheme(themeClient.current.colorScheme)
+    }
+}
+
+private extension View {
+    func appEnvironment(
+        languageClient: LanguageClient,
+        themeClient: ThemeClient,
+        premiumClient: PremiumClient,
+        coordinator: AppCoordinator,
+        questionHolder: QuestionClientHolder,
+        likesStore: LikesStore
+    ) -> some View {
+        modifier(AppEnvironmentModifier(
+            languageClient: languageClient,
+            themeClient: themeClient,
+            premiumClient: premiumClient,
+            coordinator: coordinator,
+            questionHolder: questionHolder,
+            likesStore: likesStore
+        ))
     }
 }
