@@ -1,5 +1,6 @@
 import Testing
 import Foundation
+import StoreKit
 @testable import Talk
 
 private func makeDefaults() -> (UserDefaults, String) {
@@ -25,32 +26,39 @@ struct SubscriptionViewModelTests {
         }
     }
 
-    @Suite("setup")
+    @Suite("loadProducts")
     @MainActor
-    struct Setup {
-        @Test func setup_withEmptyStoreKit_productsRemainsEmpty() async throws {
+    struct LoadProducts {
+        @Test func withoutSetup_isNoOp() async {
             let (defaults, suite) = makeDefaults()
             UserDefaultsClient.defaults = defaults
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let vm = SubscriptionViewModel()
-            let premium = PremiumClient()
-            vm.setup(premiumClient: premium)
-            try await Task.sleep(nanoseconds: 200_000_000)
+            await vm.loadProducts()
             #expect(vm.products.isEmpty)
-        }
-
-        @Test func setup_withEmptyStoreKit_selectedProductIdRemainsNil() async throws {
-            let (defaults, suite) = makeDefaults()
-            UserDefaultsClient.defaults = defaults
-            defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
-            let vm = SubscriptionViewModel()
-            let premium = PremiumClient()
-            vm.setup(premiumClient: premium)
-            try await Task.sleep(nanoseconds: 200_000_000)
             #expect(vm.selectedProductId == nil)
         }
 
-        @Test func setup_doesNotCrashOnMultipleCalls() async throws {
+        @Test func afterLoad_stateIsConsistentWithClient() async {
+            let (defaults, suite) = makeDefaults()
+            UserDefaultsClient.defaults = defaults
+            defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
+            let vm = SubscriptionViewModel()
+            let premium = PremiumClient()
+            vm.setup(premiumClient: premium)
+            await vm.loadProducts()
+            #expect(vm.isLoading == false)
+            #expect(vm.products.map(\.id) == premium.products.map(\.id))
+            if vm.products.isEmpty {
+                #expect(vm.selectedProductId == nil)
+            } else {
+                let expected = vm.products.first(where: { $0.id == PremiumClient.annualProductID })?.id
+                    ?? vm.products.first?.id
+                #expect(vm.selectedProductId == expected)
+            }
+        }
+
+        @Test func doesNotCrashOnMultipleCalls() async {
             let (defaults, suite) = makeDefaults()
             UserDefaultsClient.defaults = defaults
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
@@ -58,27 +66,39 @@ struct SubscriptionViewModelTests {
             let premium = PremiumClient()
             vm.setup(premiumClient: premium)
             vm.setup(premiumClient: premium)
-            try await Task.sleep(nanoseconds: 200_000_000)
-            #expect(vm.products.isEmpty)
+            await vm.loadProducts()
+            await vm.loadProducts()
+            #expect(vm.isLoading == false)
         }
     }
 
     @Suite("purchase")
     @MainActor
     struct Purchase {
-        @Test func noSelectedProduct_isNoOp() {
+        @Test func withoutSetup_isNoOp() async {
+            let (defaults, suite) = makeDefaults()
+            UserDefaultsClient.defaults = defaults
+            defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
+            let vm = SubscriptionViewModel()
+            vm.selectedProductId = PremiumClient.monthlyProductID
+            await vm.purchase()
+            #expect(vm.isLoading == false)
+            #expect(vm.purchaseError == nil)
+        }
+
+        @Test func noSelectedProduct_isNoOp() async {
             let (defaults, suite) = makeDefaults()
             UserDefaultsClient.defaults = defaults
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let vm = SubscriptionViewModel()
             let premium = PremiumClient()
             vm.setup(premiumClient: premium)
-            vm.purchase()
+            await vm.purchase()
             #expect(vm.isLoading == false)
             #expect(vm.purchaseError == nil)
         }
 
-        @Test func withSelectedProductId_noProductsInClient_purchaseSuccessFalse() async throws {
+        @Test func withSelectedProductId_noProductsInClient_purchaseSuccessFalse() async {
             let (defaults, suite) = makeDefaults()
             UserDefaultsClient.defaults = defaults
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
@@ -86,13 +106,12 @@ struct SubscriptionViewModelTests {
             let premium = PremiumClient()
             vm.setup(premiumClient: premium)
             vm.selectedProductId = PremiumClient.monthlyProductID
-            vm.purchase()
-            try await Task.sleep(nanoseconds: 200_000_000)
+            await vm.purchase()
             #expect(vm.isLoading == false)
             #expect(vm.purchaseSuccess == false)
         }
 
-        @Test func withSelectedProductId_noProductsInClient_purchaseErrorNil() async throws {
+        @Test func withSelectedProductId_noProductsInClient_purchaseErrorNil() async {
             let (defaults, suite) = makeDefaults()
             UserDefaultsClient.defaults = defaults
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
@@ -100,8 +119,7 @@ struct SubscriptionViewModelTests {
             let premium = PremiumClient()
             vm.setup(premiumClient: premium)
             vm.selectedProductId = PremiumClient.annualProductID
-            vm.purchase()
-            try await Task.sleep(nanoseconds: 200_000_000)
+            await vm.purchase()
             #expect(vm.purchaseError == nil)
         }
     }
@@ -109,29 +127,17 @@ struct SubscriptionViewModelTests {
     @Suite("restorePurchases")
     @MainActor
     struct RestorePurchases {
-        @Test func doesNotCrashOnMultipleCalls() async throws {
+        // restorePurchases() with an injected client calls the real AppStore.sync(),
+        // which can block on a sign-in prompt in the simulator — only the
+        // dependency guard is testable deterministically.
+        @Test func withoutSetup_isNoOp() async {
             let (defaults, suite) = makeDefaults()
             UserDefaultsClient.defaults = defaults
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let vm = SubscriptionViewModel()
-            let premium = PremiumClient()
-            vm.setup(premiumClient: premium)
-            vm.restorePurchases()
-            vm.restorePurchases()
-            try await Task.sleep(nanoseconds: 300_000_000)
-            #expect(vm.purchaseSuccess == premium.isPremium)
-        }
-
-        @Test func withoutActiveEntitlement_purchaseSuccessRemainsDefault() async throws {
-            let (defaults, suite) = makeDefaults()
-            UserDefaultsClient.defaults = defaults
-            defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
-            let vm = SubscriptionViewModel()
-            let premium = PremiumClient()
-            vm.setup(premiumClient: premium)
-            vm.restorePurchases()
-            try await Task.sleep(nanoseconds: 300_000_000)
-            #expect(vm.purchaseSuccess == premium.isPremium)
+            await vm.restorePurchases()
+            #expect(vm.isLoading == false)
+            #expect(vm.purchaseSuccess == false)
         }
     }
 }

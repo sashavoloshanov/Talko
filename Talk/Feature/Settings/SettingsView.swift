@@ -168,7 +168,7 @@ struct SettingsView: View {
                 HStack {
                     TextField(String(localized: "settings_coupon_placeholder", bundle: bundle), text: $viewModel.couponCode)
                     Button(String(localized: "settings_coupon_activate", bundle: bundle)) {
-                        viewModel.redeemCoupon(bundle: bundle)
+                        Task { await viewModel.redeemCoupon(bundle: bundle) }
                     }
                     .disabled(viewModel.couponCode.isEmpty || viewModel.isRedeemingCoupon)
                 }

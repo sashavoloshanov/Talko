@@ -13,23 +13,23 @@ final class SettingsViewModel: BaseViewModel {
         self.premiumClient = premiumClient
     }
 
-    func redeemCoupon(bundle: Bundle) {
+    func redeemCoupon(bundle: Bundle) async {
         guard let premiumClient else { return }
-        isRedeemingCoupon = true
-        couponMessage = nil
-        Task {
-            do {
-                try await premiumClient.redeemCoupon(couponCode)
-                await MainActor.run {
-                    premiumClient.isPremium = true
-                    couponMessage = String(localized: "settings_coupon_success", bundle: bundle)
-                    isRedeemingCoupon = false
-                }
-            } catch {
-                await MainActor.run {
-                    couponMessage = error.localizedDescription
-                    isRedeemingCoupon = false
-                }
+        await MainActor.run {
+            isRedeemingCoupon = true
+            couponMessage = nil
+        }
+        do {
+            try await premiumClient.redeemCoupon(couponCode)
+            await MainActor.run {
+                premiumClient.isPremium = true
+                couponMessage = String(localized: "settings_coupon_success", bundle: bundle)
+                isRedeemingCoupon = false
+            }
+        } catch {
+            await MainActor.run {
+                couponMessage = error.localizedDescription
+                isRedeemingCoupon = false
             }
         }
     }

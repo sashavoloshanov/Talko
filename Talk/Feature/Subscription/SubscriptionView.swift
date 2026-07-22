@@ -87,7 +87,7 @@ struct SubscriptionView: View {
                 }
                 
                 Button {
-                    viewModel.purchase()
+                    Task { await viewModel.purchase() }
                 } label: {
                     Group {
                         if viewModel.isLoading {
@@ -107,7 +107,7 @@ struct SubscriptionView: View {
                 .disabled(viewModel.isLoading || viewModel.selectedProductId == nil)
                 
                 Button {
-                    viewModel.restorePurchases()
+                    Task { await viewModel.restorePurchases() }
                 } label: {
                     Text(String(localized: "subscription_restore", bundle: bundle))
                         .font(.footnote)

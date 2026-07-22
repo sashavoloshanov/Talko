@@ -28,30 +28,26 @@ final class SubscriptionViewModel: BaseViewModel {
         }
     }
 
-    func purchase() {
+    func purchase() async {
         guard let premiumClient, let id = selectedProductId else { return }
-        Task {
-            await MainActor.run { isLoading = true; purchaseError = nil }
-            await premiumClient.purchase(id)
-            await MainActor.run {
-                isLoading = false
-                purchaseSuccess = premiumClient.isPremium
-                if !premiumClient.isPremium {
-                    purchaseError = premiumClient.lastPurchaseError
-                }
+        await MainActor.run { isLoading = true; purchaseError = nil }
+        await premiumClient.purchase(id)
+        await MainActor.run {
+            isLoading = false
+            purchaseSuccess = premiumClient.isPremium
+            if !premiumClient.isPremium {
+                purchaseError = premiumClient.lastPurchaseError
             }
         }
     }
 
-    func restorePurchases() {
+    func restorePurchases() async {
         guard let premiumClient else { return }
-        Task {
-            await MainActor.run { isLoading = true; purchaseError = nil }
-            await premiumClient.restorePurchases()
-            await MainActor.run {
-                isLoading = false
-                purchaseSuccess = premiumClient.isPremium
-            }
+        await MainActor.run { isLoading = true; purchaseError = nil }
+        await premiumClient.restorePurchases()
+        await MainActor.run {
+            isLoading = false
+            purchaseSuccess = premiumClient.isPremium
         }
     }
 }

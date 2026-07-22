@@ -30,28 +30,40 @@ struct SettingsViewModelTests {
             defaults = UserDefaults(suiteName: suite)!
         }
 
-        @Test func immediatelyAfterCall_isRedeemingCoupon_isTrue() {
+        @Test func withoutSetup_isNoOp() async {
+            UserDefaultsClient.defaults = defaults
+            defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
+            let vm = SettingsViewModel()
+            vm.couponCode = "TESTCODE"
+            await vm.redeemCoupon(bundle: .main)
+            #expect(vm.isRedeemingCoupon == false)
+            #expect(vm.couponMessage == nil)
+        }
+
+        @Test func validCode_setsSuccessMessageAndStopsRedeeming() async {
             UserDefaultsClient.defaults = defaults
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let vm = SettingsViewModel()
             let premium = PremiumClient()
             vm.setup(premiumClient: premium)
             vm.couponCode = "TESTCODE"
-            vm.redeemCoupon(bundle: .main)
-            #expect(vm.isRedeemingCoupon == true)
+            await vm.redeemCoupon(bundle: .main)
+            #expect(vm.isRedeemingCoupon == false)
+            #expect(vm.couponMessage != nil)
+            #expect(premium.isPremium == true)
         }
 
-        @Test func immediatelyAfterCall_clearsMessage() {
+        @Test func emptyCode_setsErrorMessage() async {
             UserDefaultsClient.defaults = defaults
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let vm = SettingsViewModel()
             let premium = PremiumClient()
             vm.setup(premiumClient: premium)
-            vm.couponMessage = "old message"
-            vm.couponCode = "CODE"
-            vm.redeemCoupon(bundle: .main)
-            #expect(vm.couponMessage == nil)
+            vm.couponCode = ""
+            await vm.redeemCoupon(bundle: .main)
+            #expect(vm.isRedeemingCoupon == false)
+            #expect(vm.couponMessage == "Invalid coupon code")
+            #expect(premium.isPremium == false)
         }
-
     }
 }
