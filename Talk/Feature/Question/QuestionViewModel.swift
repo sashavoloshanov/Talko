@@ -51,9 +51,6 @@ final class QuestionViewModel: BaseViewModel {
     func previous() {
         guard canGoPrevious else { return }
         currentIndex -= 1
-        #if DEBUG
-        saveProgress()
-        #endif
     }
 
     func toggleLike(in store: LikesStore) {

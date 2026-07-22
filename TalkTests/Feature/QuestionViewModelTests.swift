@@ -192,6 +192,16 @@ struct QuestionViewModelTests {
             vm.previous()
             #expect(vm.currentIndex == 0)
         }
+
+        @Test func previousDoesNotSaveProgress() {
+            UserDefaultsClient.defaults = defaults
+            defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
+            let vm = QuestionViewModel(questions: makeQuestions(3), subcategoryId: "sub", forceStartIndex: 2)
+            vm.previous()
+            UserDefaultsClient.defaults = defaults
+            let progress = UserDefaultsClient.get([String: Int].self, for: .subcategoryProgress)
+            #expect(progress?["sub"] == nil)
+        }
     }
 
     @Suite("loadState()")
