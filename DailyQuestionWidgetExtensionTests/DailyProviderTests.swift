@@ -15,24 +15,24 @@ struct DailyProviderTests {
             #expect(entries.count == 7)
         }
 
-        @Test func entryDatesAreMidnights() {
+        @Test func firstEntryIsDatedNow_soItRendersImmediately() {
             let provider = DailyProvider()
-            let calendar = Calendar.current
-            let entries = provider.makeEntries(from: .now, payload: makePayload(), calendar: calendar)
-            for entry in entries {
-                #expect(entry.date == calendar.startOfDay(for: entry.date))
-            }
+            let now = Date()
+            let entries = provider.makeEntries(from: now, payload: makePayload())
+            #expect(entries.first?.date == now)
         }
 
-        @Test func entryDatesAreConsecutiveDays() {
+        @Test func upcomingEntriesAreFutureMidnights() {
             let provider = DailyProvider()
             let calendar = Calendar.current
-            let entries = provider.makeEntries(from: .now, payload: makePayload(), calendar: calendar)
-            for (offset, entry) in entries.enumerated() {
+            let now = Date()
+            let entries = provider.makeEntries(from: now, payload: makePayload(), calendar: calendar)
+            for (index, entry) in entries.enumerated() where index >= 1 {
                 let expected = calendar.startOfDay(
-                    for: calendar.date(byAdding: .day, value: offset, to: .now)!
+                    for: calendar.date(byAdding: .day, value: index, to: now)!
                 )
                 #expect(entry.date == expected)
+                #expect(entry.date > now)
             }
         }
 

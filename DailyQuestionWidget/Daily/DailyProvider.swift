@@ -17,12 +17,17 @@ struct DailyProvider: TimelineProvider {
         completion(Timeline(entries: makeEntries(from: .now, payload: payload), policy: .atEnd))
     }
 
+    // The first entry is dated `now` so WidgetKit renders it immediately —
+    // past-dated entries are dropped when a new timeline is applied.
+    // The remaining entries switch the question at each upcoming midnight.
     func makeEntries(from date: Date, payload: DailyQuestionsPayload?, calendar: Calendar = .current) -> [DailyEntry] {
-        (0..<7).compactMap { offset in
+        let today = DailyEntry(date: date, questionText: questionText(for: date, payload: payload))
+        let upcoming: [DailyEntry] = (1..<7).compactMap { offset in
             guard let day = calendar.date(byAdding: .day, value: offset, to: date) else { return nil }
             let entryDate = calendar.startOfDay(for: day)
             return DailyEntry(date: entryDate, questionText: questionText(for: entryDate, payload: payload))
         }
+        return [today] + upcoming
     }
 
     func questionText(for date: Date, payload: DailyQuestionsPayload?) -> String {
