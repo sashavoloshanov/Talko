@@ -26,12 +26,15 @@ struct BadgeRow: View {
 #if DEBUG
 #Preview("Locked") {
     BadgeRow(badge: Badge(
-        id: "couple",
-        subcategoryId: "know_me",
-        subcategoryName: "Know Me",
+        id: "couple_1",
+        categoryId: "couple",
+        categoryName: "Couple",
+        tier: 1,
+        threshold: 10,
+        progress: 4,
         isEarned: false,
         imageName: "lockedBadgeIcon",
-        name: "Know Me"
+        name: "Couple"
     ),
              onTap: {}
     )
@@ -39,12 +42,15 @@ struct BadgeRow: View {
 
 #Preview("Earned") {
     BadgeRow(badge: Badge(
-        id: "couple",
-        subcategoryId: "know_me",
-        subcategoryName: "Know Me",
+        id: "couple_1",
+        categoryId: "couple",
+        categoryName: "Couple",
+        tier: 1,
+        threshold: 10,
+        progress: 12,
         isEarned: true,
-        imageName: "badge_know_me_10",
-        name: "Know Me"
+        imageName: "badge_couple_1",
+        name: "Couple"
     ),
              onTap: {}
     )

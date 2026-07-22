@@ -1,35 +1,38 @@
 import Foundation
- 
+
 struct BadgesClient {
-    static func badges(for categories: [Category], progress: [String: Int]) -> [String: [Badge]] {
+    static let thresholds = [10, 30, 50]
+
+    static func badges(for categories: [Category], progress: [String: Int], isPremium: Bool) -> [String: [Badge]] {
         var result: [String: [Badge]] = [:]
-        let thresholds = [10, 30, 50]
 
         for category in categories {
-            var categoryBadges: [Badge] = []
-            for sub in category.subcategories {
-                let answeredCount = progress[sub.id] ?? 0
-                for threshold in thresholds {
-                    let isEarned = answeredCount >= threshold
-                    let imageName = isEarned ? "badge_\(sub.id)_\(threshold)" : "lockedBadgeIcon"
-                    let badge = Badge(
-                        id: "\(sub.id)_\(threshold)",
-                        subcategoryId: sub.id,
-                        subcategoryName: sub.name,
-                        isEarned: isEarned,
-                        imageName: imageName,
-                        name: "\(sub.name)"
-                    )
-                    categoryBadges.append(badge)
-                }
+            let availableSubcategories = isPremium
+                ? category.subcategories
+                : category.subcategories.filter { !$0.isPremium }
+            let answeredCount = availableSubcategories.reduce(0) { $0 + (progress[$1.id] ?? 0) }
+
+            result[category.id] = thresholds.enumerated().map { index, threshold in
+                let tier = index + 1
+                let isEarned = answeredCount >= threshold
+                return Badge(
+                    id: "\(category.id)_\(tier)",
+                    categoryId: category.id,
+                    categoryName: category.name,
+                    tier: tier,
+                    threshold: threshold,
+                    progress: answeredCount,
+                    isEarned: isEarned,
+                    imageName: isEarned ? "badge_\(category.id)_\(tier)" : "lockedBadgeIcon",
+                    name: category.name
+                )
             }
-            result[category.id] = categoryBadges
         }
         return result
     }
 
-    static func badges(for categories: [Category]) -> [String: [Badge]] {
+    static func badges(for categories: [Category], isPremium: Bool) -> [String: [Badge]] {
         let progress = UserDefaultsClient.get([String: Int].self, for: .subcategoryProgress) ?? [:]
-        return badges(for: categories, progress: progress)
+        return badges(for: categories, progress: progress, isPremium: isPremium)
     }
 }

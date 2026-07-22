@@ -1,9 +1,12 @@
 import Foundation
- 
+
 struct Badge: Identifiable {
     let id: String
-    let subcategoryId: String
-    let subcategoryName: String
+    let categoryId: String
+    let categoryName: String
+    let tier: Int
+    let threshold: Int
+    let progress: Int
     let isEarned: Bool
     let imageName: String
     let name: String

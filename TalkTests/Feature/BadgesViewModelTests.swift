@@ -101,7 +101,7 @@ struct BadgesViewModelTests {
             let mock = MockQuestionClient()
             let holder = QuestionClientHolder(client: mock)
             let vm = BadgesViewModel()
-            vm.setup(holder: holder, languageClient: LanguageClient())
+            vm.setup(holder: holder, languageClient: LanguageClient(), premiumClient: PremiumClient(appGroupDefaults: defaults))
             await vm.loadContent()
             UserDefaultsClient.defaults = defaults
             #expect(vm.errorMessage == nil)
@@ -115,7 +115,7 @@ struct BadgesViewModelTests {
             await mock.setCategories([cat])
             let holder = QuestionClientHolder(client: mock)
             let vm = BadgesViewModel()
-            vm.setup(holder: holder, languageClient: LanguageClient())
+            vm.setup(holder: holder, languageClient: LanguageClient(), premiumClient: PremiumClient(appGroupDefaults: defaults))
             await vm.loadContent()
             UserDefaultsClient.defaults = defaults
             #expect(vm.categories.count == 1)
@@ -128,7 +128,7 @@ struct BadgesViewModelTests {
             await mock.setThrow(true)
             let holder = QuestionClientHolder(client: mock)
             let vm = BadgesViewModel()
-            vm.setup(holder: holder, languageClient: LanguageClient())
+            vm.setup(holder: holder, languageClient: LanguageClient(), premiumClient: PremiumClient(appGroupDefaults: defaults))
             await vm.loadContent()
             UserDefaultsClient.defaults = defaults
             #expect(vm.errorMessage != nil)
@@ -152,7 +152,7 @@ struct BadgesViewModelTests {
             let mock = MockQuestionClient()
             let holder = QuestionClientHolder(client: mock)
             let vm = BadgesViewModel()
-            vm.setup(holder: holder, languageClient: LanguageClient())
+            vm.setup(holder: holder, languageClient: LanguageClient(), premiumClient: PremiumClient(appGroupDefaults: defaults))
             await vm.loadContent()
             await vm.reloadContent()
             UserDefaultsClient.defaults = defaults

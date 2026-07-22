@@ -8,15 +8,17 @@ final class BadgesViewModel: BaseViewModel {
 
     @ObservationIgnored private var holder: QuestionClientHolder?
     @ObservationIgnored private var languageClient: LanguageClient?
+    @ObservationIgnored private var premiumClient: PremiumClient?
 
-    func setup(holder: QuestionClientHolder, languageClient: LanguageClient) {
+    func setup(holder: QuestionClientHolder, languageClient: LanguageClient, premiumClient: PremiumClient) {
         self.holder = holder
         self.languageClient = languageClient
+        self.premiumClient = premiumClient
     }
 
     func load(categories: [Category]) {
         self.categories = categories
-        self.badgesByCategory = BadgesClient.badges(for: categories)
+        self.badgesByCategory = BadgesClient.badges(for: categories, isPremium: premiumClient?.isPremium ?? false)
         prefetchEarnedBadges()
     }
 

@@ -20,6 +20,23 @@ extension Subcategory {
     }
 }
 
+extension Badge {
+    static func fixture(
+        id: String = "cat1_1",
+        categoryId: String = "cat1",
+        categoryName: String = "Category",
+        tier: Int = 1,
+        threshold: Int = 10,
+        progress: Int = 0,
+        isEarned: Bool = true,
+        imageName: String = "badge_cat1_1",
+        name: String = "Category"
+    ) -> Badge {
+        Badge(id: id, categoryId: categoryId, categoryName: categoryName, tier: tier, threshold: threshold,
+              progress: progress, isEarned: isEarned, imageName: imageName, name: name)
+    }
+}
+
 extension Talk.Category {
     static func fixture(
         id: String = "cat1",

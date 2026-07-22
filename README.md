@@ -117,7 +117,7 @@ DailyQuestionWidget/
 | `PremiumClient` | StoreKit 2 — `fetchAvailableProducts`, `purchase`, `restorePurchases`, `checkPremiumStatus`, background transaction listener; persists `isPremium` to the App Group and reloads widgets on every change |
 | `LanguageClient` | Persists selected language; exposes `bundle` computed property and `languagePublisher` (Combine) for observers |
 | `ThemeClient` | Persists selected theme; exposes `themePublisher` (Combine); controls `preferredColorScheme` at app root |
-| `BadgesClient` | Pure static function — computes badge earned/locked state from subcategory progress in `UserDefaults` |
+| `BadgesClient` | Pure static function — computes per-category badge state (10/30/50) from summed subcategory progress, respecting premium availability |
 | `BadgeImageClient` | Actor — downloads earned badge PNGs from `Talko-content` CDN, caches on disk (`Caches/BadgeImages/`) and in memory; deduplicates parallel requests |
 | `UserDefaultsClient` | Generic `Codable` read/write wrapper around `UserDefaults.standard` (app-only keys) |
 | `LikesStore` | `@MainActor @Observable` — manages liked question IDs; replaces direct `UserDefaultsClient.likedQuestions` access from views |
@@ -282,11 +282,13 @@ Accessed via `UserDefaultsClient` with typed `UDKey` enum:
 
 ## Badges System
 
-`BadgesClient.badges(for:)` is a pure function — it takes `[Category]` and returns `[String: [Badge]]` keyed by category ID.
+`BadgesClient.badges(for:progress:isPremium:)` is a pure function — it takes `[Category]`, the saved progress and the premium flag, and returns `[String: [Badge]]` keyed by category ID.
 
 ### Badge thresholds
 
-A badge is earned per subcategory at **10, 30, and 50** answered (liked or advanced-past) questions.
+Badges are earned **per category** (not per subcategory): tier 1 / 2 / 3 at **10, 30 and 50** answered questions across the whole category. Category progress is the sum of `subcategoryProgress` over the subcategories **available to the user** — premium subcategories only count for premium users.
+
+Tapping a locked badge opens `BadgeDetailView` with the current progress toward its threshold (e.g. `12 / 30`); sharing is available only for earned badges.
 
 ### Badge image source
 
@@ -301,8 +303,8 @@ https://cdn.jsdelivr.net/gh/sashavoloshanov/Talko-content@main/Badges/{imageName
 ### Badge image naming convention
 
 ```
-badge_{subcategoryId}_{threshold}   // earned — fetched remotely by BadgeImageClient
-lockedBadgeIcon                     // not yet earned — local asset
+badge_{categoryId}_{tier}   // earned — tier is 1, 2 or 3; fetched remotely by BadgeImageClient
+lockedBadgeIcon             // not yet earned — local asset
 ```
 
 ### Progress counting
@@ -397,16 +399,16 @@ When writing or editing question content:
 ### New subcategory
 
 1. Add the subcategory object to the relevant `{category}.json` in **both** `en.lproj/` and `uk.lproj/`.
-2. Upload badge images to the `sashavoloshanov/Talko-content` repository under `Badges/`: `badge_{subcategoryId}_10.png`, `badge_{subcategoryId}_30.png`, `badge_{subcategoryId}_50.png`.
-3. No code changes required — `BadgesClient`, `BadgeImageClient`, and `QuestionClient` pick it up automatically.
+2. No code changes and no new badge images required — `BadgesClient` counts category-level progress, and `QuestionClient` picks the content up automatically.
 
 ### New category
 
 1. Create `{category}.json` in both `en.lproj/` and `uk.lproj/`.
 2. Add the category name to the `names` array in `QuestionClient.loadCategories()`.
-3. Create a new `Widget` struct in `DailyQuestionWidget/Category/` following the existing pattern.
-4. Register the widget in the widget bundle entry point.
-5. Add the new `WidgetCategory` case to `WidgetCategory` enum.
+3. Upload badge images to the `sashavoloshanov/Talko-content` repository under `Badges/`: `badge_{categoryId}_1.png`, `badge_{categoryId}_2.png`, `badge_{categoryId}_3.png`.
+4. Create a new `Widget` struct in `DailyQuestionWidget/Category/` following the existing pattern.
+5. Register the widget in the widget bundle entry point.
+6. Add the new `WidgetCategory` case to `WidgetCategory` enum.
 
 ### New holiday question
 
