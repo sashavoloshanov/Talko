@@ -28,10 +28,10 @@ struct UserDefaultsClientRemoveTests {
     }
 
     @Test func remove_doesNotAffectOtherKeys() {
-        UserDefaultsClient.set(true, for: .isPremium)
+        UserDefaultsClient.set("dark", for: .appTheme)
         UserDefaultsClient.set("value", for: .appLanguage)
         UserDefaultsClient.remove(.appLanguage)
-        #expect(UserDefaultsClient.get(Bool.self, for: .isPremium) == true)
+        #expect(UserDefaultsClient.get(String.self, for: .appTheme) == "dark")
     }
 
     @Test func remove_thenSet_returnsNewValue() {

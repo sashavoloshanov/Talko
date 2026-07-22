@@ -44,7 +44,7 @@ struct SettingsViewModelTests {
             UserDefaultsClient.defaults = defaults
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let vm = SettingsViewModel()
-            let premium = PremiumClient()
+            let premium = PremiumClient(appGroupDefaults: defaults)
             vm.setup(premiumClient: premium)
             vm.couponCode = "TESTCODE"
             await vm.redeemCoupon(bundle: .main)
@@ -57,7 +57,7 @@ struct SettingsViewModelTests {
             UserDefaultsClient.defaults = defaults
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let vm = SettingsViewModel()
-            let premium = PremiumClient()
+            let premium = PremiumClient(appGroupDefaults: defaults)
             vm.setup(premiumClient: premium)
             vm.couponCode = ""
             await vm.redeemCoupon(bundle: .main)

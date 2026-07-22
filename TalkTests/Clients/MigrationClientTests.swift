@@ -102,6 +102,84 @@ struct MigrationClientTests {
         }
     }
 
+    @Suite("migratePremiumFlagToAppGroup")
+    @MainActor
+    struct MigratePremiumFlag {
+        let defaults: UserDefaults
+        let groupDefaults: UserDefaults
+        let suite: String
+        let groupSuite: String
+
+        init() {
+            suite = "com.talk.tests.migration.\(UUID().uuidString)"
+            groupSuite = "com.talk.tests.migration.group.\(UUID().uuidString)"
+            defaults = UserDefaults(suiteName: suite)!
+            groupDefaults = UserDefaults(suiteName: groupSuite)!
+        }
+
+        @Test func legacyTrue_movedToAppGroup() throws {
+            UserDefaultsClient.defaults = defaults
+            MigrationClient.appGroupDefaults = groupDefaults
+            defer {
+                UserDefaults.standard.removePersistentDomain(forName: suite)
+                UserDefaults.standard.removePersistentDomain(forName: groupSuite)
+            }
+            defaults.set(try JSONEncoder().encode(true), forKey: "isPremium")
+            MigrationClient.runIfNeeded()
+            #expect(groupDefaults.bool(forKey: AppGroupKey.isPremium) == true)
+        }
+
+        @Test func legacyKeyRemovedAfterMigration() throws {
+            UserDefaultsClient.defaults = defaults
+            MigrationClient.appGroupDefaults = groupDefaults
+            defer {
+                UserDefaults.standard.removePersistentDomain(forName: suite)
+                UserDefaults.standard.removePersistentDomain(forName: groupSuite)
+            }
+            defaults.set(try JSONEncoder().encode(true), forKey: "isPremium")
+            MigrationClient.runIfNeeded()
+            #expect(defaults.object(forKey: "isPremium") == nil)
+        }
+
+        @Test func existingAppGroupValueNotOverwritten() throws {
+            UserDefaultsClient.defaults = defaults
+            MigrationClient.appGroupDefaults = groupDefaults
+            defer {
+                UserDefaults.standard.removePersistentDomain(forName: suite)
+                UserDefaults.standard.removePersistentDomain(forName: groupSuite)
+            }
+            groupDefaults.set(false, forKey: AppGroupKey.isPremium)
+            defaults.set(try JSONEncoder().encode(true), forKey: "isPremium")
+            MigrationClient.runIfNeeded()
+            #expect(groupDefaults.bool(forKey: AppGroupKey.isPremium) == false)
+            #expect(defaults.object(forKey: "isPremium") == nil)
+        }
+
+        @Test func noLegacyKey_appGroupUntouched() {
+            UserDefaultsClient.defaults = defaults
+            MigrationClient.appGroupDefaults = groupDefaults
+            defer {
+                UserDefaults.standard.removePersistentDomain(forName: suite)
+                UserDefaults.standard.removePersistentDomain(forName: groupSuite)
+            }
+            MigrationClient.runIfNeeded()
+            #expect(groupDefaults.object(forKey: AppGroupKey.isPremium) == nil)
+        }
+
+        @Test func runsEvenWhenStorageMigrationFlagAlreadySet() throws {
+            UserDefaultsClient.defaults = defaults
+            MigrationClient.appGroupDefaults = groupDefaults
+            defer {
+                UserDefaults.standard.removePersistentDomain(forName: suite)
+                UserDefaults.standard.removePersistentDomain(forName: groupSuite)
+            }
+            UserDefaultsClient.set(true, for: .didMigrateFromStorageClient)
+            defaults.set(try JSONEncoder().encode(true), forKey: "isPremium")
+            MigrationClient.runIfNeeded()
+            #expect(groupDefaults.bool(forKey: AppGroupKey.isPremium) == true)
+        }
+    }
+
     @Suite("migrateSubcategoryProgress")
     @MainActor
     struct MigrateProgress {

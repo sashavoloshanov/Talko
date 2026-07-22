@@ -44,7 +44,7 @@ struct SubscriptionViewModelTests {
             UserDefaultsClient.defaults = defaults
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let vm = SubscriptionViewModel()
-            let premium = PremiumClient()
+            let premium = PremiumClient(appGroupDefaults: defaults)
             vm.setup(premiumClient: premium)
             await vm.loadProducts()
             #expect(vm.isLoading == false)
@@ -63,7 +63,7 @@ struct SubscriptionViewModelTests {
             UserDefaultsClient.defaults = defaults
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let vm = SubscriptionViewModel()
-            let premium = PremiumClient()
+            let premium = PremiumClient(appGroupDefaults: defaults)
             vm.setup(premiumClient: premium)
             vm.setup(premiumClient: premium)
             await vm.loadProducts()
@@ -91,7 +91,7 @@ struct SubscriptionViewModelTests {
             UserDefaultsClient.defaults = defaults
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let vm = SubscriptionViewModel()
-            let premium = PremiumClient()
+            let premium = PremiumClient(appGroupDefaults: defaults)
             vm.setup(premiumClient: premium)
             await vm.purchase()
             #expect(vm.isLoading == false)
@@ -103,7 +103,7 @@ struct SubscriptionViewModelTests {
             UserDefaultsClient.defaults = defaults
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let vm = SubscriptionViewModel()
-            let premium = PremiumClient()
+            let premium = PremiumClient(appGroupDefaults: defaults)
             vm.setup(premiumClient: premium)
             vm.selectedProductId = PremiumClient.monthlyProductID
             await vm.purchase()
@@ -116,7 +116,7 @@ struct SubscriptionViewModelTests {
             UserDefaultsClient.defaults = defaults
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let vm = SubscriptionViewModel()
-            let premium = PremiumClient()
+            let premium = PremiumClient(appGroupDefaults: defaults)
             vm.setup(premiumClient: premium)
             vm.selectedProductId = PremiumClient.annualProductID
             await vm.purchase()

@@ -1,10 +1,26 @@
 import Foundation
 
 struct MigrationClient {
+    static var appGroupDefaults: UserDefaults? = UserDefaults(suiteName: AppGroupKey.suiteName)
+
+    private static let legacyPremiumKey = "isPremium"
+
     static func runIfNeeded() {
+        migratePremiumFlagToAppGroup()
         guard UserDefaultsClient.get(Bool.self, for: .didMigrateFromStorageClient) != true else { return }
         migrateFromStorageClient()
         UserDefaultsClient.set(true, for: .didMigrateFromStorageClient)
+    }
+
+    private static func migratePremiumFlagToAppGroup() {
+        let defaults = UserDefaultsClient.defaults
+        guard let data = defaults.data(forKey: legacyPremiumKey),
+              let isPremium = try? JSONDecoder().decode(Bool.self, from: data) else { return }
+
+        if appGroupDefaults?.object(forKey: AppGroupKey.isPremium) == nil {
+            appGroupDefaults?.set(isPremium, forKey: AppGroupKey.isPremium)
+        }
+        defaults.removeObject(forKey: legacyPremiumKey)
     }
 
     private static func migrateFromStorageClient() {

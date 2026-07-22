@@ -20,30 +20,44 @@ struct PremiumClientTests {
         @Test func noSavedPremium_defaultsToFalse() {
             UserDefaultsClient.defaults = defaults
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
-            let client = PremiumClient()
+            let client = PremiumClient(appGroupDefaults: defaults)
             #expect(client.isPremium == false)
         }
 
         @Test func savedPremiumTrue_restoresTrue() {
             UserDefaultsClient.defaults = defaults
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
-            UserDefaultsClient.set(true, for: .isPremium)
-            UserDefaultsClient.defaults = defaults
-            let client = PremiumClient()
+            defaults.set(true, forKey: AppGroupKey.isPremium)
+            let client = PremiumClient(appGroupDefaults: defaults)
             #expect(client.isPremium == true)
+        }
+
+        @Test func settingIsPremium_persistsToAppGroupDefaults() {
+            UserDefaultsClient.defaults = defaults
+            defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
+            let client = PremiumClient(appGroupDefaults: defaults)
+            client.isPremium = true
+            #expect(defaults.bool(forKey: AppGroupKey.isPremium) == true)
+        }
+
+        @Test func nilAppGroupDefaults_defaultsToFalse() {
+            UserDefaultsClient.defaults = defaults
+            defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
+            let client = PremiumClient(appGroupDefaults: nil)
+            #expect(client.isPremium == false)
         }
 
         @Test func initialProducts_isEmpty() {
             UserDefaultsClient.defaults = defaults
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
-            let client = PremiumClient()
+            let client = PremiumClient(appGroupDefaults: defaults)
             #expect(client.products.isEmpty)
         }
 
         @Test func initialLastPurchaseError_isNil() {
             UserDefaultsClient.defaults = defaults
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
-            let client = PremiumClient()
+            let client = PremiumClient(appGroupDefaults: defaults)
             #expect(client.lastPurchaseError == nil)
         }
     }
@@ -52,19 +66,19 @@ struct PremiumClientTests {
     @MainActor
     struct RedeemCoupon {
         @Test func emptyCode_throwsCouponInvalid() async {
-            let client = PremiumClient()
+            let client = PremiumClient(appGroupDefaults: nil)
             await #expect(throws: (any Error).self) {
                 try await client.redeemCoupon("")
             }
         }
 
         @Test func nonEmptyCode_doesNotThrow() async throws {
-            let client = PremiumClient()
+            let client = PremiumClient(appGroupDefaults: nil)
             try await client.redeemCoupon("VALID123")
         }
 
         @Test func whitespaceOnlyCode_doesNotThrow() async {
-            let client = PremiumClient()
+            let client = PremiumClient(appGroupDefaults: nil)
             // Guard only checks isEmpty, so whitespace is accepted — document current behaviour
             var didThrow = false
             do { try await client.redeemCoupon("   ") }

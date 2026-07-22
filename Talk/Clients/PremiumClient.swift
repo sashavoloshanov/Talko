@@ -12,18 +12,19 @@ final class PremiumClient {
 
     var isPremium: Bool {
         didSet {
-            UserDefaultsClient.set(isPremium, for: .isPremium)
-            UserDefaults(suiteName: AppGroupKey.suiteName)?.set(isPremium, forKey: AppGroupKey.isPremium)
+            appGroupDefaults?.set(isPremium, forKey: AppGroupKey.isPremium)
             WidgetCenter.shared.reloadAllTimelines()
         }
     }
     var products: [Product] = []
     var lastPurchaseError: String? = nil
 
+    private let appGroupDefaults: UserDefaults?
     private var transactionListenerTask: Task<Void, Never>?
 
-    init() {
-        self.isPremium = UserDefaultsClient.get(Bool.self, for: .isPremium) ?? false
+    init(appGroupDefaults: UserDefaults? = UserDefaults(suiteName: AppGroupKey.suiteName)) {
+        self.appGroupDefaults = appGroupDefaults
+        self.isPremium = appGroupDefaults?.bool(forKey: AppGroupKey.isPremium) ?? false
         transactionListenerTask = listenForTransactions()
     }
 

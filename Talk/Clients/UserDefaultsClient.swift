@@ -5,7 +5,6 @@ enum UDKey: String {
     case appTheme
     case likedQuestions
     case subcategoryProgress
-    case isPremium
     case didMigrateFromStorageClient
 }
  
