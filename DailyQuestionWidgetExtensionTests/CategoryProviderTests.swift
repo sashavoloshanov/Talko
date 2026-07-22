@@ -63,7 +63,7 @@ struct CategoryProviderTests {
         @Test func nilDefaults_returnsReloadEntry() {
             let provider = CategoryProvider(categoryId: "couple")
             let entry = provider.makeEntry(defaults: nil)
-            #expect(entry.questionText == "Reload")
+            #expect(entry.questionText == WidgetFallback.reload)
             #expect(entry.categoryId == "couple")
             #expect(entry.categoryName == "couple")
             #expect(entry.totalCount == 1)
@@ -75,7 +75,7 @@ struct CategoryProviderTests {
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let provider = CategoryProvider(categoryId: "couple")
             let entry = provider.makeEntry(defaults: defaults)
-            #expect(entry.questionText == "Reload")
+            #expect(entry.questionText == WidgetFallback.reload)
             #expect(entry.totalCount == 1)
         }
 

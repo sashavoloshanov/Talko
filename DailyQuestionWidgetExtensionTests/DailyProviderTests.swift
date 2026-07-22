@@ -115,12 +115,17 @@ struct DailyProviderTests {
         }
     }
 
-    @Suite("placeholder text")
+    @Suite("WidgetFallback")
     @MainActor
-    struct Placeholder {
-        @Test func placeholderHasNonEmptyText() {
-            let text = "What made you happy today?"
-            #expect(!text.isEmpty)
+    struct Fallbacks {
+        @Test func placeholderTextsAreNonEmpty() {
+            #expect(!WidgetFallback.placeholderDailyQuestion.isEmpty)
+            #expect(!WidgetFallback.placeholderCategoryQuestion.isEmpty)
+        }
+
+        @Test func localizedFallbacksAreNonEmpty() {
+            #expect(!WidgetFallback.reload.isEmpty)
+            #expect(!WidgetFallback.dailyQuestion.isEmpty)
         }
     }
 }

@@ -5,7 +5,7 @@ struct CategoryProvider: TimelineProvider {
     let categoryId: String
 
     func placeholder(in context: Context) -> CategoryEntry {
-        CategoryEntry(date: .now, questionText: "Do you like app?",
+        CategoryEntry(date: .now, questionText: WidgetFallback.placeholderCategoryQuestion,
                       categoryId: categoryId, categoryName: "...", categoryEmoji: "",
                       currentIndex: 1, totalCount: 50)
     }
@@ -27,7 +27,7 @@ struct CategoryProvider: TimelineProvider {
         return CategoryEntry(
             date: .now,
             questionText: questions.isEmpty
-                ? "Reload"
+                ? WidgetFallback.reload
                 : questions[safeIndex],
             categoryId:    categoryId,
             categoryName:  payload?.name ?? categoryId,

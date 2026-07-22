@@ -4,7 +4,7 @@ import Foundation
 struct DailyProvider: TimelineProvider {
 
     func placeholder(in context: Context) -> DailyEntry {
-        DailyEntry(date: .now, questionText: "What made you happy today?")
+        DailyEntry(date: .now, questionText: WidgetFallback.placeholderDailyQuestion)
     }
 
     func getSnapshot(in context: Context, completion: @escaping (DailyEntry) -> Void) {
@@ -27,7 +27,7 @@ struct DailyProvider: TimelineProvider {
 
     func questionText(for date: Date, payload: DailyQuestionsPayload?) -> String {
         guard let payload, !payload.questions.isEmpty else {
-            return "What made you happy today?"
+            return WidgetFallback.dailyQuestion
         }
         return payload.holidayQuestion(for: date) ?? payload.question(for: date)
     }
