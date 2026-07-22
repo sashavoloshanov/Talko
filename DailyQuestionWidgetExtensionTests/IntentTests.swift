@@ -27,8 +27,9 @@ struct NextQuestionIntentTests {
             let (defaults, suite) = makeDefaults()
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let questions = ["Q1", "Q2", "Q3"]
-            let data = try JSONEncoder().encode(questions)
-            defaults.set(data, forKey: AppGroupKey.widgetQuestions(categoryId: "couple"))
+            let payload = WidgetCategoryPayload(name: "Couple", emoji: "💑", questions: questions)
+            let data = try JSONEncoder().encode(payload)
+            defaults.set(data, forKey: AppGroupKey.widgetCategory(categoryId: "couple"))
             defaults.set(0, forKey: AppGroupKey.widgetIndex(categoryId: "couple"))
             // Simulate what perform() does using isolated defaults
             let key = AppGroupKey.widgetIndex(categoryId: "couple")
@@ -42,8 +43,9 @@ struct NextQuestionIntentTests {
             let (defaults, suite) = makeDefaults()
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let questions = ["Q1", "Q2", "Q3"]
-            let data = try JSONEncoder().encode(questions)
-            defaults.set(data, forKey: AppGroupKey.widgetQuestions(categoryId: "couple"))
+            let payload = WidgetCategoryPayload(name: "Couple", emoji: "💑", questions: questions)
+            let data = try JSONEncoder().encode(payload)
+            defaults.set(data, forKey: AppGroupKey.widgetCategory(categoryId: "couple"))
             let key = AppGroupKey.widgetIndex(categoryId: "couple")
             defaults.set(2, forKey: key)
             let count = questions.count
@@ -87,8 +89,9 @@ struct PrevQuestionIntentTests {
             let (defaults, suite) = makeDefaults()
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let questions = ["Q1", "Q2", "Q3"]
-            let data = try JSONEncoder().encode(questions)
-            defaults.set(data, forKey: AppGroupKey.widgetQuestions(categoryId: "couple"))
+            let payload = WidgetCategoryPayload(name: "Couple", emoji: "💑", questions: questions)
+            let data = try JSONEncoder().encode(payload)
+            defaults.set(data, forKey: AppGroupKey.widgetCategory(categoryId: "couple"))
             let key = AppGroupKey.widgetIndex(categoryId: "couple")
             defaults.set(2, forKey: key)
             let count = questions.count
@@ -101,8 +104,9 @@ struct PrevQuestionIntentTests {
             let (defaults, suite) = makeDefaults()
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let questions = ["Q1", "Q2", "Q3"]
-            let data = try JSONEncoder().encode(questions)
-            defaults.set(data, forKey: AppGroupKey.widgetQuestions(categoryId: "couple"))
+            let payload = WidgetCategoryPayload(name: "Couple", emoji: "💑", questions: questions)
+            let data = try JSONEncoder().encode(payload)
+            defaults.set(data, forKey: AppGroupKey.widgetCategory(categoryId: "couple"))
             let key = AppGroupKey.widgetIndex(categoryId: "couple")
             defaults.set(0, forKey: key)
             let count = questions.count

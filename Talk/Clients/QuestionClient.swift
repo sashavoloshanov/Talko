@@ -107,15 +107,13 @@ actor QuestionClient: QuestionClientProtocol {
 
     private func saveQuestionsForWidget(categories: [Category], isPremium: Bool) {
         for category in categories {
-            widgetDefaults?.set(category.name,  forKey: AppGroupKey.widgetCategoryName(categoryId: category.id))
-            widgetDefaults?.set(category.emoji, forKey: AppGroupKey.widgetCategoryEmoji(categoryId: category.id))
-
             let questions: [String] = isPremium
                 ? category.subcategories.flatMap { $0.questions.map(\.text) }
                 : category.subcategories.filter { !$0.isPremium }.flatMap { $0.questions.map(\.text) }
 
-            if let data = try? JSONEncoder().encode(questions) {
-                widgetDefaults?.set(data, forKey: AppGroupKey.widgetQuestions(categoryId: category.id))
+            let payload = WidgetCategoryPayload(name: category.name, emoji: category.emoji, questions: questions)
+            if let data = try? JSONEncoder().encode(payload) {
+                widgetDefaults?.set(data, forKey: AppGroupKey.widgetCategory(categoryId: category.id))
             }
         }
 

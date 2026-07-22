@@ -19,7 +19,8 @@ struct CategoryProvider: TimelineProvider {
     }
 
     func makeEntry(defaults: UserDefaults?) -> CategoryEntry {
-        let questions = loadQuestions(from: defaults)
+        let payload = loadPayload(from: defaults)
+        let questions = payload?.questions ?? []
         let rawIndex = defaults?.integer(forKey: AppGroupKey.widgetIndex(categoryId: categoryId)) ?? 0
         let safeIndex = questions.isEmpty ? 0 : rawIndex % questions.count
 
@@ -29,18 +30,15 @@ struct CategoryProvider: TimelineProvider {
                 ? "Reload"
                 : questions[safeIndex],
             categoryId:    categoryId,
-            categoryName:  defaults?.string(forKey: AppGroupKey.widgetCategoryName(categoryId: categoryId)) ?? categoryId,
-            categoryEmoji: defaults?.string(forKey: AppGroupKey.widgetCategoryEmoji(categoryId: categoryId)) ?? "",
+            categoryName:  payload?.name ?? categoryId,
+            categoryEmoji: payload?.emoji ?? "",
             currentIndex:  safeIndex + 1,
             totalCount:    max(questions.count, 1)
         )
     }
 
-    func loadQuestions(from defaults: UserDefaults?) -> [String] {
-        guard
-            let data = defaults?.data(forKey: AppGroupKey.widgetQuestions(categoryId: categoryId)),
-            let q = try? JSONDecoder().decode([String].self, from: data)
-        else { return [] }
-        return q
+    func loadPayload(from defaults: UserDefaults?) -> WidgetCategoryPayload? {
+        guard let data = defaults?.data(forKey: AppGroupKey.widgetCategory(categoryId: categoryId)) else { return nil }
+        return try? JSONDecoder().decode(WidgetCategoryPayload.self, from: data)
     }
 }

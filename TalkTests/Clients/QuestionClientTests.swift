@@ -144,10 +144,10 @@ struct QuestionClientTests {
             let widgetCenter = MockWidgetCenter()
             let client = QuestionClient(contentBundle: bundle, widgetDefaults: widgetDefaults, widgetCenter: widgetCenter)
             _ = try await client.loadCategories(language: .english)
-            let data = widgetDefaults.data(forKey: AppGroupKey.widgetQuestions(categoryId: "couple"))
-            let questions = try JSONDecoder().decode([String].self, from: data!)
-            #expect(questions.contains("Free Q"))
-            #expect(!questions.contains("Premium Q"))
+            let data = widgetDefaults.data(forKey: AppGroupKey.widgetCategory(categoryId: "couple"))
+            let payload = try JSONDecoder().decode(WidgetCategoryPayload.self, from: data!)
+            #expect(payload.questions.contains("Free Q"))
+            #expect(!payload.questions.contains("Premium Q"))
         }
 
         @Test func premiumSavesAllQuestions() async throws {
@@ -158,20 +158,22 @@ struct QuestionClientTests {
             let widgetCenter = MockWidgetCenter()
             let client = QuestionClient(contentBundle: bundle, widgetDefaults: widgetDefaults, widgetCenter: widgetCenter)
             _ = try await client.loadCategories(language: .english)
-            let data = widgetDefaults.data(forKey: AppGroupKey.widgetQuestions(categoryId: "couple"))
-            let questions = try JSONDecoder().decode([String].self, from: data!)
-            #expect(questions.contains("Free Q"))
-            #expect(questions.contains("Premium Q"))
+            let data = widgetDefaults.data(forKey: AppGroupKey.widgetCategory(categoryId: "couple"))
+            let payload = try JSONDecoder().decode(WidgetCategoryPayload.self, from: data!)
+            #expect(payload.questions.contains("Free Q"))
+            #expect(payload.questions.contains("Premium Q"))
         }
 
-        @Test func widgetDefaultsContainsCategoryNameAndEmoji() async throws {
+        @Test func widgetPayloadContainsCategoryNameAndEmoji() async throws {
             let bundle = try makeAllCategoryBundle()
             let (widgetDefaults, suite) = makeWidgetDefaults()
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let client = QuestionClient(contentBundle: bundle, widgetDefaults: widgetDefaults, widgetCenter: MockWidgetCenter())
             _ = try await client.loadCategories(language: .english)
-            #expect(widgetDefaults.string(forKey: AppGroupKey.widgetCategoryName(categoryId: "couple")) == "Couple")
-            #expect(widgetDefaults.string(forKey: AppGroupKey.widgetCategoryEmoji(categoryId: "couple")) == "💑")
+            let data = widgetDefaults.data(forKey: AppGroupKey.widgetCategory(categoryId: "couple"))
+            let payload = try JSONDecoder().decode(WidgetCategoryPayload.self, from: data!)
+            #expect(payload.name == "Couple")
+            #expect(payload.emoji == "💑")
         }
 
         @Test func reloadedAllTrueAfterLoadCategories() async throws {

@@ -1,62 +1,64 @@
 import Testing
 import Foundation
 
+private func makeDefaults() -> (UserDefaults, String) {
+    let suite = "com.talk.widget.catprovider.\(UUID().uuidString)"
+    return (UserDefaults(suiteName: suite)!, suite)
+}
+
+private func savePayload(
+    _ payload: WidgetCategoryPayload,
+    categoryId: String,
+    to defaults: UserDefaults
+) throws {
+    let data = try JSONEncoder().encode(payload)
+    defaults.set(data, forKey: AppGroupKey.widgetCategory(categoryId: categoryId))
+}
+
 @Suite("CategoryProvider", .serialized)
 @MainActor
 struct CategoryProviderTests {
 
-    private func makeDefaults() -> (UserDefaults, String) {
-        let suite = "com.talk.widget.catprovider.\(UUID().uuidString)"
-        return (UserDefaults(suiteName: suite)!, suite)
-    }
-
-    @Suite("loadQuestions(from:)")
+    @Suite("loadPayload(from:)")
     @MainActor
-    struct LoadQuestions {
-        private func makeDefaults() -> (UserDefaults, String) {
-            let suite = "com.talk.widget.catprovider.\(UUID().uuidString)"
-            return (UserDefaults(suiteName: suite)!, suite)
-        }
+    struct LoadPayload {
 
-        @Test func nilDefaults_returnsEmpty() {
+        @Test func nilDefaults_returnsNil() {
             let provider = CategoryProvider(categoryId: "couple")
-            #expect(provider.loadQuestions(from: nil).isEmpty)
+            #expect(provider.loadPayload(from: nil) == nil)
         }
 
-        @Test func noQuestionsKey_returnsEmpty() {
+        @Test func noPayloadKey_returnsNil() {
             let (defaults, suite) = makeDefaults()
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let provider = CategoryProvider(categoryId: "couple")
-            #expect(provider.loadQuestions(from: defaults).isEmpty)
+            #expect(provider.loadPayload(from: defaults) == nil)
         }
 
-        @Test func validQuestions_returnsArray() throws {
+        @Test func validPayload_returnsDecodedValues() throws {
             let (defaults, suite) = makeDefaults()
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
-            let questions = ["Q1", "Q2", "Q3"]
-            let data = try JSONEncoder().encode(questions)
-            defaults.set(data, forKey: AppGroupKey.widgetQuestions(categoryId: "couple"))
+            let payload = WidgetCategoryPayload(name: "Couple", emoji: "💑", questions: ["Q1", "Q2", "Q3"])
+            try savePayload(payload, categoryId: "couple", to: defaults)
             let provider = CategoryProvider(categoryId: "couple")
-            let result = provider.loadQuestions(from: defaults)
-            #expect(result == ["Q1", "Q2", "Q3"])
+            let loaded = provider.loadPayload(from: defaults)
+            #expect(loaded?.name == "Couple")
+            #expect(loaded?.emoji == "💑")
+            #expect(loaded?.questions == ["Q1", "Q2", "Q3"])
         }
 
-        @Test func invalidData_returnsEmpty() {
+        @Test func invalidData_returnsNil() {
             let (defaults, suite) = makeDefaults()
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
-            defaults.set(Data([0xFF, 0xFE]), forKey: AppGroupKey.widgetQuestions(categoryId: "couple"))
+            defaults.set(Data([0xFF, 0xFE]), forKey: AppGroupKey.widgetCategory(categoryId: "couple"))
             let provider = CategoryProvider(categoryId: "couple")
-            #expect(provider.loadQuestions(from: defaults).isEmpty)
+            #expect(provider.loadPayload(from: defaults) == nil)
         }
     }
 
     @Suite("makeEntry(defaults:)")
     @MainActor
     struct MakeEntry {
-        private func makeDefaults() -> (UserDefaults, String) {
-            let suite = "com.talk.widget.catprovider.\(UUID().uuidString)"
-            return (UserDefaults(suiteName: suite)!, suite)
-        }
 
         @Test func nilDefaults_returnsReloadEntry() {
             let provider = CategoryProvider(categoryId: "couple")
@@ -68,7 +70,7 @@ struct CategoryProviderTests {
             #expect(entry.currentIndex == 1)
         }
 
-        @Test func emptyQuestions_returnsReloadEntry() {
+        @Test func missingPayload_returnsReloadEntry() {
             let (defaults, suite) = makeDefaults()
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let provider = CategoryProvider(categoryId: "couple")
@@ -80,9 +82,8 @@ struct CategoryProviderTests {
         @Test func withQuestions_returnsFirstAtIndex0() throws {
             let (defaults, suite) = makeDefaults()
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
-            let questions = ["Question A", "Question B", "Question C"]
-            let data = try JSONEncoder().encode(questions)
-            defaults.set(data, forKey: AppGroupKey.widgetQuestions(categoryId: "couple"))
+            let payload = WidgetCategoryPayload(name: "Couple", emoji: "💑", questions: ["Question A", "Question B", "Question C"])
+            try savePayload(payload, categoryId: "couple", to: defaults)
             defaults.set(0, forKey: AppGroupKey.widgetIndex(categoryId: "couple"))
             let provider = CategoryProvider(categoryId: "couple")
             let entry = provider.makeEntry(defaults: defaults)
@@ -94,9 +95,8 @@ struct CategoryProviderTests {
         @Test func withQuestionsAtIndex1_returnsSecond() throws {
             let (defaults, suite) = makeDefaults()
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
-            let questions = ["Q1", "Q2", "Q3"]
-            let data = try JSONEncoder().encode(questions)
-            defaults.set(data, forKey: AppGroupKey.widgetQuestions(categoryId: "couple"))
+            let payload = WidgetCategoryPayload(name: "Couple", emoji: "💑", questions: ["Q1", "Q2", "Q3"])
+            try savePayload(payload, categoryId: "couple", to: defaults)
             defaults.set(1, forKey: AppGroupKey.widgetIndex(categoryId: "couple"))
             let provider = CategoryProvider(categoryId: "couple")
             let entry = provider.makeEntry(defaults: defaults)
@@ -104,12 +104,11 @@ struct CategoryProviderTests {
             #expect(entry.currentIndex == 2)
         }
 
-        @Test func outOfBoundsIndex_clampsToZero() throws {
+        @Test func outOfBoundsIndex_wrapsAround() throws {
             let (defaults, suite) = makeDefaults()
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
-            let questions = ["Q1", "Q2"]
-            let data = try JSONEncoder().encode(questions)
-            defaults.set(data, forKey: AppGroupKey.widgetQuestions(categoryId: "couple"))
+            let payload = WidgetCategoryPayload(name: "Couple", emoji: "💑", questions: ["Q1", "Q2"])
+            try savePayload(payload, categoryId: "couple", to: defaults)
             defaults.set(99, forKey: AppGroupKey.widgetIndex(categoryId: "couple"))
             let provider = CategoryProvider(categoryId: "couple")
             let entry = provider.makeEntry(defaults: defaults)
@@ -117,18 +116,18 @@ struct CategoryProviderTests {
             #expect(entry.questionText == "Q2")
         }
 
-        @Test func categoryNameAndEmoji_fromDefaults() throws {
+        @Test func categoryNameAndEmoji_fromPayload() throws {
             let (defaults, suite) = makeDefaults()
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
-            defaults.set("Couple", forKey: AppGroupKey.widgetCategoryName(categoryId: "couple"))
-            defaults.set("💑", forKey: AppGroupKey.widgetCategoryEmoji(categoryId: "couple"))
+            let payload = WidgetCategoryPayload(name: "Couple", emoji: "💑", questions: [])
+            try savePayload(payload, categoryId: "couple", to: defaults)
             let provider = CategoryProvider(categoryId: "couple")
             let entry = provider.makeEntry(defaults: defaults)
             #expect(entry.categoryName == "Couple")
             #expect(entry.categoryEmoji == "💑")
         }
 
-        @Test func missingCategoryName_fallsBackToCategoryId() {
+        @Test func missingPayload_fallsBackToCategoryId() {
             let (defaults, suite) = makeDefaults()
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let provider = CategoryProvider(categoryId: "family")

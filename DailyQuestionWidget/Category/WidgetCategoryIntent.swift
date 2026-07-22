@@ -20,10 +20,10 @@ struct NextQuestionIntent: AppIntent {
 
     private func loadCount(from defaults: UserDefaults?) -> Int {
         guard
-            let data = defaults?.data(forKey: AppGroupKey.widgetQuestions(categoryId: categoryId)),
-            let q = try? JSONDecoder().decode([String].self, from: data)
+            let data = defaults?.data(forKey: AppGroupKey.widgetCategory(categoryId: categoryId)),
+            let payload = try? JSONDecoder().decode(WidgetCategoryPayload.self, from: data)
         else { return 1 }
-        return q.count
+        return payload.questions.count
     }
 }
 
@@ -47,9 +47,9 @@ struct PrevQuestionIntent: AppIntent {
 
     private func loadCount(from defaults: UserDefaults?) -> Int {
         guard
-            let data = defaults?.data(forKey: AppGroupKey.widgetQuestions(categoryId: categoryId)),
-            let q = try? JSONDecoder().decode([String].self, from: data)
+            let data = defaults?.data(forKey: AppGroupKey.widgetCategory(categoryId: categoryId)),
+            let payload = try? JSONDecoder().decode(WidgetCategoryPayload.self, from: data)
         else { return 1 }
-        return q.count
+        return payload.questions.count
     }
 }
