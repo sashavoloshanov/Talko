@@ -35,7 +35,7 @@ struct PremiumClientTests {
         @Test func settingIsPremium_persistsToAppGroupDefaults() {
             UserDefaultsClient.defaults = defaults
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
-            let client = PremiumClient(appGroupDefaults: defaults)
+            let client = PremiumClient(appGroupDefaults: defaults, widgetCenter: MockWidgetCenter(), questionClient: MockQuestionClient())
             client.isPremium = true
             #expect(defaults.bool(forKey: AppGroupKey.isPremium) == true)
         }
@@ -59,6 +59,46 @@ struct PremiumClientTests {
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let client = PremiumClient(appGroupDefaults: defaults)
             #expect(client.lastPurchaseError == nil)
+        }
+    }
+
+    @Suite("widget reload on isPremium change")
+    @MainActor
+    struct WidgetReload {
+        let defaults: UserDefaults
+        let suite: String
+
+        init() {
+            suite = "com.talk.tests.premium.\(UUID().uuidString)"
+            defaults = UserDefaults(suiteName: suite)!
+        }
+
+        @Test func settingTrue_reloadsAllTimelines() {
+            UserDefaultsClient.defaults = defaults
+            defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
+            let center = MockWidgetCenter()
+            let client = PremiumClient(appGroupDefaults: defaults, widgetCenter: center, questionClient: MockQuestionClient())
+            client.isPremium = true
+            #expect(center.reloadedAll == true)
+        }
+
+        @Test func settingFalse_alsoReloadsAllTimelines() {
+            UserDefaultsClient.defaults = defaults
+            defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
+            defaults.set(true, forKey: AppGroupKey.isPremium)
+            let center = MockWidgetCenter()
+            let client = PremiumClient(appGroupDefaults: defaults, widgetCenter: center, questionClient: MockQuestionClient())
+            client.isPremium = false
+            #expect(center.reloadedAll == true)
+            #expect(defaults.bool(forKey: AppGroupKey.isPremium) == false)
+        }
+
+        @Test func initDoesNotReloadTimelines() {
+            UserDefaultsClient.defaults = defaults
+            defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
+            let center = MockWidgetCenter()
+            _ = PremiumClient(appGroupDefaults: defaults, widgetCenter: center, questionClient: MockQuestionClient())
+            #expect(center.reloadedAll == false)
         }
     }
 

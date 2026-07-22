@@ -13,19 +13,37 @@ final class PremiumClient {
     var isPremium: Bool {
         didSet {
             appGroupDefaults?.set(isPremium, forKey: AppGroupKey.isPremium)
-            WidgetCenter.shared.reloadAllTimelines()
+            widgetCenter.reloadAllTimelines()
+            refreshWidgetQuestions()
         }
     }
     var products: [Product] = []
     var lastPurchaseError: String? = nil
 
     private let appGroupDefaults: UserDefaults?
+    private let widgetCenter: any WidgetCenterProtocol
+    private let questionClient: any QuestionClientProtocol
     private var transactionListenerTask: Task<Void, Never>?
 
-    init(appGroupDefaults: UserDefaults? = UserDefaults(suiteName: AppGroupKey.suiteName)) {
+    init(
+        appGroupDefaults: UserDefaults? = UserDefaults(suiteName: AppGroupKey.suiteName),
+        widgetCenter: any WidgetCenterProtocol = WidgetCenter.shared,
+        questionClient: any QuestionClientProtocol = QuestionClient.shared
+    ) {
         self.appGroupDefaults = appGroupDefaults
+        self.widgetCenter = widgetCenter
+        self.questionClient = questionClient
         self.isPremium = appGroupDefaults?.bool(forKey: AppGroupKey.isPremium) ?? false
         transactionListenerTask = listenForTransactions()
+    }
+
+    // Category widgets cache a premium-filtered question pool in the App Group,
+    // so a premium change must rebuild that pool, not just re-render timelines.
+    private func refreshWidgetQuestions() {
+        let language = AppLanguage(rawValue: appGroupDefaults?.string(forKey: AppGroupKey.appLanguage) ?? "") ?? .ukrainian
+        Task { [questionClient] in
+            await questionClient.refreshWidgetData(for: language)
+        }
     }
 
     deinit {
