@@ -11,9 +11,10 @@ enum WidgetFallback {
         String(localized: "widget_fallback_daily_question", defaultValue: "What made you happy today?", bundle: languageBundle)
     }
 
-    // Placeholder strings are only rendered in the widget gallery preview and stay English.
-    static let placeholderDailyQuestion = "What made you happy today?"
-    static let placeholderCategoryQuestion = "Do you like app?"
+    // Placeholder text shown before the first timeline loads. Localized so the
+    // widget never displays an empty/English-only state.
+    static var placeholderDailyQuestion: String { dailyQuestion }
+    static var placeholderCategoryQuestion: String { reload }
 
     // Widgets follow the language selected in the app (App Group), not the system locale.
     private static var languageBundle: Bundle {

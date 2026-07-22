@@ -28,5 +28,8 @@ struct MediumWidgetView: View {
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        // Show the question text even in the placeholder/loading state instead
+        // of the system's grey redaction bars.
+        .unredacted()
     }
 }
