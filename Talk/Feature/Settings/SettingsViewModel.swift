@@ -1,13 +1,20 @@
 import Foundation
 import Observation
- 
+
 @Observable
 final class SettingsViewModel: BaseViewModel {
     var couponCode: String = ""
     var couponMessage: String? = nil
     var isRedeemingCoupon: Bool = false
- 
-    func redeemCoupon(premiumClient: PremiumClient, bundle: Bundle) {
+
+    @ObservationIgnored private var premiumClient: PremiumClient?
+
+    func setup(premiumClient: PremiumClient) {
+        self.premiumClient = premiumClient
+    }
+
+    func redeemCoupon(bundle: Bundle) {
+        guard let premiumClient else { return }
         isRedeemingCoupon = true
         couponMessage = nil
         Task {

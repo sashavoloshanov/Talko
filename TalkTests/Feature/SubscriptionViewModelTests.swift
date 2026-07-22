@@ -72,7 +72,8 @@ struct SubscriptionViewModelTests {
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let vm = SubscriptionViewModel()
             let premium = PremiumClient()
-            vm.purchase(premiumClient: premium)
+            vm.setup(premiumClient: premium)
+            vm.purchase()
             #expect(vm.isLoading == false)
             #expect(vm.purchaseError == nil)
         }
@@ -83,8 +84,9 @@ struct SubscriptionViewModelTests {
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let vm = SubscriptionViewModel()
             let premium = PremiumClient()
+            vm.setup(premiumClient: premium)
             vm.selectedProductId = PremiumClient.monthlyProductID
-            vm.purchase(premiumClient: premium)
+            vm.purchase()
             try await Task.sleep(nanoseconds: 200_000_000)
             #expect(vm.isLoading == false)
             #expect(vm.purchaseSuccess == false)
@@ -96,8 +98,9 @@ struct SubscriptionViewModelTests {
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let vm = SubscriptionViewModel()
             let premium = PremiumClient()
+            vm.setup(premiumClient: premium)
             vm.selectedProductId = PremiumClient.annualProductID
-            vm.purchase(premiumClient: premium)
+            vm.purchase()
             try await Task.sleep(nanoseconds: 200_000_000)
             #expect(vm.purchaseError == nil)
         }
@@ -112,8 +115,9 @@ struct SubscriptionViewModelTests {
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let vm = SubscriptionViewModel()
             let premium = PremiumClient()
-            vm.restorePurchases(premiumClient: premium)
-            vm.restorePurchases(premiumClient: premium)
+            vm.setup(premiumClient: premium)
+            vm.restorePurchases()
+            vm.restorePurchases()
             try await Task.sleep(nanoseconds: 300_000_000)
             #expect(vm.purchaseSuccess == premium.isPremium)
         }
@@ -124,7 +128,8 @@ struct SubscriptionViewModelTests {
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let vm = SubscriptionViewModel()
             let premium = PremiumClient()
-            vm.restorePurchases(premiumClient: premium)
+            vm.setup(premiumClient: premium)
+            vm.restorePurchases()
             try await Task.sleep(nanoseconds: 300_000_000)
             #expect(vm.purchaseSuccess == premium.isPremium)
         }

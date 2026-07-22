@@ -9,11 +9,14 @@ final class SubscriptionViewModel: BaseViewModel {
     var purchaseSuccess: Bool = false
     var purchaseError: String? = nil
 
+    @ObservationIgnored private var premiumClient: PremiumClient?
+
     func setup(premiumClient: PremiumClient) {
-        Task { await loadProducts(premiumClient: premiumClient) }
+        self.premiumClient = premiumClient
     }
 
-    private func loadProducts(premiumClient: PremiumClient) async {
+    func loadProducts() async {
+        guard let premiumClient else { return }
         await MainActor.run { isLoading = true }
         await premiumClient.fetchAvailableProducts()
         await MainActor.run {
@@ -25,8 +28,8 @@ final class SubscriptionViewModel: BaseViewModel {
         }
     }
 
-    func purchase(premiumClient: PremiumClient) {
-        guard let id = selectedProductId else { return }
+    func purchase() {
+        guard let premiumClient, let id = selectedProductId else { return }
         Task {
             await MainActor.run { isLoading = true; purchaseError = nil }
             await premiumClient.purchase(id)
@@ -40,7 +43,8 @@ final class SubscriptionViewModel: BaseViewModel {
         }
     }
 
-    func restorePurchases(premiumClient: PremiumClient) {
+    func restorePurchases() {
+        guard let premiumClient else { return }
         Task {
             await MainActor.run { isLoading = true; purchaseError = nil }
             await premiumClient.restorePurchases()

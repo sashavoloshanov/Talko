@@ -40,6 +40,9 @@ struct SettingsView: View {
             versionView
         }
         .background(Colors.backgroundPrimary)
+        .onAppear {
+            viewModel.setup(premiumClient: premiumClient)
+        }
     }
     
     private var navigationView: some View {
@@ -165,7 +168,7 @@ struct SettingsView: View {
                 HStack {
                     TextField(String(localized: "settings_coupon_placeholder", bundle: bundle), text: $viewModel.couponCode)
                     Button(String(localized: "settings_coupon_activate", bundle: bundle)) {
-                        viewModel.redeemCoupon(premiumClient: premiumClient, bundle: bundle)
+                        viewModel.redeemCoupon(bundle: bundle)
                     }
                     .disabled(viewModel.couponCode.isEmpty || viewModel.isRedeemingCoupon)
                 }

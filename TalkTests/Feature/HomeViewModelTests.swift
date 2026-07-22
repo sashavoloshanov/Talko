@@ -108,7 +108,8 @@ struct HomeViewModelTests {
             let premium = PremiumClient()
             let store = LikesStore()
             let vm = HomeViewModel()
-            await vm.loadContent(holder: holder, language: .english, premiumClient: premium, likesStore: store)
+            vm.setup(holder: holder, languageClient: LanguageClient(), premiumClient: premium, likesStore: store)
+            await vm.loadContent()
             #expect(vm.errorMessage == nil)
         }
 
@@ -121,7 +122,8 @@ struct HomeViewModelTests {
             let premium = PremiumClient()
             let store = LikesStore()
             let vm = HomeViewModel()
-            await vm.loadContent(holder: holder, language: .english, premiumClient: premium, likesStore: store)
+            vm.setup(holder: holder, languageClient: LanguageClient(), premiumClient: premium, likesStore: store)
+            await vm.loadContent()
             #expect(vm.errorMessage != nil)
         }
 
@@ -137,7 +139,8 @@ struct HomeViewModelTests {
             let store = LikesStore()
             store.toggle("pq1")
             let vm = HomeViewModel()
-            await vm.loadContent(holder: holder, language: .english, premiumClient: premium, likesStore: store)
+            vm.setup(holder: holder, languageClient: LanguageClient(), premiumClient: premium, likesStore: store)
+            await vm.loadContent()
             #expect(!store.likedIds.contains("pq1"))
         }
     }
@@ -161,8 +164,9 @@ struct HomeViewModelTests {
             let premium = PremiumClient()
             let store = LikesStore()
             let vm = HomeViewModel()
-            await vm.loadContent(holder: holder, language: .english, premiumClient: premium, likesStore: store)
-            await vm.reloadContent(holder: holder, language: .english, premiumClient: premium, likesStore: store)
+            vm.setup(holder: holder, languageClient: LanguageClient(), premiumClient: premium, likesStore: store)
+            await vm.loadContent()
+            await vm.reloadContent()
             let count = await mock.loadCategoriesCallCount
             #expect(count == 2)
         }

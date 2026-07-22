@@ -87,7 +87,7 @@ struct SubscriptionView: View {
                 }
                 
                 Button {
-                    viewModel.purchase(premiumClient: premiumClient)
+                    viewModel.purchase()
                 } label: {
                     Group {
                         if viewModel.isLoading {
@@ -107,7 +107,7 @@ struct SubscriptionView: View {
                 .disabled(viewModel.isLoading || viewModel.selectedProductId == nil)
                 
                 Button {
-                    viewModel.restorePurchases(premiumClient: premiumClient)
+                    viewModel.restorePurchases()
                 } label: {
                     Text(String(localized: "subscription_restore", bundle: bundle))
                         .font(.footnote)
@@ -136,8 +136,9 @@ struct SubscriptionView: View {
             }
         }
         .background(Colors.backgroundPrimary)
-        .onAppear {
+        .task {
             viewModel.setup(premiumClient: premiumClient)
+            await viewModel.loadProducts()
         }
         .onChange(of: viewModel.purchaseSuccess) { _, success in
             if success { coordinator.dismissSheet() }

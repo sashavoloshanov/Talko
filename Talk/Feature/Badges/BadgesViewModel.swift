@@ -6,15 +6,24 @@ final class BadgesViewModel: BaseViewModel {
     var badgesByCategory: [String: [Badge]] = [:]
     var categories: [Category] = []
 
+    @ObservationIgnored private var holder: QuestionClientHolder?
+    @ObservationIgnored private var languageClient: LanguageClient?
+
+    func setup(holder: QuestionClientHolder, languageClient: LanguageClient) {
+        self.holder = holder
+        self.languageClient = languageClient
+    }
+
     func load(categories: [Category]) {
         self.categories = categories
         self.badgesByCategory = BadgesClient.badges(for: categories)
         prefetchEarnedBadges()
     }
 
-    func loadContent(holder: QuestionClientHolder, language: AppLanguage, premiumClient: PremiumClient) async {
+    func loadContent() async {
+        guard let holder, let languageClient else { return }
         do {
-            try await holder.load(language: language)
+            try await holder.load(language: languageClient.current)
             load(categories: holder.categories)
         } catch is CancellationError {
         } catch {
@@ -22,9 +31,9 @@ final class BadgesViewModel: BaseViewModel {
         }
     }
 
-    func reloadContent(holder: QuestionClientHolder, language: AppLanguage, premiumClient: PremiumClient) async {
-        holder.reload()
-        await loadContent(holder: holder, language: language, premiumClient: premiumClient)
+    func reloadContent() async {
+        holder?.reload()
+        await loadContent()
     }
 
     private func prefetchEarnedBadges() {

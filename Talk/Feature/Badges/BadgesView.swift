@@ -3,6 +3,7 @@ import SwiftUI
 struct BadgesView: View {
     @Environment(AppCoordinator.self) private var coordinator
     @Environment(QuestionClientHolder.self) private var questionHolder
+    @Environment(LanguageClient.self) private var languageClient
     @Environment(\.languageBundle) private var bundle
     @State private var viewModel = BadgesViewModel()
 
@@ -13,6 +14,7 @@ struct BadgesView: View {
         }
         .background(Color.backgroundPrimary)
         .onAppear {
+            viewModel.setup(holder: questionHolder, languageClient: languageClient)
             viewModel.load(categories: questionHolder.categories)
         }
         .onChange(of: questionHolder.categories) { _, cats in

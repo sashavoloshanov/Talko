@@ -100,9 +100,9 @@ struct BadgesViewModelTests {
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let mock = MockQuestionClient()
             let holder = QuestionClientHolder(client: mock)
-            let premium = PremiumClient()
             let vm = BadgesViewModel()
-            await vm.loadContent(holder: holder, language: .english, premiumClient: premium)
+            vm.setup(holder: holder, languageClient: LanguageClient())
+            await vm.loadContent()
             UserDefaultsClient.defaults = defaults
             #expect(vm.errorMessage == nil)
         }
@@ -114,9 +114,9 @@ struct BadgesViewModelTests {
             let mock = MockQuestionClient()
             await mock.setCategories([cat])
             let holder = QuestionClientHolder(client: mock)
-            let premium = PremiumClient()
             let vm = BadgesViewModel()
-            await vm.loadContent(holder: holder, language: .english, premiumClient: premium)
+            vm.setup(holder: holder, languageClient: LanguageClient())
+            await vm.loadContent()
             UserDefaultsClient.defaults = defaults
             #expect(vm.categories.count == 1)
         }
@@ -127,9 +127,9 @@ struct BadgesViewModelTests {
             let mock = MockQuestionClient()
             await mock.setThrow(true)
             let holder = QuestionClientHolder(client: mock)
-            let premium = PremiumClient()
             let vm = BadgesViewModel()
-            await vm.loadContent(holder: holder, language: .english, premiumClient: premium)
+            vm.setup(holder: holder, languageClient: LanguageClient())
+            await vm.loadContent()
             UserDefaultsClient.defaults = defaults
             #expect(vm.errorMessage != nil)
         }
@@ -151,10 +151,10 @@ struct BadgesViewModelTests {
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let mock = MockQuestionClient()
             let holder = QuestionClientHolder(client: mock)
-            let premium = PremiumClient()
             let vm = BadgesViewModel()
-            await vm.loadContent(holder: holder, language: .english, premiumClient: premium)
-            await vm.reloadContent(holder: holder, language: .english, premiumClient: premium)
+            vm.setup(holder: holder, languageClient: LanguageClient())
+            await vm.loadContent()
+            await vm.reloadContent()
             UserDefaultsClient.defaults = defaults
             let count = await mock.loadCategoriesCallCount
             #expect(count == 2)
