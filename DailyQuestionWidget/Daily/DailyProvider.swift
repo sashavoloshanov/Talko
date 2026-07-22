@@ -8,34 +8,37 @@ struct DailyProvider: TimelineProvider {
     }
 
     func getSnapshot(in context: Context, completion: @escaping (DailyEntry) -> Void) {
-        completion(DailyEntry(date: .now, questionText: loadQuestion(defaults: UserDefaults(suiteName: AppGroupKey.suiteName))))
+        let payload = loadPayload()
+        completion(DailyEntry(date: .now, questionText: questionText(for: .now, payload: payload)))
     }
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<DailyEntry>) -> Void) {
-        let entry = DailyEntry(date: .now, questionText: loadQuestion(defaults: UserDefaults(suiteName: AppGroupKey.suiteName)))
-        let midnight = Calendar.current.nextDate(
-            after: .now,
-            matching: DateComponents(hour: 0, minute: 0),
-            matchingPolicy: .nextTime
-        ) ?? .now.addingTimeInterval(86400)
-        completion(Timeline(entries: [entry], policy: .after(midnight)))
+        let payload = loadPayload()
+        completion(Timeline(entries: makeEntries(from: .now, payload: payload), policy: .atEnd))
     }
 
-    func loadQuestion(defaults: UserDefaults?) -> String {
-        if let cached = defaults?.string(forKey: AppGroupKey.dailyQuestion) {
-            return cached
+    func makeEntries(from date: Date, payload: DailyQuestionsPayload?, calendar: Calendar = .current) -> [DailyEntry] {
+        (0..<7).compactMap { offset in
+            guard let day = calendar.date(byAdding: .day, value: offset, to: date) else { return nil }
+            let entryDate = calendar.startOfDay(for: day)
+            return DailyEntry(date: entryDate, questionText: questionText(for: entryDate, payload: payload))
         }
-        return loadFromBundle() ?? "What made you happy today?"
     }
 
-    func loadFromBundle() -> String? {
-        let langCode = UserDefaults(suiteName: AppGroupKey.suiteName)?.string(forKey: AppGroupKey.appLanguage) ?? "uk"
+    func questionText(for date: Date, payload: DailyQuestionsPayload?) -> String {
+        guard let payload, !payload.questions.isEmpty else {
+            return "What made you happy today?"
+        }
+        return payload.holidayQuestion(for: date) ?? payload.question(for: date)
+    }
+
+    func loadPayload(defaults: UserDefaults? = UserDefaults(suiteName: AppGroupKey.suiteName)) -> DailyQuestionsPayload? {
+        let langCode = defaults?.string(forKey: AppGroupKey.appLanguage) ?? "uk"
         let bundle = Bundle(path: Bundle.main.path(forResource: langCode, ofType: "lproj") ?? "") ?? .main
         guard
             let url = bundle.url(forResource: "daily", withExtension: "json"),
-            let data = try? Data(contentsOf: url),
-            let payload = try? JSONDecoder().decode(DailyQuestionsPayload.self, from: data)
+            let data = try? Data(contentsOf: url)
         else { return nil }
-        return payload.holidayQuestion(for: .now) ?? payload.question(for: .now)
+        return try? JSONDecoder().decode(DailyQuestionsPayload.self, from: data)
     }
 }

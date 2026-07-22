@@ -94,9 +94,6 @@ actor QuestionClient: QuestionClientProtocol {
         let today = Date()
         let text = await payload.holidayQuestion(for: today) ?? payload.question(for: today)
 
-        await widgetDefaults?.set(text, forKey: AppGroupKey.dailyQuestion)
-        await widgetCenter.reloadTimelines(ofKind: "DailyQuestionWidget")
-
         return DailyQuestion(text: text)
     }
 
@@ -105,13 +102,6 @@ actor QuestionClient: QuestionClientProtocol {
         if let categories = try? names.map({ try loadCategory($0, language: language) }) {
             let isPremium = await widgetDefaults?.bool(forKey: AppGroupKey.isPremium) ?? false
             saveQuestionsForWidget(categories: categories, isPremium: isPremium)
-        }
-
-        if let url = try? fileURL(name: "daily", language: language),
-           let data = try? Data(contentsOf: url),
-           let payload = try? JSONDecoder().decode(DailyQuestionsPayload.self, from: data) {
-            let text = await payload.holidayQuestion(for: .now) ?? payload.question(for: .now)
-            await widgetDefaults?.set(text, forKey: AppGroupKey.dailyQuestion)
         }
     }
 

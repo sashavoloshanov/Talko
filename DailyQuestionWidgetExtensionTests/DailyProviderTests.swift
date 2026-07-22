@@ -5,96 +5,129 @@ import Foundation
 @MainActor
 struct DailyProviderTests {
 
-    private func makeDefaults() -> (UserDefaults, String) {
-        let suite = "com.talk.widget.dailyprovider.\(UUID().uuidString)"
-        return (UserDefaults(suiteName: suite)!, suite)
-    }
-
-    @Suite("loadQuestion(defaults:)")
+    @Suite("makeEntries(from:payload:)")
     @MainActor
-    struct LoadQuestion {
-        private func makeDefaults() -> (UserDefaults, String) {
-            let suite = "com.talk.widget.dailyprovider.\(UUID().uuidString)"
-            return (UserDefaults(suiteName: suite)!, suite)
+    struct MakeEntries {
+
+        @Test func returnsSevenEntries() {
+            let provider = DailyProvider()
+            let entries = provider.makeEntries(from: .now, payload: makePayload())
+            #expect(entries.count == 7)
         }
 
-        @Test func nilDefaults_returnsFallback() {
+        @Test func entryDatesAreMidnights() {
             let provider = DailyProvider()
-            let result = provider.loadQuestion(defaults: nil)
-            #expect(!result.isEmpty)
+            let calendar = Calendar.current
+            let entries = provider.makeEntries(from: .now, payload: makePayload(), calendar: calendar)
+            for entry in entries {
+                #expect(entry.date == calendar.startOfDay(for: entry.date))
+            }
         }
 
-        @Test func cachedQuestion_returnsCached() {
-            let (defaults, suite) = makeDefaults()
-            defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
-            defaults.set("Cached question!", forKey: AppGroupKey.dailyQuestion)
+        @Test func entryDatesAreConsecutiveDays() {
             let provider = DailyProvider()
-            let result = provider.loadQuestion(defaults: defaults)
-            #expect(result == "Cached question!")
+            let calendar = Calendar.current
+            let entries = provider.makeEntries(from: .now, payload: makePayload(), calendar: calendar)
+            for (offset, entry) in entries.enumerated() {
+                let expected = calendar.startOfDay(
+                    for: calendar.date(byAdding: .day, value: offset, to: .now)!
+                )
+                #expect(entry.date == expected)
+            }
         }
 
-        @Test func noCachedQuestion_returnsNonEmpty() {
-            let (defaults, suite) = makeDefaults()
-            defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
+        @Test func questionsFollowSharedDayOfYearRule() {
             let provider = DailyProvider()
-            let result = provider.loadQuestion(defaults: defaults)
-            #expect(!result.isEmpty)
+            let payload = makePayload(questions: ["Q1", "Q2", "Q3"])
+            let entries = provider.makeEntries(from: .now, payload: payload)
+            for entry in entries {
+                #expect(entry.questionText == payload.holidayQuestion(for: entry.date) ?? payload.question(for: entry.date))
+            }
         }
 
-        @Test func differentCachedValues_returnCorrectOne() {
-            let (defaults, suite) = makeDefaults()
-            defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
-            defaults.set("Today's question", forKey: AppGroupKey.dailyQuestion)
+        @Test func holidayOverridesRegularQuestion() {
             let provider = DailyProvider()
-            #expect(provider.loadQuestion(defaults: defaults) == "Today's question")
+            let calendar = Calendar.current
+            let tomorrow = calendar.startOfDay(for: calendar.date(byAdding: .day, value: 1, to: .now)!)
+            let formatter = DateFormatter()
+            formatter.dateFormat = "MM-dd"
+            let key = formatter.string(from: tomorrow)
+            let payload = makePayload(questions: ["Regular"], holidays: [key: "Holiday Q"])
+            let entries = provider.makeEntries(from: .now, payload: payload)
+            #expect(entries[1].questionText == "Holiday Q")
+        }
+
+        @Test func nilPayload_usesFallbackText() {
+            let provider = DailyProvider()
+            let entries = provider.makeEntries(from: .now, payload: nil)
+            #expect(entries.count == 7)
+            for entry in entries {
+                #expect(!entry.questionText.isEmpty)
+            }
+        }
+
+        @Test func emptyQuestions_usesFallbackText() {
+            let provider = DailyProvider()
+            let entries = provider.makeEntries(from: .now, payload: makePayload(questions: []))
+            for entry in entries {
+                #expect(!entry.questionText.isEmpty)
+            }
         }
     }
 
-    @Suite("placeholder")
+    @Suite("questionText(for:payload:)")
+    @MainActor
+    struct QuestionText {
+
+        @Test func nilPayload_returnsNonEmptyFallback() {
+            let provider = DailyProvider()
+            #expect(!provider.questionText(for: .now, payload: nil).isEmpty)
+        }
+
+        @Test func payloadWithQuestions_matchesPayloadSelection() {
+            let provider = DailyProvider()
+            let payload = makePayload(questions: ["A", "B"])
+            let expected = payload.holidayQuestion(for: .now) ?? payload.question(for: .now)
+            #expect(provider.questionText(for: .now, payload: payload) == expected)
+        }
+    }
+
+    @Suite("loadPayload(defaults:)")
+    @MainActor
+    struct LoadPayload {
+
+        @Test func nilDefaults_doesNotCrash() {
+            let provider = DailyProvider()
+            // In the test environment Bundle.main is the test runner — daily.json
+            // may not be present, so nil is the expected result; no crash is the guarantee.
+            _ = provider.loadPayload(defaults: nil)
+        }
+
+        @Test func missingBundleFile_returnsNil() {
+            let suite = "com.talk.widget.dailyprovider.\(UUID().uuidString)"
+            let defaults = UserDefaults(suiteName: suite)!
+            defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
+            let provider = DailyProvider()
+            let payload = provider.loadPayload(defaults: defaults)
+            if let payload {
+                #expect(!payload.questions.isEmpty)
+            }
+        }
+    }
+
+    @Suite("placeholder text")
     @MainActor
     struct Placeholder {
         @Test func placeholderHasNonEmptyText() {
-            let provider = DailyProvider()
-            // Access placeholder text directly — it's a constant
             let text = "What made you happy today?"
             #expect(!text.isEmpty)
         }
     }
+}
 
-    @Suite("loadFromBundle()")
-    @MainActor
-    struct LoadFromBundle {
-
-        @Test func doesNotCrash() {
-            let provider = DailyProvider()
-            // In the test environment Bundle.main is the test runner — daily.json
-            // may not be present, so nil is the expected fallback; no crash is the guarantee.
-            _ = provider.loadFromBundle()
-        }
-
-        @Test func returnsNilOrNonEmptyString() {
-            let provider = DailyProvider()
-            let result = provider.loadFromBundle()
-            if let text = result {
-                #expect(!text.isEmpty)
-            }
-        }
-
-        @Test func loadQuestion_fallsBackToBundleWhenNoCachedValue() {
-            // No cached question → loadQuestion calls loadFromBundle → falls back to hardcoded
-            let provider = DailyProvider()
-            let result = provider.loadQuestion(defaults: nil)
-            #expect(!result.isEmpty)
-        }
-
-        @Test func loadQuestion_bundleFallbackProducesNonEmptyString() {
-            // Empty defaults (no daily question key) triggers loadFromBundle path
-            let suite = "com.talk.widget.bundle.\(UUID().uuidString)"
-            let defaults = UserDefaults(suiteName: suite)!
-            defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
-            let provider = DailyProvider()
-            let result = provider.loadQuestion(defaults: defaults)
-            #expect(!result.isEmpty)
-        }
-    }
+private func makePayload(
+    questions: [String] = ["Q1", "Q2", "Q3"],
+    holidays: [String: String] = [:]
+) -> DailyQuestionsPayload {
+    DailyQuestionsPayload(questions: questions, holidays: holidays)
 }

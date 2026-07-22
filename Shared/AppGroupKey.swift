@@ -2,7 +2,6 @@ import Foundation
 
 enum AppGroupKey {
     static let suiteName = "group.com.voloshanov.talk.shared"
-    static let dailyQuestion = "dailyQuestion"
     static let isPremium = "isPremium"
     static let appLanguage = "appLanguage"
 

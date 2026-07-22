@@ -103,24 +103,15 @@ struct QuestionClientTests {
             #expect(result.text == "Holiday Q")
         }
 
-        @Test func questionTextSavedToWidgetDefaults() async throws {
+        @Test func doesNotTouchWidgetDefaults() async throws {
             let bundle = try makeBundle(dailyJSON: #"{"questions":["Widget Q"],"holidays":{}}"#)
             let (widgetDefaults, suite) = makeWidgetDefaults()
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
             let widgetCenter = MockWidgetCenter()
             let client = QuestionClient(contentBundle: bundle, widgetDefaults: widgetDefaults, widgetCenter: widgetCenter)
-            _ = try await client.loadDailyQuestion(language: .english)
-            #expect(widgetDefaults.string(forKey: AppGroupKey.dailyQuestion) == "Widget Q")
-        }
-
-        @Test func reloadedKindsContainsDailyWidget() async throws {
-            let bundle = try makeBundle(dailyJSON: #"{"questions":["Q1"],"holidays":{}}"#)
-            let (widgetDefaults, suite) = makeWidgetDefaults()
-            defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
-            let widgetCenter = MockWidgetCenter()
-            let client = QuestionClient(contentBundle: bundle, widgetDefaults: widgetDefaults, widgetCenter: widgetCenter)
-            _ = try await client.loadDailyQuestion(language: .english)
-            #expect(widgetCenter.reloadedKinds.contains("DailyQuestionWidget"))
+            let result = try await client.loadDailyQuestion(language: .english)
+            #expect(result.text == "Widget Q")
+            #expect(widgetCenter.reloadedKinds.isEmpty)
         }
     }
 
