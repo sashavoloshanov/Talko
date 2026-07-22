@@ -6,18 +6,17 @@ struct BadgeRow: View {
 
     var body: some View {
         Button(action: onTap) {
-            VStack(spacing: 6) {
-                ZStack {
-                    if badge.isEarned {
-                        RemoteBadgeImage(imageName: badge.imageName)
-                            .padding(8)
-                    } else {
-                        Image("lockedBadgeIcon")
-                            .resizable()
-                            .scaledToFit()
-                    }
+            ZStack {
+                if badge.isEarned {
+                    RemoteBadgeImage(imageName: badge.imageName)
+                } else {
+                    Image("lockedBadgeIcon")
+                        .resizable()
+                        .scaledToFit()
                 }
             }
+            .frame(maxWidth: .infinity)
+            .aspectRatio(1, contentMode: .fit)
         }
         .buttonStyle(.plain)
     }

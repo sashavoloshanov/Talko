@@ -39,23 +39,14 @@ struct BadgesView: View {
 
     private var scrollContent: some View {
         ScrollView {
-            LazyVStack(alignment: .leading, spacing: 24) {
+            VStack(alignment: .leading, spacing: 16) {
                 ForEach(viewModel.categories) { category in
                     let badges = viewModel.badgesByCategory[category.id] ?? []
                     if !badges.isEmpty {
-                        VStack(alignment: .leading, spacing: 12) {
+                        VStack(alignment: .leading, spacing: 8) {
                             CategorySectionHeader(emoji: category.emoji, name: category.name)
 
-                            LazyVGrid(
-                                columns: Array(repeating: GridItem(.flexible()), count: 3),
-                                spacing: 0
-                            ) {
-                                ForEach(badges) { badge in
-                                    BadgeRow(badge: badge) {
-                                        coordinator.present(.badge(badge))
-                                    }
-                                }
-                            }
+                            badgeGrid(badges)
                         }
                     }
                 }
@@ -66,6 +57,30 @@ struct BadgesView: View {
         }
     }
     
+    private func badgeGrid(_ badges: [Badge]) -> some View {
+        let columns = 3
+        let rows = stride(from: 0, to: badges.count, by: columns).map {
+            Array(badges[$0..<min($0 + columns, badges.count)])
+        }
+        return VStack(spacing: 8) {
+            ForEach(Array(rows.enumerated()), id: \.offset) { _, row in
+                HStack(spacing: 8) {
+                    ForEach(row) { badge in
+                        BadgeRow(badge: badge) {
+                            coordinator.present(.badge(badge))
+                        }
+                    }
+                    ForEach(0..<(columns - row.count), id: \.self) { _ in
+                        Color.clear
+                            .frame(maxWidth: .infinity)
+                            .aspectRatio(1, contentMode: .fit)
+                    }
+                }
+            }
+        }
+        .padding(.horizontal, 8)
+    }
+
     private var navigationView: some View {
         NavigationBar(
             leftButton: nil,

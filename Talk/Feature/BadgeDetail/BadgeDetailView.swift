@@ -1,11 +1,11 @@
 import SwiftUI
-import UniformTypeIdentifiers
 
 struct BadgeDetailView: View {
     @Environment(AppCoordinator.self) private var coordinator
     let badge: Badge
 
     @State private var shareImage: UIImage?
+    @State private var isSharePresented = false
 
     var body: some View {
         ZStack(alignment: .topTrailing) {
@@ -25,13 +25,19 @@ struct BadgeDetailView: View {
             .contentShape(Rectangle())
             .onTapGesture { coordinator.dismissCover() }
 
-            if badge.isEarned, let shareImage {
-                shareButton(shareImage)
+            if badge.isEarned, shareImage != nil {
+                shareButton
             }
         }
         .task {
             guard badge.isEarned else { return }
             shareImage = try? await BadgeImageClient.shared.image(named: badge.imageName)
+        }
+        .sheet(isPresented: $isSharePresented) {
+            if let shareImage {
+                ActivityShareSheet(items: [shareImage])
+                    .presentationDetents([.medium, .large])
+            }
         }
     }
 
@@ -41,11 +47,10 @@ struct BadgeDetailView: View {
             RemoteBadgeImage(imageName: badge.imageName)
                 .padding(32)
         } else {
-            VStack(alignment: .center, spacing: 16) {
+            VStack(alignment: .center, spacing: 24) {
                 Image("lockedBadgeIcon")
                     .resizable()
                     .scaledToFit()
-                    .frame(width: 160)
 
                 Text("\(min(badge.progress, badge.threshold)) / \(badge.threshold)")
                     .font(.title2.bold())
@@ -55,11 +60,10 @@ struct BadgeDetailView: View {
         }
     }
 
-    private func shareButton(_ image: UIImage) -> some View {
-        ShareLink(
-            item: BadgeShareItem(image: image, fileName: badge.imageName),
-            preview: SharePreview(badge.name, image: Image(uiImage: image))
-        ) {
+    private var shareButton: some View {
+        Button {
+            isSharePresented = true
+        } label: {
             ZStack {
                 Circle()
                     .frame(width: 44, height: 44)
@@ -76,22 +80,14 @@ struct BadgeDetailView: View {
     }
 }
 
-// Shared as a PNG file so every target app (messengers, social, Files)
-// accepts it — SwiftUI Image lacks a file representation for some apps.
-private struct BadgeShareItem: Transferable {
-    let image: UIImage
-    let fileName: String
+// UIActivityViewController shares a plain UIImage, which every social app
+// accepts — ShareLink's Transferable items arrive empty in some targets.
+private struct ActivityShareSheet: UIViewControllerRepresentable {
+    let items: [Any]
 
-    static var transferRepresentation: some TransferRepresentation {
-        FileRepresentation(exportedContentType: .png) { item in
-            let url = FileManager.default.temporaryDirectory
-                .appendingPathComponent(item.fileName)
-                .appendingPathExtension("png")
-            guard let data = item.image.pngData() else {
-                throw CocoaError(.fileWriteUnknown)
-            }
-            try data.write(to: url)
-            return SentTransferredFile(url)
-        }
+    func makeUIViewController(context: Context) -> UIActivityViewController {
+        UIActivityViewController(activityItems: items, applicationActivities: nil)
     }
+
+    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
 }

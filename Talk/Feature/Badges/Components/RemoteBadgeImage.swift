@@ -51,14 +51,14 @@ struct RemoteBadgeImage: View {
 #if DEBUG
 #Preview("Dark") {
     PreviewContainer(scheme: .dark) {
-        RemoteBadgeImage(imageName: "badge_know_me_10")
+        RemoteBadgeImage(imageName: "badge_couple_1")
             .frame(width: 80, height: 80)
     }
 }
 
 #Preview("Light") {
     PreviewContainer(scheme: .light) {
-        RemoteBadgeImage(imageName: "badge_know_me_10")
+        RemoteBadgeImage(imageName: "badge_friends_3")
             .frame(width: 80, height: 80)
     }
 }
