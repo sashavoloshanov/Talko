@@ -71,8 +71,6 @@ Talk/
 │   ├── Settings/               # SettingsView + SettingsViewModel
 │   ├── Subscription/           # SubscriptionView + SubscriptionViewModel
 │   └── Document/               # DocumentView — in-app HTML viewer (ToS, Privacy)
-├── Shared/
-│   └── AppGroupKey.swift       # App Group suite name & shared UserDefaults keys
 ├── Utility/
 │   └── Colors.swift            # Colors enum with asset catalog references
 └── Resources/
@@ -80,9 +78,16 @@ Talk/
     ├── Colors.xcassets/        # Brand color assets
     └── Documents/              # privacy_policy_*.html, terms_of_use_*.html, support_*.html
 
+Shared/                         # Compiled into both the app and the widget extension
+├── AppGroupKey.swift           # App Group suite name & shared UserDefaults keys
+├── WidgetCategoryPayload.swift # Codable payload for category widgets
+└── WidgetCenterProtocol.swift  # WidgetCenter abstraction for tests
+
 DailyQuestionWidget/
+├── WidgetFallback.swift        # Localized fallback strings for widgets
+├── Localizable.xcstrings       # Widget-target String catalog (EN + UK)
 ├── Daily/                      # DailyQuestionWidget (small + medium)
-│   ├── DailyProvider.swift
+│   ├── DailyProvider.swift     # 7-day timeline generated from bundled daily.json
 │   └── DailyQuestionWidget.swift
 └── Category/                   # Per-category widgets (large only)
     ├── CategoryProvider.swift
@@ -97,8 +102,9 @@ DailyQuestionWidget/
 ## Architecture
 
 - **SwiftUI** with `@Observable` (iOS 17 Observation framework) — no Combine in ViewModels. Combine is used only in `LanguageClient` (`languagePublisher`) and `ThemeClient` (`themePublisher`) where external observers need a publisher interface.
-- **Environment-driven DI** — all clients (`PremiumClient`, `LanguageClient`, `ThemeClient`, `QuestionClientHolder`) are injected via `.environment(...)` at the app root (`TalkApp`).
-- **Splash gate** — `TalkApp` checks `SplashState.isFinished` (`@Observable`) before switching from `SplashView` to `TabBarView`. All environment objects are injected into both views.
+- **Environment-driven DI** — all clients (`PremiumClient`, `LanguageClient`, `ThemeClient`, `QuestionClientHolder`) are injected via a single `appEnvironment(...)` view modifier at the app root (`TalkApp`).
+- **Splash gate** — `TalkApp` checks `SplashState.isFinished` (`@Observable`) before switching from `SplashView` to `TabBarView`. Both branches share the same `appEnvironment(...)` set of environment objects.
+- **One-shot ViewModel setup** — ViewModels receive their client dependencies once via `setup(...)` (called from the view's `onAppear`/`task`); async methods like `loadContent()`, `purchase()` and `restorePurchases()` are parameterless and explicitly `async` so tests can await them directly.
 - **Actor-isolated data layer** — `QuestionClient` and `BadgeImageClient` are Swift `actor`s to guarantee thread-safe data access.
 - **Coordinator pattern** — `AppCoordinator` owns `NavigationPath`, `sheet`, and `fullScreenCover` state. Views call `coordinator.push()`, `coordinator.present()`, `coordinator.dismiss()`.
 - **BaseViewModel** — shared base class for `isLoading` and `errorMessage` state.
@@ -107,15 +113,15 @@ DailyQuestionWidget/
 
 | Client | Role |
 |---|---|
-| `QuestionClient` | Loads `couple.json`, `family.json`, `friends.json`, `daily.json` from the localized bundle; writes widget data to App Group UserDefaults |
-| `PremiumClient` | StoreKit 2 — `fetchAvailableProducts`, `purchase`, `restorePurchases`, `checkPremiumStatus`, background transaction listener |
+| `QuestionClient` | Loads `couple.json`, `family.json`, `friends.json`, `daily.json` from the localized bundle; writes the per-category widget payload to App Group UserDefaults |
+| `PremiumClient` | StoreKit 2 — `fetchAvailableProducts`, `purchase`, `restorePurchases`, `checkPremiumStatus`, background transaction listener; persists `isPremium` to the App Group and reloads widgets on every change |
 | `LanguageClient` | Persists selected language; exposes `bundle` computed property and `languagePublisher` (Combine) for observers |
 | `ThemeClient` | Persists selected theme; exposes `themePublisher` (Combine); controls `preferredColorScheme` at app root |
 | `BadgesClient` | Pure static function — computes badge earned/locked state from subcategory progress in `UserDefaults` |
 | `BadgeImageClient` | Actor — downloads earned badge PNGs from `Talko-content` CDN, caches on disk (`Caches/BadgeImages/`) and in memory; deduplicates parallel requests |
-| `UserDefaultsClient` | Generic `Codable` read/write wrapper around `UserDefaults.standard` |
+| `UserDefaultsClient` | Generic `Codable` read/write wrapper around `UserDefaults.standard` (app-only keys) |
 | `LikesStore` | `@MainActor @Observable` — manages liked question IDs; replaces direct `UserDefaultsClient.likedQuestions` access from views |
-| `MigrationClient` | One-time migration from legacy keys (`favorites`, `lastQuestionIndex_*`) to current keys (`likedQuestions`, `subcategoryProgress`); run in `TalkApp.init()` |
+| `MigrationClient` | One-time migration from legacy keys (`favorites`, `lastQuestionIndex_*`, standard-defaults `isPremium`) to current storage (`likedQuestions`, `subcategoryProgress`, App Group `isPremium`); run in `TalkApp.init()` |
 | `SplashState` | `@Observable` class; `isFinished` gates the transition from `SplashView` to `TabBarView` |
 
 ---
@@ -194,19 +200,18 @@ The widget extension uses **App Group** `group.com.voloshanov.talk.shared` for d
 
 | Widget | Kind | Sizes | Description |
 |---|---|---|---|
-| `DailyQuestionWidget` | `DailyQuestionWidget` | small, medium | Shows today's daily question; refreshes at midnight |
+| `DailyQuestionWidget` | `DailyQuestionWidget` | small, medium | Shows today's daily question; timeline covers 7 days ahead and rolls over at midnight without opening the app |
 | `CoupleQuestionWidget` | `CategoryWidget_couple` | large | Interactive question browser for the Couple category |
 | `FamilyQuestionWidget` | `CategoryWidget_family` | large | Interactive question browser for the Family category |
 | `FriendsQuestionWidget` | `CategoryWidget_friends` | large | Interactive question browser for the Friends category |
 
 ### Data flow (App → Widget)
 
-1. App calls `QuestionClient.loadCategories()` → writes to App Group UserDefaults:
-   - `widgetCategoryName_{id}` — display name
-   - `widgetCategoryEmoji_{id}` — emoji
-   - `widgetQuestions_{id}` — JSON-encoded `[String]` (filtered by premium status)
-2. `DailyProvider` reads `dailyQuestion` key; falls back to bundle `daily.json` if absent.
-3. `CategoryProvider` reads `widgetQuestions_{id}` and `widgetIndex_{id}` to render the current question.
+1. App calls `QuestionClient.loadCategories()` → writes one key per category to App Group UserDefaults:
+   - `widgetCategory_{id}` — JSON-encoded `WidgetCategoryPayload { name, emoji, questions }` (questions filtered by premium status)
+2. `DailyProvider` is self-sufficient: it reads `daily.json` directly from the widget bundle (language taken from the App Group `appLanguage` key) and generates 7 midnight-dated entries with an `.atEnd` reload policy. Question selection reuses the shared `DailyQuestionsPayload` logic.
+3. `CategoryProvider` decodes `widgetCategory_{id}` and reads `widgetIndex_{id}` to render the current question.
+4. Fallback strings shown by the widgets (`Reload`, the daily-question fallback) live in `WidgetFallback` and are localized via the widget target's String catalog (EN + UK).
 
 ### Interactive Widget (Next / Previous)
 
@@ -216,7 +221,7 @@ Category widgets use `AppIntent`s:
 
 ### Premium & Widgets
 
-When `isPremium` is `false`, only non-premium subcategory questions are written to the widget. The flag `isPremium` is mirrored to App Group key `"isPremium"` whenever `PremiumClient.isPremium` changes.
+When `isPremium` is `false`, only non-premium subcategory questions are written to the widget payload. Every `PremiumClient.isPremium` change (purchase, restore, coupon, `Transaction.updates`) persists the flag to the App Group key `"isPremium"`, rebuilds the widget question pool via `refreshWidgetData` and calls `WidgetCenter.reloadAllTimelines()`, so category widgets show or hide the premium pool immediately.
 
 ---
 
@@ -260,19 +265,18 @@ Accessed via `UserDefaultsClient` with typed `UDKey` enum:
 | `appTheme` | `AppTheme` | Selected color scheme |
 | `likedQuestions` | `[String]` | IDs of liked questions |
 | `subcategoryProgress` | `[String: Int]` | Last viewed index per subcategory |
-| `isPremium` | `Bool` | Cached premium status |
+| `didMigrateFromStorageClient` | `Bool` | One-time migration guard |
 
 ### `UserDefaults(suiteName: "group.com.voloshanov.talk.shared")` (shared with widget)
 
 | Key | Type | Purpose |
 |---|---|---|
-| `dailyQuestion` | `String` | Today's daily question text |
-| `isPremium` | `Bool` | Premium flag for widget filtering |
+| `isPremium` | `Bool` | **Single persisted source of truth** for premium status (read by app and widget) |
 | `appLanguage` | `String` | Selected UI language (shared with widget) |
-| `widgetCategoryName_{id}` | `String` | Category display name |
-| `widgetCategoryEmoji_{id}` | `String` | Category emoji |
-| `widgetQuestions_{id}` | `Data` (JSON `[String]`) | Questions pool for widget |
-| `widgetIndex_{id}` | `Int` | Current question index in widget |
+| `widgetCategory_{id}` | `Data` (JSON `WidgetCategoryPayload`) | Category name, emoji and premium-filtered question pool for the widget |
+| `widgetIndex_{id}` | `Int` | Current question index in widget (mutated by widget AppIntents) |
+
+`PremiumClient` keeps `isPremium` in memory at runtime, but the App Group is the only place it is persisted. A legacy `isPremium` value in `UserDefaults.standard` is migrated to the App Group by `MigrationClient` and the old key is deleted.
 
 ---
 
@@ -307,7 +311,7 @@ Progress per subcategory is stored in `subcategoryProgress` UserDefaults key as 
 
 - **Forward navigation** (`next()`) — saves `currentIndex + 1` directly.
 - **Toggle like** (`toggleLike()`) — calls `incrementProgressCount()`, which uses `max(current, currentIndex + 1)` so progress never goes backwards.
-- **Backward navigation** (`previous()`) — does **not** save progress in release builds; only saves in `#if DEBUG`.
+- **Backward navigation** (`previous()`) — never saves progress (identical behavior in debug and release).
 
 This means progress reflects how far into a subcategory the user has gone, not how many questions they have liked.
 
@@ -418,8 +422,9 @@ Add an entry to `holidays` in `daily.json` in both language bundles:
 
 ## Debug Notes
 
-- In `#if DEBUG`, `premiumClient.isPremium = true` is set at `TalkApp.init()` — all premium content is unlocked automatically in simulator/preview.
-- `QuestionViewModel.previous()` only saves progress in `DEBUG` builds — in release, going back does not update `subcategoryProgress`.
+- Debug and release builds behave identically — there are no `#if DEBUG` blocks that change runtime logic.
+- `#if DEBUG` is used only around `#Preview` blocks (part of the project's code style).
+- To test premium content in the simulator, purchase through the StoreKit sandbox or temporarily set the `isPremium` App Group key.
 
 ---
 
