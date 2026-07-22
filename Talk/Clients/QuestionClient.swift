@@ -8,12 +8,17 @@ final class QuestionClientHolder {
     var dailyQuestion: DailyQuestion?
     private(set) var loadedLanguage: AppLanguage?
     private(set) var isLoading: Bool = false
+    private(set) var subcategoriesById: [String: Subcategory] = [:]
 
     private let client: any QuestionClientProtocol
     private var loadingTask: Task<Void, Error>?
 
     init(client: any QuestionClientProtocol = QuestionClient.shared) {
         self.client = client
+    }
+
+    func subcategory(withId id: String) -> Subcategory? {
+        subcategoriesById[id]
     }
 
     func load(language: AppLanguage) async throws {
@@ -26,6 +31,10 @@ final class QuestionClientHolder {
             let (c, d) = try await (cats, daily)
             self.categories = c
             self.dailyQuestion = d
+            self.subcategoriesById = Dictionary(
+                c.flatMap(\.subcategories).map { ($0.id, $0) },
+                uniquingKeysWith: { first, _ in first }
+            )
             self.loadedLanguage = language
         }
         loadingTask = task

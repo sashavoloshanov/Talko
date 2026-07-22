@@ -40,6 +40,44 @@ struct QuestionClientHolderTests {
         }
     }
 
+    @Suite("subcategory(withId:)")
+    @MainActor
+    struct SubcategoryLookup {
+        @Test func returnsSubcategoryAfterLoad() async throws {
+            let sub = Subcategory.fixture(id: "sub42", questions: [.fixture(id: "q42")])
+            let mock = MockQuestionClient()
+            await mock.setCategories([.fixture(subcategories: [sub])])
+            let holder = QuestionClientHolder(client: mock)
+            try await holder.load(language: .english)
+            #expect(holder.subcategory(withId: "sub42")?.questions.first?.id == "q42")
+        }
+
+        @Test func unknownIdReturnsNil() async throws {
+            let mock = MockQuestionClient()
+            await mock.setCategories([.fixture()])
+            let holder = QuestionClientHolder(client: mock)
+            try await holder.load(language: .english)
+            #expect(holder.subcategory(withId: "missing") == nil)
+        }
+
+        @Test func beforeLoadReturnsNil() {
+            let holder = QuestionClientHolder(client: MockQuestionClient())
+            #expect(holder.subcategory(withId: "sub1") == nil)
+        }
+
+        @Test func coversAllSubcategoriesAcrossCategories() async throws {
+            let cats: [Talk.Category] = [
+                .fixture(id: "c1", subcategories: [.fixture(id: "s1"), .fixture(id: "s2")]),
+                .fixture(id: "c2", subcategories: [.fixture(id: "s3")])
+            ]
+            let mock = MockQuestionClient()
+            await mock.setCategories(cats)
+            let holder = QuestionClientHolder(client: mock)
+            try await holder.load(language: .english)
+            #expect(holder.subcategoriesById.count == 3)
+        }
+    }
+
     @Suite("Deduplication")
     @MainActor
     struct Deduplication {

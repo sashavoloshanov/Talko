@@ -53,9 +53,7 @@ struct TabBarView: View {
     private func routeView(_ route: AppRoute) -> some View {
         switch route {
         case .question(let subcategoryId, let title):
-            let questions = questionHolder.categories
-                .flatMap(\.subcategories)
-                .first(where: { $0.id == subcategoryId })?.questions ?? []
+            let questions = questionHolder.subcategory(withId: subcategoryId)?.questions ?? []
             if questions.isEmpty {
                 EmptyView().onAppear { coordinator.pop() }
             } else {
