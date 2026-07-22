@@ -1,4 +1,5 @@
 import SwiftUI
+import UniformTypeIdentifiers
 
 struct BadgeDetailView: View {
     @Environment(AppCoordinator.self) private var coordinator
@@ -20,6 +21,7 @@ struct BadgeDetailView: View {
 
                 Spacer()
             }
+            .frame(maxWidth: .infinity)
             .contentShape(Rectangle())
             .onTapGesture { coordinator.dismissCover() }
 
@@ -39,7 +41,7 @@ struct BadgeDetailView: View {
             RemoteBadgeImage(imageName: badge.imageName)
                 .padding(32)
         } else {
-            VStack(spacing: 16) {
+            VStack(alignment: .center, spacing: 16) {
                 Image("lockedBadgeIcon")
                     .resizable()
                     .scaledToFit()
@@ -55,7 +57,7 @@ struct BadgeDetailView: View {
 
     private func shareButton(_ image: UIImage) -> some View {
         ShareLink(
-            item: Image(uiImage: image),
+            item: BadgeShareItem(image: image, fileName: badge.imageName),
             preview: SharePreview(badge.name, image: Image(uiImage: image))
         ) {
             ZStack {
@@ -71,5 +73,25 @@ struct BadgeDetailView: View {
         }
         .padding(.top, 20)
         .padding(.trailing, 20)
+    }
+}
+
+// Shared as a PNG file so every target app (messengers, social, Files)
+// accepts it — SwiftUI Image lacks a file representation for some apps.
+private struct BadgeShareItem: Transferable {
+    let image: UIImage
+    let fileName: String
+
+    static var transferRepresentation: some TransferRepresentation {
+        FileRepresentation(exportedContentType: .png) { item in
+            let url = FileManager.default.temporaryDirectory
+                .appendingPathComponent(item.fileName)
+                .appendingPathExtension("png")
+            guard let data = item.image.pngData() else {
+                throw CocoaError(.fileWriteUnknown)
+            }
+            try data.write(to: url)
+            return SentTransferredFile(url)
+        }
     }
 }
