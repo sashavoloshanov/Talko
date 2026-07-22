@@ -17,19 +17,19 @@ struct BadgesClientTests {
 
         @Test func progress0AllLocked() {
             let result = badges(progress: 0)
-            #expect(result.filter { !$0.isEarned }.count == 3)
+            #expect(result.filter { !$0.isEarned }.count == 5)
             #expect(result.filter { $0.isEarned }.count == 0)
         }
 
         @Test func progress9AllLocked() {
             let result = badges(progress: 9)
-            #expect(result.filter { !$0.isEarned }.count == 3)
+            #expect(result.filter { !$0.isEarned }.count == 5)
         }
 
         @Test func progress10OneEarned() {
             let result = badges(progress: 10)
             #expect(result.filter { $0.isEarned }.count == 1)
-            #expect(result.filter { !$0.isEarned }.count == 2)
+            #expect(result.filter { !$0.isEarned }.count == 4)
         }
 
         @Test func progress29OneEarned() {
@@ -42,9 +42,29 @@ struct BadgesClientTests {
             #expect(result.filter { $0.isEarned }.count == 2)
         }
 
-        @Test func progress50AllEarned() {
+        @Test func progress50ThreeEarned() {
             let result = badges(progress: 50)
             #expect(result.filter { $0.isEarned }.count == 3)
+        }
+
+        @Test func progress74ThreeEarned() {
+            let result = badges(progress: 74)
+            #expect(result.filter { $0.isEarned }.count == 3)
+        }
+
+        @Test func progress75FourEarned() {
+            let result = badges(progress: 75)
+            #expect(result.filter { $0.isEarned }.count == 4)
+        }
+
+        @Test func progress99FourEarned() {
+            let result = badges(progress: 99)
+            #expect(result.filter { $0.isEarned }.count == 4)
+        }
+
+        @Test func progress100AllEarned() {
+            let result = badges(progress: 100)
+            #expect(result.filter { $0.isEarned }.count == 5)
         }
     }
 
@@ -111,8 +131,8 @@ struct BadgesClientTests {
         }
 
         @Test func allEarnedImageNames() {
-            let badges = BadgesClient.badges(for: [category], progress: ["sub1": 50], isPremium: false)["couple"] ?? []
-            #expect(badges.map(\.imageName) == ["badge_couple_1", "badge_couple_2", "badge_couple_3"])
+            let badges = BadgesClient.badges(for: [category], progress: ["sub1": 100], isPremium: false)["couple"] ?? []
+            #expect(badges.map(\.imageName) == ["badge_couple_1", "badge_couple_2", "badge_couple_3", "badge_couple_4", "badge_couple_5"])
         }
 
         @Test func lockedImageName() {
@@ -128,17 +148,17 @@ struct BadgesClientTests {
 
         @Test func badgeIdsMatchFormat() {
             let badges = BadgesClient.badges(for: [category], progress: [:], isPremium: false)["couple"] ?? []
-            #expect(badges.map(\.id) == ["couple_1", "couple_2", "couple_3"])
+            #expect(badges.map(\.id) == ["couple_1", "couple_2", "couple_3", "couple_4", "couple_5"])
         }
 
-        @Test func thresholdsAre10_30_50() {
+        @Test func thresholdsAre10_30_50_75_100() {
             let badges = BadgesClient.badges(for: [category], progress: [:], isPremium: false)["couple"] ?? []
-            #expect(badges.map(\.threshold) == [10, 30, 50])
+            #expect(badges.map(\.threshold) == [10, 30, 50, 75, 100])
         }
 
-        @Test func tiersAre1_2_3() {
+        @Test func tiersAre1Through5() {
             let badges = BadgesClient.badges(for: [category], progress: [:], isPremium: false)["couple"] ?? []
-            #expect(badges.map(\.tier) == [1, 2, 3])
+            #expect(badges.map(\.tier) == [1, 2, 3, 4, 5])
         }
 
         @Test func categoryFieldsMatchCategory() {
@@ -157,14 +177,14 @@ struct BadgesClientTests {
             #expect(result.isEmpty)
         }
 
-        @Test func categoryAlwaysHasExactly3Badges() {
+        @Test func categoryAlwaysHasExactly5Badges() {
             let one = Talk.Category.fixture(id: "cat1", subcategories: [.fixture(id: "sub1")])
             let many = Talk.Category.fixture(id: "cat2", subcategories: [
                 .fixture(id: "s1"), .fixture(id: "s2"), .fixture(id: "s3"), .fixture(id: "s4")
             ])
             let result = BadgesClient.badges(for: [one, many], progress: [:], isPremium: false)
-            #expect(result["cat1"]?.count == 3)
-            #expect(result["cat2"]?.count == 3)
+            #expect(result["cat1"]?.count == 5)
+            #expect(result["cat2"]?.count == 5)
         }
 
         @Test func threeCategoriesHave3Keys() {
@@ -207,10 +227,10 @@ struct BadgesClientTests {
             #expect(result["cat1"]?.first { $0.tier == 1 }?.isEarned == true)
         }
 
-        @Test func progressFor50_allEarned() {
+        @Test func progressFor100_allEarned() {
             UserDefaultsClient.defaults = defaults
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
-            UserDefaultsClient.set(["sub1": 50], for: .subcategoryProgress)
+            UserDefaultsClient.set(["sub1": 100], for: .subcategoryProgress)
             UserDefaultsClient.defaults = defaults
             let cat = Talk.Category.fixture(id: "cat1", subcategories: [.fixture(id: "sub1")])
             let result = BadgesClient.badges(for: [cat], isPremium: false)

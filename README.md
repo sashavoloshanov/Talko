@@ -117,7 +117,7 @@ DailyQuestionWidget/
 | `PremiumClient` | StoreKit 2 — `fetchAvailableProducts`, `purchase`, `restorePurchases`, `checkPremiumStatus`, background transaction listener; persists `isPremium` to the App Group and reloads widgets on every change |
 | `LanguageClient` | Persists selected language; exposes `bundle` computed property and `languagePublisher` (Combine) for observers |
 | `ThemeClient` | Persists selected theme; exposes `themePublisher` (Combine); controls `preferredColorScheme` at app root |
-| `BadgesClient` | Pure static function — computes per-category badge state (10/30/50) from summed subcategory progress, respecting premium availability |
+| `BadgesClient` | Pure static function — computes per-category badge state (10/30/50/75/100) from summed subcategory progress, respecting premium availability |
 | `BadgeImageClient` | Actor — downloads earned badge PNGs from `Talko-content` CDN, caches on disk (`Caches/BadgeImages/`) and in memory; deduplicates parallel requests |
 | `UserDefaultsClient` | Generic `Codable` read/write wrapper around `UserDefaults.standard` (app-only keys) |
 | `LikesStore` | `@MainActor @Observable` — manages liked question IDs; replaces direct `UserDefaultsClient.likedQuestions` access from views |
@@ -286,7 +286,7 @@ Accessed via `UserDefaultsClient` with typed `UDKey` enum:
 
 ### Badge thresholds
 
-Badges are earned **per category** (not per subcategory): tier 1 / 2 / 3 at **10, 30 and 50** answered questions across the whole category. Category progress is the sum of `subcategoryProgress` over the subcategories **available to the user** — premium subcategories only count for premium users.
+Badges are earned **per category** (not per subcategory): tiers 1–5 at **10, 30, 50, 75 and 100** answered questions across the whole category. Category progress is the sum of `subcategoryProgress` over the subcategories **available to the user** — premium subcategories only count for premium users.
 
 Tapping a locked badge opens `BadgeDetailView` with the current progress toward its threshold (e.g. `12 / 30`); sharing is available only for earned badges.
 
@@ -303,7 +303,7 @@ https://cdn.jsdelivr.net/gh/sashavoloshanov/Talko-content@main/Badges/{imageName
 ### Badge image naming convention
 
 ```
-badge_{categoryId}_{tier}   // earned — tier is 1, 2 or 3; fetched remotely by BadgeImageClient
+badge_{categoryId}_{tier}   // earned — tier is 1…5; fetched remotely by BadgeImageClient
 lockedBadgeIcon             // not yet earned — local asset
 ```
 
@@ -405,7 +405,7 @@ When writing or editing question content:
 
 1. Create `{category}.json` in both `en.lproj/` and `uk.lproj/`.
 2. Add the category name to the `names` array in `QuestionClient.loadCategories()`.
-3. Upload badge images to the `sashavoloshanov/Talko-content` repository under `Badges/`: `badge_{categoryId}_1.png`, `badge_{categoryId}_2.png`, `badge_{categoryId}_3.png`.
+3. Upload badge images to the `sashavoloshanov/Talko-content` repository under `Badges/`: `badge_{categoryId}_1.png` … `badge_{categoryId}_5.png` (one per tier).
 4. Create a new `Widget` struct in `DailyQuestionWidget/Category/` following the existing pattern.
 5. Register the widget in the widget bundle entry point.
 6. Add the new `WidgetCategory` case to `WidgetCategory` enum.

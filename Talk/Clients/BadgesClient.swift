@@ -1,7 +1,7 @@
 import Foundation
 
 struct BadgesClient {
-    static let thresholds = [10, 30, 50]
+    static let thresholds = [10, 30, 50, 75, 100]
 
     static func badges(for categories: [Category], progress: [String: Int], isPremium: Bool) -> [String: [Badge]] {
         var result: [String: [Badge]] = [:]

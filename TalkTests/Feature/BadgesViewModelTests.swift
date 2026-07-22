@@ -43,7 +43,7 @@ struct BadgesViewModelTests {
             let vm = BadgesViewModel()
             vm.load(categories: [cat])
             #expect(vm.badgesByCategory["cat1"] != nil)
-            #expect(vm.badgesByCategory["cat1"]?.count == 3)
+            #expect(vm.badgesByCategory["cat1"]?.count == 5)
         }
 
         @Test func replaceCategories_updatesAll() {
@@ -59,14 +59,14 @@ struct BadgesViewModelTests {
         @Test func withEarnedBadges_populatesEarnedCount() {
             UserDefaultsClient.defaults = defaults
             defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
-            UserDefaultsClient.set(["sub1": 50], for: .subcategoryProgress)
+            UserDefaultsClient.set(["sub1": 100], for: .subcategoryProgress)
             UserDefaultsClient.defaults = defaults
             let sub = Subcategory.fixture(id: "sub1")
             let cat = Talk.Category.fixture(id: "cat1", subcategories: [sub])
             let vm = BadgesViewModel()
             vm.load(categories: [cat])
             let earned = vm.badgesByCategory["cat1"]?.filter { $0.isEarned } ?? []
-            #expect(earned.count == 3)
+            #expect(earned.count == 5)
         }
 
         @Test func multipleCategoriesAllPopulated() {
@@ -79,8 +79,8 @@ struct BadgesViewModelTests {
             let vm = BadgesViewModel()
             vm.load(categories: cats)
             #expect(vm.badgesByCategory.keys.count == 2)
-            #expect(vm.badgesByCategory["cat1"]?.count == 3)
-            #expect(vm.badgesByCategory["cat2"]?.count == 3)
+            #expect(vm.badgesByCategory["cat1"]?.count == 5)
+            #expect(vm.badgesByCategory["cat2"]?.count == 5)
         }
     }
 
